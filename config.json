@@ -1,0 +1,10 @@
+{
+    "gemini_model": "gemini-3.8-flash",
+    "target_band_low": 20,
+    "target_band_high": 200,
+    "max_iterations": 8,
+    "top_k": 10,
+    "shard_max_bytes": 5000000,
+    "min_df_for_index": 1,
+    "kgram_k": 3
+}
