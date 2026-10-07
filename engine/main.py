@@ -20,7 +20,7 @@ def main():
         print("Usage: python -m engine.main <query>")
         print("Example: python -m engine.main 'coronavirus treatment options'")
         print()
-        print("Set GEMINI_API_KEY env var to enable LLM query proposal.")
+        print("Set GROQ_API_KEY env var to enable model query proposal.")
         print("Without it, the engine uses keyword AND as the initial query.")
         sys.exit(0)
 
@@ -44,10 +44,10 @@ def main():
     # Always permit cache lookup. On a cache miss, the client uses the API key
     # if present and the controller falls back to keywords if it is absent.
     use_llm = True
-    if os.environ.get("GEMINI_API_KEY"):
-        print("[mode] Gemini cache and API enabled")
+    if os.environ.get("GROQ_API_KEY"):
+        print("[mode] Groq cache and API enabled")
     else:
-        print("[mode] Cached Gemini responses when available, keyword fallback otherwise")
+        print("[mode] Cached model responses when available, keyword fallback otherwise")
 
     # run the controller loop
     ranked, ctrl_log, final_query = run_controller(query, index, config, use_llm=use_llm)

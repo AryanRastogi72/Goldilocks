@@ -1,5 +1,6 @@
 {
-    "gemini_model": "gemini-3.8-flash",
+    "llm_provider": "groq",
+    "groq_model": "openai/gpt-oss-20b",
     "target_band_low": 20,
     "target_band_high": 200,
     "max_iterations": 8,

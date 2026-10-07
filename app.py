@@ -1,11 +1,12 @@
 import json
+import os
 from pathlib import Path
 
 import pandas as pd
 import streamlit as st
 
 from engine.controller import run_controller
-from engine.gemini_client import using_api_key
+from engine.llm_client import using_api_key
 from engine.search import SearchIndex
 from pipeline.tokenizer import tokenize
 
@@ -20,7 +21,7 @@ def load_index():
 
 def secret_key():
     try:
-        return st.secrets.get("GEMINI_API_KEY", "")
+        return st.secrets.get("GROQ_API_KEY", "")
     except Exception:
         return ""
 
@@ -31,10 +32,7 @@ def show_search(index):
     config = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
     with st.sidebar:
         st.header("Search settings")
-        mode = st.radio("Query proposal", ["Offline keywords", "Gemini"]) 
-        key_input = ""
-        if mode == "Gemini":
-            key_input = st.text_input("Gemini API key", type="password", key="gemini_api_key")
+        mode = st.radio("Query proposal", ["Offline keywords", "Groq"])
         low = st.number_input("Minimum results", min_value=1, value=int(config.get("target_band_low", 20)))
         high = st.number_input("Maximum results", min_value=1, value=int(config.get("target_band_high", 200)))
         iterations = st.number_input("Iteration limit", min_value=1, max_value=20,
@@ -50,17 +48,17 @@ def show_search(index):
 
     config.update({"target_band_low": int(low), "target_band_high": int(high),
                    "max_iterations": int(iterations), "top_k": int(top_k)})
-    chosen_key = key_input.strip() or secret_key()
-    use_gemini = mode == "Gemini" and bool(chosen_key)
-    if mode == "Gemini" and not chosen_key:
-        st.warning("No key was entered. Searching with offline keywords.")
+    chosen_key = secret_key()
+    use_groq = mode == "Groq" and bool(chosen_key or os.environ.get("GROQ_API_KEY"))
+    if mode == "Groq" and not use_groq:
+        st.warning("Groq is not configured for this app. Searching with offline keywords.")
 
     with st.spinner("Running the Boolean controller and ranking results"):
-        if use_gemini:
+        if use_groq:
             with using_api_key(chosen_key):
                 ranked, trace, final_query = run_controller(query, index, config, use_llm=True)
             if trace.llm_errors:
-                st.warning("Gemini was unavailable. The search was repeated in offline mode. " + trace.llm_errors[0])
+                st.warning("Groq was unavailable. The search was repeated in offline mode. " + trace.llm_errors[0])
                 ranked, trace, final_query = run_controller(query, index, config, use_llm=False)
         else:
             ranked, trace, final_query = run_controller(query, index, config, use_llm=False)
@@ -121,7 +119,7 @@ def show_evaluation():
     data = json.loads(path.read_text(encoding="utf-8"))
     methods = [
         ("Goldilocks", "goldilocks"),
-        ("One shot Gemini", "one_shot_llm_baseline"),
+        ("One shot Groq", "one_shot_llm_baseline"),
         ("AND keywords", "and_baseline"),
         ("OR keywords", "or_baseline"),
     ]
@@ -142,7 +140,7 @@ def show_evaluation():
                "Average P at 10": round(sum(entry["p_at_10"] for entry in entries) / count, 4)}
         if key == "goldilocks":
             row["Average controller steps"] = round(sum(entry.get("iterations", 0) for entry in entries) / count, 2)
-            row["Average Gemini calls"] = round(sum(entry.get("llm_calls", 0) for entry in entries) / count, 2)
+            row["Average model calls"] = round(sum(entry.get("llm_calls", 0) for entry in entries) / count, 2)
         summary.append(row)
         chart_rows.append({"Method": label, "Average hits": row["Average hits"],
                            "Average P at 10": row["Average P at 10"]})

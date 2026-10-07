@@ -28,7 +28,7 @@ from engine.search import SearchIndex
 from engine.boolean_parser import parse, collect_terms, ParseError
 from engine.ranker import rank_documents
 from engine.controller import run_controller, load_config, keyword_terms
-from engine.gemini_client import propose_boolean_query
+from engine.llm_client import propose_boolean_query
 
 
 def load_eval_data():
@@ -108,14 +108,14 @@ def baseline_or_keywords(query_text, index, top_k=10):
 
 
 def baseline_one_shot_llm(query_text, index, top_k=10):
-    """Run one Gemini Boolean proposal without controller refinement."""
+    """Run one Groq Boolean proposal without controller refinement."""
     try:
         query_str = propose_boolean_query(query_text)
         ast = parse(query_str)
     except RuntimeError as error:
         return {"available": False, "error": str(error)}
     except ParseError:
-        return {"available": False, "error": "Gemini returned an invalid Boolean query."}
+        return {"available": False, "error": "Groq returned an invalid Boolean query."}
 
     docs = index.execute_boolean(ast)
     terms = list(collect_terms(ast))
@@ -148,10 +148,10 @@ def run_evaluation():
     # Always allow cache lookup. On a cache miss, the client uses the API key
     # if present and the controller falls back to keywords if it is absent.
     use_llm = True
-    if os.environ.get("GEMINI_API_KEY"):
-        print("[mode] Gemini cache and API enabled")
+    if os.environ.get("GROQ_API_KEY"):
+        print("[mode] Groq cache and API enabled")
     else:
-        print("[mode] Cached Gemini responses when available, keyword fallback otherwise")
+        print("[mode] Cached model responses when available, keyword fallback otherwise")
 
     # results storage
     results = {
@@ -281,7 +281,7 @@ def run_evaluation():
         entries = [entry for entry in results[method] if entry.get("available", True)]
         if not entries:
             if results[method]:
-                print(f"\n{method.upper()}: no successful Gemini responses")
+                print(f"\n{method.upper()}: no successful Groq responses")
             continue
 
         n = len(entries)
@@ -378,7 +378,7 @@ def _generate_charts(results, config):
         if hits:
             ax.hist(hits, bins=30, color="steelblue", edgecolor="white", alpha=0.8)
         else:
-            ax.text(0.5, 0.5, "No successful Gemini responses", ha="center", va="center", transform=ax.transAxes)
+            ax.text(0.5, 0.5, "No successful Groq responses", ha="center", va="center", transform=ax.transAxes)
         ax.axvline(x=target_low, color="green", linestyle="--", label=f"Target low ({target_low})")
         ax.axvline(x=target_high, color="red", linestyle="--", label=f"Target high ({target_high})")
         ax.set_title(title)

@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from engine.boolean_parser import parse, ast_to_string, collect_terms, ParseError
 from engine.search import SearchIndex
 from engine.ranker import rank_documents
-from engine.gemini_client import propose_boolean_query, suggest_synonyms, refine_query
+from engine.llm_client import propose_boolean_query, suggest_synonyms, refine_query
 from pipeline.tokenizer import stem_term, tokenize
 
 
@@ -44,7 +44,7 @@ class ControllerLog:
 
     def __init__(self):
         self.iterations = []
-        self.llm_calls = 0  # count of Gemini API calls used
+        self.llm_calls = 0  # count of model API calls used
         self.llm_errors = []
 
     def add(self, iteration_num, query_str, df_table, estimated_hits, actual_hits, decision, reason):
@@ -321,7 +321,7 @@ if __name__ == "__main__":
     config = load_config()
 
     # try with LLM first, fall back to keyword-only
-    use_llm = bool(os.environ.get("GEMINI_API_KEY"))
+    use_llm = bool(os.environ.get("GROQ_API_KEY"))
     ranked, ctrl_log, final_query = run_controller(query, index, config, use_llm=use_llm)
 
     print("\n" + "=" * 60)

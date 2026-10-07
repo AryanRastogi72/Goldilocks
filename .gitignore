@@ -19,7 +19,7 @@ node_modules/
 # Raw data and generated caches
 /data/raw/
 /data/cache/
-/gemini_cache/
+/llm_cache/
 
 # Private index backup and retired browser copies
 /index_out_original/
