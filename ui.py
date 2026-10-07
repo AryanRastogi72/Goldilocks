@@ -172,6 +172,10 @@ def run_search(query, index, config, context="", context_query=None):
                             error_message = "Groq rate limit reached. The search used offline keywords."
                         elif "not configured" in message:
                             error_message = "No Groq key is set and no cached proposal matched. The search used offline keywords."
+                        elif "contained no text" in message:
+                            error_message = "Groq returned no query text. The search used offline keywords."
+                        elif any(f"HTTP {code}" in message for code in (500, 502, 503, 504)) or message == "Groq request failed. Check the connection and model settings.":
+                            error_message = "Groq had a temporary service or connection problem. The search used offline keywords."
                         else:
                             error_message = "Groq was unavailable. The search used offline keywords."
                         ranked, trace, final_query = run_controller(

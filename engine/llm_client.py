@@ -14,6 +14,7 @@ ROOT = os.path.dirname(os.path.dirname(__file__))
 CACHE_DIR = os.path.join(ROOT, "llm_cache")
 _session_api_key = ContextVar("goldilocks_api_key", default=None)
 RATE_LIMIT_RETRIES = 3
+RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
 
 
 def load_config():
@@ -68,18 +69,26 @@ def call_model(prompt, use_cache=True):
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.3,
-        "max_completion_tokens": 512,
+        "max_completion_tokens": 1024,
+        "reasoning_effort": "low",
     }
 
     try:
         for attempt in range(RATE_LIMIT_RETRIES + 1):
-            response = requests.post(
-                "https://api.groq.com/openai/v1/chat/completions",
-                headers=headers,
-                json=payload,
-                timeout=30,
-            )
-            if response.status_code != 429 or attempt == RATE_LIMIT_RETRIES:
+            try:
+                response = requests.post(
+                    "https://api.groq.com/openai/v1/chat/completions",
+                    headers=headers,
+                    json=payload,
+                    timeout=30,
+                )
+            except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
+                if attempt == RATE_LIMIT_RETRIES:
+                    raise
+                time.sleep(min(2 ** attempt, 10))
+                continue
+
+            if response.status_code not in RETRYABLE_STATUS_CODES or attempt == RATE_LIMIT_RETRIES:
                 break
             try:
                 delay = float(response.headers.get("Retry-After", 2 ** attempt))
