@@ -12,7 +12,7 @@ Our main track is Track 2, Conversational and agentic search. The app keeps rece
 
 [Open Goldilocks](https://goldilocks-hackathon.streamlit.app/)
 
-The project owner reports that the deployed app and public repository are working. The owner configures the Groq secret. Visitors can also use Offline mode without a key.
+
 
 ## Novelty
 
@@ -139,9 +139,9 @@ Raghav Garg built the original project, including the Python indexing and retrie
 
 ## Submission links
 
-Report Google Doc: Add the link here
+[Report Google Doc](https://drive.google.com/drive/folders/1FauDbnLpA1ehaHF8nSEGFvTo1GJpY4yY?usp=sharing)
 
-Demo video: Add the YouTube or Google Drive link here
+[Demo video](https://drive.google.com/drive/folders/1FauDbnLpA1ehaHF8nSEGFvTo1GJpY4yY?usp=sharing)
 
 ## Sources
 
