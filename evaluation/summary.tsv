@@ -1,0 +1,4 @@
+Method	In Band %	Avg Hits	Avg Precision	Avg Recall	Avg P@10
+goldilocks	84.0	56.8	0.1662	0.0186	0.2540
+and_baseline	10.0	8.9	0.1481	0.0089	0.1768
+or_baseline	0.0	135330.3	0.0036	0.9728	0.2880

@@ -1,0 +1,1610 @@
+{
+  "goldilocks": [
+    {
+      "qid": "1",
+      "hits": 53,
+      "in_band": true,
+      "precision": 0.11320754716981132,
+      "recall": 0.009419152276295133,
+      "p_at_10": 0.3,
+      "llm_calls": 0,
+      "iterations": 1,
+      "final_query": "what AND is AND the AND origin AND of AND covid AND 19"
+    },
+    {
+      "qid": "2",
+      "hits": 53,
+      "in_band": true,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 3,
+      "final_query": "how AND the AND coronaviru AND respond AND to AND chang AND in AND the"
+    },
+    {
+      "qid": "3",
+      "hits": 112,
+      "in_band": true,
+      "precision": 0.25892857142857145,
+      "recall": 0.04617834394904458,
+      "p_at_10": 0.6,
+      "llm_calls": 0,
+      "iterations": 6,
+      "final_query": "will AND sar AND infect AND develop AND immun AND is"
+    },
+    {
+      "qid": "4",
+      "hits": 143,
+      "in_band": true,
+      "precision": 0.055944055944055944,
+      "recall": 0.015122873345935728,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 2,
+      "final_query": "what AND death AND from AND covid AND 19"
+    },
+    {
+      "qid": "5",
+      "hits": 70,
+      "in_band": true,
+      "precision": 0.22857142857142856,
+      "recall": 0.026058631921824105,
+      "p_at_10": 0.4,
+      "llm_calls": 0,
+      "iterations": 3,
+      "final_query": "drug AND have AND been AND activ AND against AND sar AND cov AND sar AND cov AND 2 AND in AND studi"
+    },
+    {
+      "qid": "6",
+      "hits": 39,
+      "in_band": true,
+      "precision": 0.3076923076923077,
+      "recall": 0.01251303441084463,
+      "p_at_10": 0.3,
+      "llm_calls": 0,
+      "iterations": 3,
+      "final_query": "type AND of AND test AND for AND covid AND 19 AND have AND been AND develop"
+    },
+    {
+      "qid": "7",
+      "hits": 35,
+      "in_band": true,
+      "precision": 0.37142857142857144,
+      "recall": 0.02702702702702703,
+      "p_at_10": 0.6,
+      "llm_calls": 0,
+      "iterations": 2,
+      "final_query": "are AND there AND test AND that AND detect AND antibodi AND to AND coronaviru"
+    },
+    {
+      "qid": "8",
+      "hits": 78,
+      "in_band": true,
+      "precision": 0.14102564102564102,
+      "recall": 0.01740506329113924,
+      "p_at_10": 0.2,
+      "llm_calls": 0,
+      "iterations": 6,
+      "final_query": "how AND ha AND of AND test AND avail AND to AND of AND of AND covid AND 19"
+    },
+    {
+      "qid": "9",
+      "hits": 137,
+      "in_band": true,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 4,
+      "final_query": "((how AND ha AND covid AND 19 AND affect) AND (can OR can1 OR cana OR canabi OR canad))"
+    },
+    {
+      "qid": "10",
+      "hits": 23,
+      "in_band": true,
+      "precision": 0.17391304347826086,
+      "recall": 0.008421052631578947,
+      "p_at_10": 0.3,
+      "llm_calls": 0,
+      "iterations": 3,
+      "final_query": "ha AND social AND had AND an AND impact AND on AND the AND spread AND of AND covid AND 19"
+    },
+    {
+      "qid": "11",
+      "hits": 4,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 8,
+      "final_query": "((are AND the AND guidelin AND for AND patient AND infect AND with AND coronaviru) AND (tri OR (tri OR tria OR triacet OR (tria AND (cylicospirura OR cylind OR cylindr OR cylindracea OR (cylicospirura OR cylind OR cylindr OR cylindracea OR (cylicospirura OR cylind OR cylindr OR cylindracea OR cylindrica)))) OR triad) OR ((tri OR tria OR triacet OR (tria AND (cylicospirura OR cylind OR cylindr OR cylindracea OR (cylicospirura OR cylind OR cylindr OR cylindracea OR (cylicospirura OR cylind OR cylindr OR cylindracea OR cylindrica)))) OR triad) AND cet) OR ((tri OR tria OR triacet OR (tria AND (cylicospirura OR cylind OR cylindr OR cylindracea OR (cylicospirura OR cylind OR cylindr OR cylindracea OR (cylicospirura OR cylind OR cylindr OR cylindracea OR cylindrica)))) OR triad) AND (cylicospirura OR cylind OR cylindr OR cylindracea OR (cylicospirura OR cylind OR cylindr OR cylindracea OR (cylicospirura OR cylind OR cylindr OR cylindracea OR cylindrica)))) OR ((tri OR tria OR triacet OR (tria AND (cylicospirura OR cylind OR cylindr OR cylindracea OR (cylicospirura OR cylind OR cylindr OR cylindracea OR (cylicospirura OR cylind OR cylindr OR cylindracea OR cylindrica)))) OR triad) AND d)))"
+    },
+    {
+      "qid": "12",
+      "hits": 31,
+      "in_band": true,
+      "precision": 0.03225806451612903,
+      "recall": 0.0016233766233766235,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 5,
+      "final_query": "what AND are AND practic AND in AND hospit AND at AND in"
+    },
+    {
+      "qid": "13",
+      "hits": 139,
+      "in_band": true,
+      "precision": 0.17266187050359713,
+      "recall": 0.02768166089965398,
+      "p_at_10": 0.4,
+      "llm_calls": 0,
+      "iterations": 2,
+      "final_query": "what AND are AND the AND transmiss AND of AND coronaviru"
+    },
+    {
+      "qid": "14",
+      "hits": 24,
+      "in_band": true,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 3,
+      "final_query": "what AND evid AND is AND there AND relat AND to AND covid AND 19"
+    },
+    {
+      "qid": "15",
+      "hits": 97,
+      "in_band": true,
+      "precision": 0.020618556701030927,
+      "recall": 0.004728132387706856,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 4,
+      "final_query": "how AND long AND can AND the AND coronaviru AND the"
+    },
+    {
+      "qid": "16",
+      "hits": 20,
+      "in_band": true,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 4,
+      "final_query": "how AND long AND coronaviru AND remain AND on"
+    },
+    {
+      "qid": "17",
+      "hits": 26,
+      "in_band": true,
+      "precision": 0.6538461538461539,
+      "recall": 0.025449101796407185,
+      "p_at_10": 0.8,
+      "llm_calls": 0,
+      "iterations": 1,
+      "final_query": "are AND there AND ani AND clinic AND trial AND avail AND for AND the AND coronaviru"
+    },
+    {
+      "qid": "18",
+      "hits": 58,
+      "in_band": true,
+      "precision": 0.017241379310344827,
+      "recall": 0.0015923566878980893,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 3,
+      "final_query": "what AND are AND the AND for AND prevent AND infect AND by AND covid AND 19"
+    },
+    {
+      "qid": "19",
+      "hits": 26,
+      "in_band": true,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 4,
+      "final_query": "what AND type AND of AND is AND need AND to AND covid AND 19"
+    },
+    {
+      "qid": "20",
+      "hits": 37,
+      "in_band": true,
+      "precision": 0.7837837837837838,
+      "recall": 0.04131054131054131,
+      "p_at_10": 0.9,
+      "llm_calls": 0,
+      "iterations": 6,
+      "final_query": "are AND patient AND enzym AND inhibitor AND at AND risk AND for AND covid AND 19"
+    },
+    {
+      "qid": "21",
+      "hits": 29,
+      "in_band": true,
+      "precision": 0.3793103448275862,
+      "recall": 0.01746031746031746,
+      "p_at_10": 0.7,
+      "llm_calls": 0,
+      "iterations": 2,
+      "final_query": "are AND the AND mortal AND rate AND over AND in AND specif AND popul"
+    },
+    {
+      "qid": "22",
+      "hits": 32,
+      "in_band": true,
+      "precision": 0.4375,
+      "recall": 0.02564102564102564,
+      "p_at_10": 0.9,
+      "llm_calls": 0,
+      "iterations": 1,
+      "final_query": "are AND cardiac AND complic AND like AND in AND patient AND with AND covid AND 19"
+    },
+    {
+      "qid": "23",
+      "hits": 108,
+      "in_band": true,
+      "precision": 0.05555555555555555,
+      "recall": 0.016172506738544475,
+      "p_at_10": 0.1,
+      "llm_calls": 0,
+      "iterations": 4,
+      "final_query": "of AND complic AND relat AND to AND covid AND 19 AND are AND associ AND with"
+    },
+    {
+      "qid": "24",
+      "hits": 108,
+      "in_band": true,
+      "precision": 0.05555555555555555,
+      "recall": 0.01485148514851485,
+      "p_at_10": 0.1,
+      "llm_calls": 0,
+      "iterations": 4,
+      "final_query": "of AND complic AND relat AND to AND covid AND 19 AND are AND associ AND with"
+    },
+    {
+      "qid": "25",
+      "hits": 53,
+      "in_band": true,
+      "precision": 0.39622641509433965,
+      "recall": 0.03969754253308128,
+      "p_at_10": 0.6,
+      "llm_calls": 0,
+      "iterations": 4,
+      "final_query": "which AND predict AND the AND sever AND clinic AND of AND 2019 AND infect"
+    },
+    {
+      "qid": "26",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 8,
+      "final_query": "((are AND the AND initi AND symptom AND of AND covid AND 19) AND (wha OR wha61 OR wha66 OR whack OR (wha OR wha61 OR wha66 OR whack OR (wha OR wha61 OR wha66 OR whack OR (wha OR wha61 OR wha66 OR whack OR (wha OR wha61 OR wha66 OR whack OR (wha OR wha61 OR wha66 OR whack OR whagen)))))))"
+    },
+    {
+      "qid": "27",
+      "hits": 55,
+      "in_band": true,
+      "precision": 0.10909090909090909,
+      "recall": 0.007067137809187279,
+      "p_at_10": 0.3,
+      "llm_calls": 0,
+      "iterations": 4,
+      "final_query": "is AND about AND those AND infect AND with AND covid AND 19 AND but AND are"
+    },
+    {
+      "qid": "28",
+      "hits": 161,
+      "in_band": true,
+      "precision": 0.12422360248447205,
+      "recall": 0.036297640653357534,
+      "p_at_10": 0.2,
+      "llm_calls": 0,
+      "iterations": 4,
+      "final_query": "evid AND is AND there AND for AND the AND of AND in AND treat AND covid AND 19"
+    },
+    {
+      "qid": "29",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 8,
+      "final_query": "which AND sar AND cov AND 2 AND protein AND human AND protein AND potenti AND for AND are AND there AND that AND can AND be AND base AND on AND thi"
+    },
+    {
+      "qid": "30",
+      "hits": 87,
+      "in_band": true,
+      "precision": 0.5977011494252874,
+      "recall": 0.14054054054054055,
+      "p_at_10": 1.0,
+      "llm_calls": 0,
+      "iterations": 1,
+      "final_query": "is AND remdesivir AND an AND effect AND treatment AND for AND covid AND 19"
+    },
+    {
+      "qid": "31",
+      "hits": 6,
+      "in_band": false,
+      "precision": 0.5,
+      "recall": 0.0084985835694051,
+      "p_at_10": 0.5,
+      "llm_calls": 0,
+      "iterations": 8,
+      "final_query": "((how AND the AND coronaviru AND differ AND from) AND (flu OR flua OR fluab OR fluad OR (flu OR flua OR fluab OR fluad OR (flu OR flua OR fluab OR fluad OR (flu OR flua OR fluab OR fluad OR fluaid)))))"
+    },
+    {
+      "qid": "32",
+      "hits": 31,
+      "in_band": true,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 5,
+      "final_query": "sar AND cov AND 2 AND have AND ani AND if AND are AND they"
+    },
+    {
+      "qid": "33",
+      "hits": 27,
+      "in_band": true,
+      "precision": 0.4444444444444444,
+      "recall": 0.042704626334519574,
+      "p_at_10": 0.8,
+      "llm_calls": 0,
+      "iterations": 4,
+      "final_query": "((vaccin AND are AND be AND test AND for AND covid AND 19)) AND candid"
+    },
+    {
+      "qid": "34",
+      "hits": 68,
+      "in_band": true,
+      "precision": 0.029411764705882353,
+      "recall": 0.011627906976744186,
+      "p_at_10": 0.2,
+      "llm_calls": 0,
+      "iterations": 5,
+      "final_query": "are AND the AND term AND of AND those AND who AND from AND covid AND 19"
+    },
+    {
+      "qid": "35",
+      "hits": 25,
+      "in_band": true,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 3,
+      "final_query": "new AND public AND are AND avail AND relat AND to AND covid AND 19"
+    },
+    {
+      "qid": "36",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 8,
+      "final_query": "(((is AND the AND protein AND structur AND of AND the AND sar AND cov AND 2) AND (spi OR spia OR spic OR spica OR (spi OR spia OR spic OR spica OR (spi OR spia OR spic OR spica OR (spi OR spia OR spic OR spica OR spicatum))))) AND what)"
+    },
+    {
+      "qid": "37",
+      "hits": 118,
+      "in_band": true,
+      "precision": 0.4406779661016949,
+      "recall": 0.11555555555555555,
+      "p_at_10": 0.4,
+      "llm_calls": 0,
+      "iterations": 3,
+      "final_query": "is AND the AND result AND of AND analysi AND of AND sar AND cov AND 2 AND genom AND sequenc"
+    },
+    {
+      "qid": "38",
+      "hits": 165,
+      "in_band": true,
+      "precision": 0.48484848484848486,
+      "recall": 0.0631911532385466,
+      "p_at_10": 0.9,
+      "llm_calls": 0,
+      "iterations": 4,
+      "final_query": "is AND the AND mechan AND of AND inflammatori AND of AND covid AND 19 AND case"
+    },
+    {
+      "qid": "39",
+      "hits": 33,
+      "in_band": true,
+      "precision": 0.030303030303030304,
+      "recall": 0.0011627906976744186,
+      "p_at_10": 0.1,
+      "llm_calls": 0,
+      "iterations": 3,
+      "final_query": "what AND is AND the AND mechan AND of AND syndrom AND on AND the AND covid AND 19"
+    },
+    {
+      "qid": "40",
+      "hits": 122,
+      "in_band": true,
+      "precision": 0.10655737704918032,
+      "recall": 0.023381294964028777,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 8,
+      "final_query": "are AND the AND observ AND in AND the AND sar AND cov AND 2 AND the AND occur"
+    },
+    {
+      "qid": "41",
+      "hits": 36,
+      "in_band": true,
+      "precision": 0.027777777777777776,
+      "recall": 0.003215434083601286,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 7,
+      "final_query": "are AND the AND of AND covid AND 19 AND among AND that AND differ AND from AND the AND of AND the AND s AND popul"
+    },
+    {
+      "qid": "42",
+      "hits": 1,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 8,
+      "final_query": "((impact AND covid AND 19 AND prevent AND treatment) AND (vit OR vita OR vitacea OR (vit OR vita OR vitacea OR (vit OR vita OR vitacea OR (vit OR vita OR vitacea OR vitagen OR vital) OR vital) OR vital) OR vital))"
+    },
+    {
+      "qid": "43",
+      "hits": 128,
+      "in_band": true,
+      "precision": 0.0390625,
+      "recall": 0.019762845849802372,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 5,
+      "final_query": "how AND ha AND the AND covid AND 19 AND pandem AND impact AND in AND includ"
+    },
+    {
+      "qid": "44",
+      "hits": 27,
+      "in_band": true,
+      "precision": 0.07407407407407407,
+      "recall": 0.004140786749482402,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 4,
+      "final_query": "how AND impact AND have AND on AND prevent AND the AND spread AND of AND the AND covid AND 19"
+    },
+    {
+      "qid": "45",
+      "hits": 49,
+      "in_band": true,
+      "precision": 0.3877551020408163,
+      "recall": 0.02357320099255583,
+      "p_at_10": 0.7,
+      "llm_calls": 0,
+      "iterations": 1,
+      "final_query": "how AND ha AND the AND covid AND 19 AND pandem AND impact AND mental AND health"
+    },
+    {
+      "qid": "46",
+      "hits": 28,
+      "in_band": true,
+      "precision": 0.07142857142857142,
+      "recall": 0.01098901098901099,
+      "p_at_10": 0.2,
+      "llm_calls": 0,
+      "iterations": 2,
+      "final_query": "what AND evid AND is AND there AND for AND as AND a AND treatment AND for AND covid AND 19"
+    },
+    {
+      "qid": "47",
+      "hits": 1,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 8,
+      "final_query": "((are AND the AND health AND outcom AND for AND who AND covid AND 19) AND (con OR (con OR (con OR (con OR con1 OR con1b OR cona OR conain) OR (con OR con1 OR con1b OR cona OR conain)b OR cona OR conain) OR ((con OR (con OR con1 OR con1b OR cona OR conain) OR (con OR con1 OR con1b OR cona OR conain)b OR cona OR conain) AND b) OR cona OR conain) OR ((con OR (con OR (con OR con1 OR con1b OR cona OR conain) OR (con OR con1 OR con1b OR cona OR conain)b OR cona OR conain) OR ((con OR (con OR con1 OR con1b OR cona OR conain) OR (con OR con1 OR con1b OR cona OR conain)b OR cona OR conain) AND b) OR cona OR conain) AND b) OR cona OR conain))"
+    },
+    {
+      "qid": "48",
+      "hits": 117,
+      "in_band": true,
+      "precision": 0.09401709401709402,
+      "recall": 0.024774774774774775,
+      "p_at_10": 0.2,
+      "llm_calls": 0,
+      "iterations": 6,
+      "final_query": "are AND the AND risk AND of AND open AND in AND the AND of AND the AND covid AND 19 AND pandem"
+    },
+    {
+      "qid": "49",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 8,
+      "final_query": "individu AND who AND from AND covid AND 19 AND show AND immun AND includ AND level AND cell AND immun AND to AND prevent AND infect"
+    },
+    {
+      "qid": "50",
+      "hits": 21,
+      "in_band": true,
+      "precision": 0.09523809523809523,
+      "recall": 0.014598540145985401,
+      "p_at_10": 0.0,
+      "llm_calls": 0,
+      "iterations": 3,
+      "final_query": "is AND known AND about AND an AND vaccin AND for AND the AND sar AND cov AND 2 AND viru"
+    }
+  ],
+  "one_shot_llm_baseline": [
+    {
+      "qid": "1",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "2",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "3",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "4",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "5",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "6",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "7",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "8",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "9",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "10",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "11",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "12",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "13",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "14",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "15",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "16",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "17",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "18",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "19",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "20",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "21",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "22",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "23",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "24",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "25",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "26",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "27",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "28",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "29",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "30",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "31",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "32",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "33",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "34",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "35",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "36",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "37",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "38",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "39",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "40",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "41",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "42",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "43",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "44",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "45",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "46",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "47",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "48",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "49",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    },
+    {
+      "qid": "50",
+      "available": false,
+      "error": "GEMINI_API_KEY environment variable not set. Get a free key from https://aistudio.google.com/"
+    }
+  ],
+  "and_baseline": [
+    {
+      "qid": "1",
+      "hits": 62,
+      "in_band": true,
+      "precision": 0.12903225806451613,
+      "recall": 0.012558869701726845,
+      "p_at_10": 0.4
+    },
+    {
+      "qid": "2",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "3",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "4",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "5",
+      "hits": 2,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "6",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "7",
+      "hits": 14,
+      "in_band": false,
+      "precision": 0.7142857142857143,
+      "recall": 0.02079002079002079,
+      "p_at_10": 0.7
+    },
+    {
+      "qid": "8",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "9",
+      "hits": 9,
+      "in_band": false,
+      "precision": 0.4444444444444444,
+      "recall": 0.020942408376963352,
+      "p_at_10": 0.4444444444444444
+    },
+    {
+      "qid": "10",
+      "hits": 7,
+      "in_band": false,
+      "precision": 0.42857142857142855,
+      "recall": 0.00631578947368421,
+      "p_at_10": 0.42857142857142855
+    },
+    {
+      "qid": "11",
+      "hits": 1,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "12",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "13",
+      "hits": 5,
+      "in_band": false,
+      "precision": 0.6,
+      "recall": 0.0034602076124567475,
+      "p_at_10": 0.6
+    },
+    {
+      "qid": "14",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "15",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "16",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "17",
+      "hits": 26,
+      "in_band": true,
+      "precision": 0.6538461538461539,
+      "recall": 0.025449101796407185,
+      "p_at_10": 0.8
+    },
+    {
+      "qid": "18",
+      "hits": 5,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "19",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "20",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "21",
+      "hits": 5,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "22",
+      "hits": 32,
+      "in_band": true,
+      "precision": 0.4375,
+      "recall": 0.02564102564102564,
+      "p_at_10": 0.9
+    },
+    {
+      "qid": "23",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "24",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "25",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "26",
+      "hits": 14,
+      "in_band": false,
+      "precision": 0.2857142857142857,
+      "recall": 0.005141388174807198,
+      "p_at_10": 0.3
+    },
+    {
+      "qid": "27",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "28",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "29",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "30",
+      "hits": 163,
+      "in_band": true,
+      "precision": 0.5828220858895705,
+      "recall": 0.25675675675675674,
+      "p_at_10": 0.9
+    },
+    {
+      "qid": "31",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "32",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "33",
+      "hits": 2,
+      "in_band": false,
+      "precision": 1.0,
+      "recall": 0.0071174377224199285,
+      "p_at_10": 1.0
+    },
+    {
+      "qid": "34",
+      "hits": 1,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "35",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "36",
+      "hits": 6,
+      "in_band": false,
+      "precision": 0.6666666666666666,
+      "recall": 0.006546644844517185,
+      "p_at_10": 0.6666666666666666
+    },
+    {
+      "qid": "37",
+      "hits": 1,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "38",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "39",
+      "hits": 1,
+      "in_band": false,
+      "precision": 1.0,
+      "recall": 0.0011627906976744186,
+      "p_at_10": 1.0
+    },
+    {
+      "qid": "40",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "41",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "42",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "43",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "44",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "45",
+      "hits": 89,
+      "in_band": true,
+      "precision": 0.4606741573033708,
+      "recall": 0.05086848635235732,
+      "p_at_10": 0.7
+    },
+    {
+      "qid": "46",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "47",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "48",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "49",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "50",
+      "hits": 0,
+      "in_band": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "p_at_10": 0.0
+    }
+  ],
+  "or_baseline": [
+    {
+      "qid": "1",
+      "hits": 154448,
+      "in_band": false,
+      "precision": 0.004001346731586035,
+      "recall": 0.9701726844583988,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "2",
+      "hits": 145922,
+      "in_band": false,
+      "precision": 0.002103863708008388,
+      "recall": 0.9777070063694268,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "3",
+      "hits": 96809,
+      "in_band": false,
+      "precision": 0.006383703994463324,
+      "recall": 0.9840764331210191,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "4",
+      "hits": 109280,
+      "in_band": false,
+      "precision": 0.004712664714494876,
+      "recall": 0.9735349716446124,
+      "p_at_10": 0.1
+    },
+    {
+      "qid": "5",
+      "hits": 111124,
+      "in_band": false,
+      "precision": 0.005408372628775062,
+      "recall": 0.9788273615635179,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "6",
+      "hits": 145250,
+      "in_band": false,
+      "precision": 0.006519793459552495,
+      "recall": 0.9874869655891554,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "7",
+      "hits": 120959,
+      "in_band": false,
+      "precision": 0.00393521771840045,
+      "recall": 0.9896049896049897,
+      "p_at_10": 0.5
+    },
+    {
+      "qid": "8",
+      "hits": 92960,
+      "in_band": false,
+      "precision": 0.006529690189328744,
+      "recall": 0.9604430379746836,
+      "p_at_10": 0.1
+    },
+    {
+      "qid": "9",
+      "hits": 71452,
+      "in_band": false,
+      "precision": 0.0025471645300341487,
+      "recall": 0.9528795811518325,
+      "p_at_10": 0.4
+    },
+    {
+      "qid": "10",
+      "hits": 154576,
+      "in_band": false,
+      "precision": 0.003066452748162716,
+      "recall": 0.9978947368421053,
+      "p_at_10": 0.1
+    },
+    {
+      "qid": "11",
+      "hits": 154499,
+      "in_band": false,
+      "precision": 0.002621376190137153,
+      "recall": 0.9759036144578314,
+      "p_at_10": 0.3
+    },
+    {
+      "qid": "12",
+      "hits": 85060,
+      "in_band": false,
+      "precision": 0.006019280507876793,
+      "recall": 0.8311688311688312,
+      "p_at_10": 0.3
+    },
+    {
+      "qid": "13",
+      "hits": 146487,
+      "in_band": false,
+      "precision": 0.005761603418733403,
+      "recall": 0.9734717416378316,
+      "p_at_10": 0.3
+    },
+    {
+      "qid": "14",
+      "hits": 91623,
+      "in_band": false,
+      "precision": 0.002237429466400358,
+      "recall": 0.803921568627451,
+      "p_at_10": 0.7
+    },
+    {
+      "qid": "15",
+      "hits": 146079,
+      "in_band": false,
+      "precision": 0.002690325098063377,
+      "recall": 0.9290780141843972,
+      "p_at_10": 0.1
+    },
+    {
+      "qid": "16",
+      "hits": 63351,
+      "in_band": false,
+      "precision": 0.005019652412748023,
+      "recall": 0.8217054263565892,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "17",
+      "hits": 150465,
+      "in_band": false,
+      "precision": 0.0043598178978499985,
+      "recall": 0.9820359281437125,
+      "p_at_10": 0.3
+    },
+    {
+      "qid": "18",
+      "hits": 158537,
+      "in_band": false,
+      "precision": 0.003929682030062383,
+      "recall": 0.9920382165605095,
+      "p_at_10": 0.5
+    },
+    {
+      "qid": "19",
+      "hits": 83760,
+      "in_band": false,
+      "precision": 0.0011580706781279847,
+      "recall": 0.8738738738738738,
+      "p_at_10": 0.1
+    },
+    {
+      "qid": "20",
+      "hits": 146390,
+      "in_band": false,
+      "precision": 0.004706605642461917,
+      "recall": 0.9814814814814815,
+      "p_at_10": 0.6
+    },
+    {
+      "qid": "21",
+      "hits": 144529,
+      "in_band": false,
+      "precision": 0.004234444298376105,
+      "recall": 0.9714285714285714,
+      "p_at_10": 0.1
+    },
+    {
+      "qid": "22",
+      "hits": 144204,
+      "in_band": false,
+      "precision": 0.0036961526726027017,
+      "recall": 0.9761904761904762,
+      "p_at_10": 0.4
+    },
+    {
+      "qid": "23",
+      "hits": 143884,
+      "in_band": false,
+      "precision": 0.0025367657279475133,
+      "recall": 0.9838274932614556,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "24",
+      "hits": 143969,
+      "in_band": false,
+      "precision": 0.0028061596593711145,
+      "recall": 1.0,
+      "p_at_10": 0.4
+    },
+    {
+      "qid": "25",
+      "hits": 147568,
+      "in_band": false,
+      "precision": 0.003537352271495175,
+      "recall": 0.9867674858223062,
+      "p_at_10": 0.1
+    },
+    {
+      "qid": "26",
+      "hits": 154938,
+      "in_band": false,
+      "precision": 0.004956821438252721,
+      "recall": 0.987146529562982,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "27",
+      "hits": 147637,
+      "in_band": false,
+      "precision": 0.005669310538686102,
+      "recall": 0.9858657243816255,
+      "p_at_10": 0.5
+    },
+    {
+      "qid": "28",
+      "hits": 156970,
+      "in_band": false,
+      "precision": 0.0034911129515193986,
+      "recall": 0.9945553539019963,
+      "p_at_10": 0.3
+    },
+    {
+      "qid": "29",
+      "hits": 139143,
+      "in_band": false,
+      "precision": 0.004326484264389872,
+      "recall": 0.9966887417218543,
+      "p_at_10": 0.1
+    },
+    {
+      "qid": "30",
+      "hits": 139333,
+      "in_band": false,
+      "precision": 0.0026124464412594288,
+      "recall": 0.9837837837837838,
+      "p_at_10": 0.8
+    },
+    {
+      "qid": "31",
+      "hits": 147102,
+      "in_band": false,
+      "precision": 0.002304523391932129,
+      "recall": 0.9603399433427762,
+      "p_at_10": 0.2
+    },
+    {
+      "qid": "32",
+      "hits": 101350,
+      "in_band": false,
+      "precision": 0.002101628021706956,
+      "recall": 0.9861111111111112,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "33",
+      "hits": 143860,
+      "in_band": false,
+      "precision": 0.0019463367162519116,
+      "recall": 0.99644128113879,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "34",
+      "hits": 155781,
+      "in_band": false,
+      "precision": 0.001091275572759194,
+      "recall": 0.9883720930232558,
+      "p_at_10": 0.1
+    },
+    {
+      "qid": "35",
+      "hits": 119881,
+      "in_band": false,
+      "precision": 0.0018017867718821165,
+      "recall": 0.9908256880733946,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "36",
+      "hits": 145726,
+      "in_band": false,
+      "precision": 0.004192800186651661,
+      "recall": 1.0,
+      "p_at_10": 0.2
+    },
+    {
+      "qid": "37",
+      "hits": 146055,
+      "in_band": false,
+      "precision": 0.003053644175139502,
+      "recall": 0.9911111111111112,
+      "p_at_10": 0.3
+    },
+    {
+      "qid": "38",
+      "hits": 155142,
+      "in_band": false,
+      "precision": 0.008108700416392724,
+      "recall": 0.9936808846761453,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "39",
+      "hits": 155224,
+      "in_band": false,
+      "precision": 0.005501726537133433,
+      "recall": 0.9930232558139535,
+      "p_at_10": 1.0
+    },
+    {
+      "qid": "40",
+      "hits": 146641,
+      "in_band": false,
+      "precision": 0.0037642951152815378,
+      "recall": 0.9928057553956835,
+      "p_at_10": 0.2
+    },
+    {
+      "qid": "41",
+      "hits": 155977,
+      "in_band": false,
+      "precision": 0.0019810613103213937,
+      "recall": 0.9935691318327974,
+      "p_at_10": 0.7
+    },
+    {
+      "qid": "42",
+      "hits": 90203,
+      "in_band": false,
+      "precision": 0.0026495792822855114,
+      "recall": 0.9835390946502057,
+      "p_at_10": 0.6
+    },
+    {
+      "qid": "43",
+      "hits": 155169,
+      "in_band": false,
+      "precision": 0.0016240357287860333,
+      "recall": 0.9960474308300395,
+      "p_at_10": 0.9
+    },
+    {
+      "qid": "44",
+      "hits": 155065,
+      "in_band": false,
+      "precision": 0.0030825782736271885,
+      "recall": 0.989648033126294,
+      "p_at_10": 0.7
+    },
+    {
+      "qid": "45",
+      "hits": 155619,
+      "in_band": false,
+      "precision": 0.00516003829866533,
+      "recall": 0.9962779156327544,
+      "p_at_10": 1.0
+    },
+    {
+      "qid": "46",
+      "hits": 139440,
+      "in_band": false,
+      "precision": 0.001298049340218015,
+      "recall": 0.9945054945054945,
+      "p_at_10": 1.0
+    },
+    {
+      "qid": "47",
+      "hits": 157838,
+      "in_band": false,
+      "precision": 0.002648284950392174,
+      "recall": 0.9952380952380953,
+      "p_at_10": 0.1
+    },
+    {
+      "qid": "48",
+      "hits": 155653,
+      "in_band": false,
+      "precision": 0.0028524988275201893,
+      "recall": 1.0,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "49",
+      "hits": 143002,
+      "in_band": false,
+      "precision": 0.0017202556607599894,
+      "recall": 0.9959514170040485,
+      "p_at_10": 0.0
+    },
+    {
+      "qid": "50",
+      "hits": 150581,
+      "in_band": false,
+      "precision": 0.0009098093384955605,
+      "recall": 1.0,
+      "p_at_10": 0.3
+    }
+  ]
+}
