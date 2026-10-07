@@ -1,7 +1,7 @@
 """
 build_index.py
 Offline pipeline that builds the inverted index, k-gram index, and exports
-compact JSON shards for the browser engine.
+compact JSON shards for the Python search engine.
 
 Usage: python -m pipeline.build_index
 
@@ -163,7 +163,7 @@ def export_shards(postings, vocab, doc_meta, kgram_index, corpus_stats, config, 
     - Terms are sorted alphabetically and packed into shards until size limit.
     - dictionary.json maps each term to its shard number.
 
-    This format lets the browser engine load only the shards it needs
+    This format lets the search engine load only the shards it needs
     (lazy loading), keeping memory usage low.
     """
     print("[export] Exporting index shards...")

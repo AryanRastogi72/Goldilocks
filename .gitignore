@@ -1,8 +1,10 @@
 # Private documentation stays local
 /docs_private/
+/submission_private/
 
 # Local environments and Python output
 .venv/
+.venv*/
 venv/
 __pycache__/
 *.pyc
@@ -20,6 +22,8 @@ node_modules/
 /data/raw/
 /data/cache/
 /llm_cache/
+/gemini_cache/
+/tmp/
 
 # Private index backup and retired browser copies
 /index_out_original/
@@ -43,3 +47,6 @@ Thumbs.db
 
 # Local Streamlit logs
 streamlit_server.*.log
+
+# Local browser test output
+.playwright-cli/

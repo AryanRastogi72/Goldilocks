@@ -1,7 +1,7 @@
 """
 search.py
 Core search operations: loading the index, Boolean query execution with
-df-ordered intersection, and wildcard expansion via the k-gram index.
+sorted postings intersection, and wildcard expansion via the k gram index.
 """
 
 import os
@@ -21,7 +21,7 @@ class SearchIndex:
     Supports:
       - Looking up postings for a term
       - Boolean query execution (AND, OR, NOT)
-      - df-ordered intersection (process smallest postings list first)
+      - sorted postings intersection (process the shortest list first)
       - Wildcard expansion using the k-gram index
     """
 
@@ -114,66 +114,72 @@ class SearchIndex:
     # ---- Boolean execution ----
 
     def execute_boolean(self, ast):
-        """
-        Executes a Boolean AST against the index.
-        Returns a set of matching document IDs (integers).
+        """Execute a Boolean query and return matching document IDs as a set."""
+        return set(self._execute_boolean_sorted(ast))
 
-        For AND, we use df-ordered intersection: sort children by their
-        postings list size (smallest first) and intersect incrementally.
-        This minimizes comparisons, a key optimization from the lectures.
-        """
+    def _execute_boolean_sorted(self, ast):
+        """Return sorted document IDs so AND can merge postings directly."""
         op = ast[0]
 
         if op == "TERM":
-            term = ast[1]
-            postings = self.get_postings(term)
-            return set(doc_id for doc_id, tf in postings)
+            postings = self.get_postings(ast[1])
+            return [doc_id for doc_id, tf in postings]
 
-        elif op == "WILDCARD":
-            prefix = ast[1]
-            expanded_terms = self.expand_wildcard(prefix)
-            # OR all expanded terms together
+        if op == "WILDCARD":
             result = set()
-            for term in expanded_terms:
+            for term in self.expand_wildcard(ast[1]):
                 postings = self.get_postings(term)
-                result |= set(doc_id for doc_id, tf in postings)
-            return result
+                result.update(doc_id for doc_id, tf in postings)
+            return sorted(result)
 
-        elif op == "AND":
-            children = ast[1]
-            # get result sets for each child, ordered by size (smallest first)
-            child_results = []
-            for child in children:
-                child_results.append(self.execute_boolean(child))
-
-            # sort by set size for efficient intersection
+        if op == "AND":
+            child_results = [self._execute_boolean_sorted(child) for child in ast[1]]
             child_results.sort(key=len)
-
-            # incremental intersection: start with smallest set
+            if not child_results:
+                return []
             result = child_results[0]
             for other in child_results[1:]:
-                result = result & other
-                # early termination: if result is empty, no need to continue
+                result = self._intersect_sorted(result, other)
                 if not result:
                     break
             return result
 
-        elif op == "OR":
-            children = ast[1]
+        if op == "OR":
             result = set()
-            for child in children:
-                result |= self.execute_boolean(child)
+            for child in ast[1]:
+                result.update(self._execute_boolean_sorted(child))
+            return sorted(result)
+
+        if op == "NOT":
+            child_result = self._execute_boolean_sorted(ast[1])
+            result = []
+            child_position = 0
+            for doc_id in range(self.num_docs):
+                if child_position < len(child_result) and child_result[child_position] == doc_id:
+                    child_position += 1
+                else:
+                    result.append(doc_id)
             return result
 
-        elif op == "NOT":
-            child = ast[1]
-            child_result = self.execute_boolean(child)
-            # NOT returns all docs except those matching the child
-            all_docs = set(range(self.num_docs))
-            return all_docs - child_result
+        raise ValueError(f"Unknown AST node type: {op}")
 
-        else:
-            raise ValueError(f"Unknown AST node type: {op}")
+    @staticmethod
+    def _intersect_sorted(left, right):
+        result = []
+        left_position = 0
+        right_position = 0
+        while left_position < len(left) and right_position < len(right):
+            left_doc = left[left_position]
+            right_doc = right[right_position]
+            if left_doc == right_doc:
+                result.append(left_doc)
+                left_position += 1
+                right_position += 1
+            elif left_doc < right_doc:
+                left_position += 1
+            else:
+                right_position += 1
+        return result
 
     # ---- Wildcard expansion ----
 

@@ -13,6 +13,7 @@ import requests
 ROOT = os.path.dirname(os.path.dirname(__file__))
 CACHE_DIR = os.path.join(ROOT, "llm_cache")
 _session_api_key = ContextVar("goldilocks_api_key", default=None)
+RATE_LIMIT_RETRIES = 3
 
 
 def load_config():
@@ -71,12 +72,20 @@ def call_model(prompt, use_cache=True):
     }
 
     try:
-        response = requests.post(
-            "https://api.groq.com/openai/v1/chat/completions",
-            headers=headers,
-            json=payload,
-            timeout=30,
-        )
+        for attempt in range(RATE_LIMIT_RETRIES + 1):
+            response = requests.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=30,
+            )
+            if response.status_code != 429 or attempt == RATE_LIMIT_RETRIES:
+                break
+            try:
+                delay = float(response.headers.get("Retry-After", 2 ** attempt))
+            except (TypeError, ValueError):
+                delay = 2 ** attempt
+            time.sleep(min(max(delay, 0), 30))
         response.raise_for_status()
         choices = response.json().get("choices", [])
         text = choices[0]["message"]["content"]

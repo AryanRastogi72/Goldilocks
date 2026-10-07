@@ -21,6 +21,7 @@ import sys
 import os
 import json
 import time
+import gzip
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -57,11 +58,11 @@ def compute_p_at_k(ranked_ext_ids, relevant_ext_ids, k=10):
     """
     Precision at K: fraction of the top K ranked results that are relevant.
     """
-    top_k = ranked_ext_ids[:k]
-    if not top_k:
+    if k <= 0:
         return 0.0
+    top_k = ranked_ext_ids[:k]
     relevant_count = sum(1 for doc_id in top_k if doc_id in relevant_ext_ids)
-    return relevant_count / len(top_k)
+    return relevant_count / k
 
 
 def baseline_and_keywords(query_text, index, top_k=10):
@@ -160,6 +161,7 @@ def run_evaluation():
         "and_baseline": [],
         "or_baseline": [],
     }
+    retrieved_ids = {name: {} for name in results}
 
     # track metrics
     total_queries = 0
@@ -186,8 +188,11 @@ def run_evaluation():
                 "in_band": target_low <= len(llm_result["docs"]) <= target_high,
                 "precision": llm_p, "recall": llm_r,
                 "p_at_10": compute_p_at_k(llm_ranked_ext, relevant, k=10),
+                "ranked_doc_ids": llm_ranked_ext,
+                "retrieved_ids_key": f"one_shot_llm_baseline:{qid}",
                 "query": llm_result["query"],
             })
+            retrieved_ids["one_shot_llm_baseline"][qid] = sorted(llm_ext)
             query_use_llm = True
             print(f"  [one shot LLM] hits={len(llm_result['docs'])}")
         else:
@@ -223,18 +228,24 @@ def run_evaluation():
                 "precision": gc_precision,
                 "recall": gc_recall,
                 "p_at_10": gc_p10,
+                "ranked_doc_ids": gc_ranked_ext,
+                "retrieved_ids_key": f"goldilocks:{qid}",
                 "llm_calls": ctrl_log.llm_calls,
                 "iterations": len(ctrl_log.iterations),
                 "final_query": final_query,
             })
+            retrieved_ids["goldilocks"][qid] = sorted(gc_docs)
             print(f"  [goldilocks] hits={gc_actual}, in_band={gc_in_band}, P@10={gc_p10:.3f}, llm_calls={ctrl_log.llm_calls}")
         except Exception as e:
             print(f"  [goldilocks] ERROR: {e}")
             results["goldilocks"].append({
                 "qid": qid, "hits": 0, "in_band": False,
                 "precision": 0, "recall": 0, "p_at_10": 0,
+                "ranked_doc_ids": [],
+                "retrieved_ids_key": f"goldilocks:{qid}",
                 "llm_calls": 0, "iterations": 0, "final_query": "ERROR",
             })
+            retrieved_ids["goldilocks"][qid] = []
 
         # ---- AND baseline ----
         and_docs, and_ranked, and_query = baseline_and_keywords(query_text, index, top_k)
@@ -251,7 +262,10 @@ def run_evaluation():
             "precision": and_p,
             "recall": and_r,
             "p_at_10": and_p10,
+            "ranked_doc_ids": and_ranked_ext,
+            "retrieved_ids_key": f"and_baseline:{qid}",
         })
+        retrieved_ids["and_baseline"][qid] = sorted(and_ext)
         print(f"  [AND base] hits={len(and_docs)}, in_band={and_in_band}, P@10={and_p10:.3f}")
 
         # ---- OR baseline ----
@@ -269,7 +283,10 @@ def run_evaluation():
             "precision": or_p,
             "recall": or_r,
             "p_at_10": or_p10,
+            "ranked_doc_ids": or_ranked_ext,
+            "retrieved_ids_key": f"or_baseline:{qid}",
         })
+        retrieved_ids["or_baseline"][qid] = sorted(or_ext)
         print(f"  [OR  base] hits={len(or_docs)}, in_band={or_in_band}, P@10={or_p10:.3f}")
 
     # ---- Aggregate and print results ----
@@ -311,6 +328,11 @@ def run_evaluation():
     with open(results_path, "w") as f:
         json.dump(results, f, indent=2)
     print(f"\nDetailed results saved to {results_path}")
+
+    retrieved_path = os.path.join("evaluation", "retrieved_ids.json.gz")
+    with gzip.open(retrieved_path, "wt", encoding="utf-8") as f:
+        json.dump(retrieved_ids, f, separators=(",", ":"))
+    print(f"Retrieved document identifiers saved to {retrieved_path}")
 
     # ---- Generate charts ----
     try:
@@ -374,7 +396,8 @@ def _generate_charts(results, config):
     fig, axes = plt.subplots(1, len(methods), figsize=(5 * len(methods), 5))
 
     for ax, method, title in zip(axes, methods, titles):
-        hits = [e["hits"] for e in results[method]]
+        entries = [e for e in results[method] if e.get("available", True)]
+        hits = [e["hits"] for e in entries]
         if hits:
             ax.hist(hits, bins=30, color="steelblue", edgecolor="white", alpha=0.8)
         else:
