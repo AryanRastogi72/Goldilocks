@@ -6,18 +6,22 @@ Goldilocks is an Information Retrieval course project for scientific search. It 
 
 ## Track choice
 
-Our main track is Track 2, Conversational and agentic search. The agentic part is query construction and iterative query adjustment. The current system handles one question at a time. It does not remember earlier turns, resolve follow up questions, or merge several subquery rankings, so it is a partial fit to the full track challenge.
+Our main track is Track 2, Conversational and agentic search. The app keeps recent questions and accepted queries for the current browser session. A follow up can use that context when Groq is enabled. Offline mode keeps the earlier query and adds terms from the follow up, then the same controller adjusts the result size. Session context is temporary and does not persist after the browser session ends.
 
 ## Try the hosted app
 
 [Open Goldilocks](https://goldilocks-hackathon.streamlit.app/)
 
-The owner supplied this app link. Its current public availability was not checked during this update. When deployed, the owner configures the Groq secret. Visitors can also use Offline mode without a key.
+The project owner reports that the deployed app and public repository are working. The owner configures the Groq secret. Visitors can also use Offline mode without a key.
+
+## Novelty
+
+The project contribution is an inspectable query size controller for a large scientific collection. It uses postings document frequencies to estimate the likely result size, checks the exact Boolean hit count, and records each accept, tighten or relax decision. The app also carries recent search context into follow up questions during the current session. These are system integration and teaching contributions built from established information retrieval methods. They are not a new retrieval algorithm, and the evaluation does not show that Goldilocks is more relevant overall.
 
 ## How search works
 
 1. The tokenizer normalizes the question and stems terms.
-2. Groq may propose a Boolean query. It proposes terms only, it does not decide whether to tighten or relax.
+2. Groq may propose a Boolean query using the current question and recent session context. It proposes terms only, it does not decide whether to tighten or relax.
 3. The controller reads document frequency, estimates possible result counts, runs Boolean retrieval and checks the actual hit count.
 4. The controller accepts a result count in the configured target band, tightens a query above the band, or relaxes a query below the band.
 5. The ranker orders the matching papers by tf idf cosine score and returns the requested top K.
@@ -79,20 +83,20 @@ The index is already included, so most users do not need to download or rebuild 
 
 The full evaluation and validator need `data/cache/queries.json` and `data/cache/qrels.json`. These local files are excluded from Git. To fetch the source topics and judgments, run the index pipeline command above. It also rebuilds the index. The prebuilt index is already present, so a first time app visitor does not need this step to search.
 
-For Streamlit Community Cloud, select Python 3.12 in Advanced settings and put `GROQ_API_KEY` in the app Secrets field. The repository contains `runtime.txt` as a version note. Current Community Cloud setup selects Python in its deployment settings, so the file does not replace that selection. The local requirements install passed in a clean Python 3.13.5 environment. A Cloud deployment was not tested in this update.
+For Streamlit Community Cloud, select Python 3.12 in Advanced settings and put `GROQ_API_KEY` in the app Secrets field. The repository contains `runtime.txt` as a version note. Current Community Cloud setup selects Python in its deployment settings, so the file does not replace that selection. The local requirements install passed in a clean Python 3.13.5 environment. The project owner reports that the deployed app works.
 
 ## Verified evaluation
 
-The values below are from the regenerated `evaluation/results.json` and `evaluation/summary.tsv`. P at 10 always divides the number of relevant items in the ranked first ten by ten, including when fewer than ten results were returned.
+The values below are from the regenerated `evaluation/results.json` and `evaluation/summary.tsv`. P at 10 always divides the number of relevant items in the ranked first ten by ten, including when fewer than ten results were returned. nDCG at 10 uses graded relevance and discounts lower ranked results. MRR at 10 measures the position of the first relevant result.
 
-1. Goldilocks, 50 topics, 43 in the target band, mean hits 73.5, precision 0.3286, recall 0.0535, P at 10 0.4860.
-2. One shot Groq Boolean baseline, 36 topics with valid proposals, 12 in the target band, mean hits 1809.0, precision 0.4863, recall 0.1491, P at 10 0.5333.
-3. AND keyword baseline, 50 topics, 5 in the target band, mean hits 8.9, precision 0.1481, recall 0.0089, P at 10 0.1280.
-4. OR keyword baseline, 50 topics, none in the target band, mean hits 135330.3, precision 0.0036, recall 0.9728, P at 10 0.2880.
+1. Goldilocks, 50 topics, 43 in the target band, mean hits 73.5, precision 0.3286, recall 0.0535, P at 10 0.4860, nDCG at 10 0.4549, MRR at 10 0.6593.
+2. One shot Groq Boolean baseline, 36 topics with valid proposals, 12 in the target band, mean hits 1809.0, precision 0.4863, recall 0.1491, P at 10 0.5333, nDCG at 10 0.5348, MRR at 10 0.7650.
+3. AND keyword baseline, 50 topics, 5 in the target band, mean hits 8.9, precision 0.1481, recall 0.0089, P at 10 0.1280, nDCG at 10 0.1130, MRR at 10 0.2467.
+4. OR keyword baseline, 50 topics, none in the target band, mean hits 135330.3, precision 0.0036, recall 0.9728, P at 10 0.2880, nDCG at 10 0.2542, MRR at 10 0.4525.
 
-The Groq baseline is unavailable on 14 topics. The saved evaluation records 11 missing cached proposals and 3 invalid Boolean replies. Its fair direct comparison uses the same 36 topics for both systems. On those topics, Goldilocks has mean precision 0.3816, recall 0.0677, P at 10 0.5583 and target band rate 80.56 percent. The one shot Groq baseline has mean precision 0.4863, recall 0.1491, P at 10 0.5333 and target band rate 33.33 percent.
+The Groq baseline is unavailable on 14 topics. In this key free replay, 11 had no cached proposal and 3 had invalid Boolean replies. Its fair direct comparison uses the same 36 topics for both systems. On those topics, Goldilocks has precision 0.3816, recall 0.0677, P at 10 0.5583, nDCG at 10 0.5198, MRR at 10 0.6907 and target band rate 80.56 percent. The one shot Groq baseline has precision 0.4863, recall 0.1491, P at 10 0.5333, nDCG at 10 0.5348, MRR at 10 0.7650 and target band rate 33.33 percent.
 
-These results support the claim that Goldilocks controls result size more reliably. They do not show better overall relevance. The one shot Groq baseline has higher paired precision and recall, while Goldilocks has slightly higher paired P at 10 and a much higher paired target band rate. The OR baseline has much higher recall and very low precision. These systems make different tradeoffs.
+These results support the claim that Goldilocks controls result size more reliably. They do not show better overall relevance. On the paired topics, the one shot Groq baseline has higher precision, recall, nDCG at 10 and MRR at 10. Goldilocks has slightly higher P at 10 and a much higher paired target band rate. The OR baseline has much higher recall and very low precision. These systems make different tradeoffs.
 
 Run the independent saved metric check with:
 
@@ -106,7 +110,7 @@ Run the independent saved metric check with:
 2. Document frequency supports hit estimates and orders AND processing from the shortest postings list.
 3. The Boolean engine supports AND, OR, NOT and wildcard terms through a trigram k gram index.
 4. The ranker uses logarithmic term frequency, inverse document frequency, vector length normalization, cosine similarity and heap based top K selection.
-5. The evaluation uses the provided TREC COVID topics and relevance judgments, measuring precision, recall and P at 10.
+5. The evaluation uses the provided TREC COVID topics and relevance judgments, measuring precision, recall, P at 10, graded nDCG at 10 and MRR at 10.
 
 ## Libraries
 
@@ -127,23 +131,17 @@ Roberts and colleagues, “Searching for Scientific Evidence in a Pandemic: An O
 
 Thakur and colleagues, “BEIR: A Heterogenous Benchmark for Zero Shot Evaluation of Information Retrieval Models,” NeurIPS Datasets and Benchmarks, 2021. [Paper](https://arxiv.org/abs/2104.08663)
 
-The project combines established retrieval components and follows known query reformulation ideas. Its contribution is a small, inspectable controller that uses postings statistics and exact hit counts to target a useful result size. This is an implementation and teaching contribution, not a new retrieval algorithm or a claim of state of the art relevance.
+The project combines established retrieval components and follows known query reformulation ideas. Its inspectable controller and session scoped follow up context are implementation and teaching contributions, not a new retrieval algorithm or a claim of state of the art relevance.
 
 ## Team and AI use
 
 Raghav Garg built the original project, including the Python indexing and retrieval pipeline, controller and evaluation foundation. Aryan Rastogi tested the project, changed the model provider from Gemini to Groq, built and redesigned the Streamlit app, and led the audit and integration work. Codex assisted with debugging, the sorted postings intersection, rate limit handling, evaluation checks and documentation. Groq generated Boolean query proposals only. Search logic, controller decisions, ranking and evaluation run in project code.
 
-## Work still planned
+## Submission links
 
-1. Record the required video with both team members, no slides, within the required time.
-2. Add verified public links for the report and video after submission.
-3. Extend the system to retain conversation context and handle follow up questions, which would better address Track 2.
-4. Improve relevance evaluation and investigate the low recall.
-5. Test a clean public repository and verify the deployed app after the owner publishes the current changes.
+Report Google Doc: Add the link here
 
-Report link: add after upload.
-
-Video link: add after recording and upload.
+Demo video: Add the YouTube or Google Drive link here
 
 ## Sources
 

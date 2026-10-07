@@ -33,6 +33,37 @@ def keyword_query(text, operator="AND"):
     return f" {operator} ".join(keyword_terms(text))
 
 
+FOLLOWUP_STOPWORDS = {
+    "a", "an", "and", "are", "about", "can", "could", "do", "does", "for",
+    "how", "i", "in", "is", "it", "of", "on", "or", "show", "tell", "that",
+    "the", "their", "them", "they", "this", "to", "was", "were", "what",
+    "when", "where", "which", "who", "why", "with", "would",
+}
+
+
+def contextual_keyword_query(user_query, previous_query, index):
+    """Keep the earlier search topic and add terms from a short follow up."""
+    try:
+        previous_ast = parse(previous_query)
+    except ParseError:
+        return keyword_query(user_query)
+
+    terms = []
+    for term in keyword_terms(user_query):
+        if term in FOLLOWUP_STOPWORDS or index.get_df(term) == 0:
+            continue
+        if term not in terms:
+            terms.append(term)
+
+    if not terms:
+        return ast_to_string(previous_ast)
+
+    followup_ast = parse(" OR ".join(terms))
+    children = list(previous_ast[1]) if previous_ast[0] == "AND" else [previous_ast]
+    children.append(followup_ast)
+    return ast_to_string(("AND", children))
+
+
 def load_config():
     config_path = os.path.join(os.path.dirname(__file__), "..", "config.json")
     with open(config_path, "r") as f:
@@ -77,7 +108,9 @@ class ControllerLog:
             print(f"  Reason: {it['reason']}")
 
 
-def run_controller(user_query, index, config=None, use_llm=True):
+def run_controller(
+    user_query, index, config=None, use_llm=True, context="", context_query=None
+):
     """
     Main controller loop.
 
@@ -104,16 +137,22 @@ def run_controller(user_query, index, config=None, use_llm=True):
     # Step 1: Get initial Boolean query
     if use_llm:
         try:
-            raw_query = propose_boolean_query(user_query)
+            raw_query = propose_boolean_query(user_query, context=context)
             log.llm_calls += 1
         except RuntimeError as e:
             # fallback: just AND all keywords
             print(f"[controller] LLM unavailable ({e}), using keyword fallback")
             log.llm_errors.append(str(e))
-            raw_query = keyword_query(user_query)
+            if context_query:
+                raw_query = contextual_keyword_query(user_query, context_query, index)
+            else:
+                raw_query = keyword_query(user_query)
     else:
         # no LLM: AND all keywords as the initial query
-        raw_query = keyword_query(user_query)
+        if context_query:
+            raw_query = contextual_keyword_query(user_query, context_query, index)
+        else:
+            raw_query = keyword_query(user_query)
 
     current_query_str = raw_query.strip()
 

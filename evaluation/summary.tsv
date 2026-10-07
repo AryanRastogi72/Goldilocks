@@ -1,5 +1,5 @@
-Method	In Band %	Avg Hits	Avg Precision	Avg Recall	Avg P@10
-goldilocks	86.0	73.5	0.3286	0.0535	0.4860
-one_shot_llm_baseline	33.3	1809.0	0.4863	0.1491	0.5333
-and_baseline	10.0	8.9	0.1481	0.0089	0.1280
-or_baseline	0.0	135330.3	0.0036	0.9728	0.2880
+Method	In Band %	Avg Hits	Avg Precision	Avg Recall	Avg P@10	Avg nDCG@10	Avg MRR@10
+goldilocks	86.0	73.5	0.3286	0.0535	0.4860	0.4549	0.6593
+one_shot_llm_baseline	33.3	1809.0	0.4863	0.1491	0.5333	0.5348	0.7650
+and_baseline	10.0	8.9	0.1481	0.0089	0.1280	0.1130	0.2467
+or_baseline	0.0	135330.3	0.0036	0.9728	0.2880	0.2542	0.4525

@@ -7,6 +7,8 @@
       "precision": 0.11320754716981132,
       "recall": 0.009419152276295133,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.18335831253455231,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "dv9m19yk",
         "0paafp5j",
@@ -31,6 +33,8 @@
       "precision": 0.2962962962962963,
       "recall": 0.025477707006369428,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.2899773651602119,
+      "mrr_at_10": 0.3333333333333333,
       "ranked_doc_ids": [
         "k18xzd1q",
         "jikq1dqv",
@@ -55,6 +59,8 @@
       "precision": 0.484472049689441,
       "recall": 0.12420382165605096,
       "p_at_10": 0.6,
+      "ndcg_at_10": 0.6710163164833095,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "ukz73rp2",
         "buwz6lu3",
@@ -79,6 +85,8 @@
       "precision": 0.055944055944055944,
       "recall": 0.015122873345935728,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "3fiyfkqm",
         "o72xreym",
@@ -103,6 +111,8 @@
       "precision": 0.33146067415730335,
       "recall": 0.09609120521172639,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.2465505554475862,
+      "mrr_at_10": 0.25,
       "ranked_doc_ids": [
         "20eleh36",
         "ywaefpe8",
@@ -127,6 +137,8 @@
       "precision": 0.3076923076923077,
       "recall": 0.01251303441084463,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.46900009332067477,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "zyrzfm40",
         "qexn0nuy",
@@ -151,6 +163,8 @@
       "precision": 0.37142857142857144,
       "recall": 0.02702702702702703,
       "p_at_10": 0.6,
+      "ndcg_at_10": 0.6745711375739728,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "wf5cozst",
         "m9yv4qkm",
@@ -175,6 +189,8 @@
       "precision": 0.14102564102564102,
       "recall": 0.01740506329113924,
       "p_at_10": 0.2,
+      "ndcg_at_10": 0.17554440492323456,
+      "mrr_at_10": 0.5,
       "ranked_doc_ids": [
         "k0f8jj0c",
         "yv5yz261",
@@ -199,6 +215,8 @@
       "precision": 0.34394904458598724,
       "recall": 0.28272251308900526,
       "p_at_10": 0.2,
+      "ndcg_at_10": 0.17947710508581735,
+      "mrr_at_10": 0.3333333333333333,
       "ranked_doc_ids": [
         "woylyufz",
         "zlpz435d",
@@ -223,6 +241,8 @@
       "precision": 0.3442622950819672,
       "recall": 0.04421052631578947,
       "p_at_10": 0.7,
+      "ndcg_at_10": 0.6045174058036498,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "952a4n71",
         "zp4xc5ma",
@@ -247,6 +267,8 @@
       "precision": 0.17010309278350516,
       "recall": 0.07951807228915662,
       "p_at_10": 0.6,
+      "ndcg_at_10": 0.44589899989768544,
+      "mrr_at_10": 0.5,
       "ranked_doc_ids": [
         "6p6v6z9q",
         "ss8yikca",
@@ -271,11 +293,13 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "goldilocks:12",
       "llm_calls": 1,
       "iterations": 8,
-      "final_query": "((((best AND practic) OR guidelin) AND (hospit OR home) AND ((infect AND control) OR isol)) AND (qua OR quackeri OR (qua OR quackeri OR (qua OR quackeri OR (qua OR quackeri OR (qua OR quackeri OR (qua OR quackeri OR quacov OR quad OR quada) OR quad OR quada) OR quad OR quada) OR quad OR quada) OR quad OR quada) OR quad OR quada))"
+      "final_query": "((((best AND practic) OR guidelin) AND (hospit OR home) AND ((infect AND control) OR isol)) AND (qua OR (qua OR (qua OR (qua OR (qua OR (qua OR quackeri OR quacov OR quad OR quada) OR quacov OR quad OR quada) OR quacov OR quad OR quada) OR quacov OR quad OR quada) OR quacov OR quad OR quada) OR quacov OR quad OR quada))"
     },
     {
       "qid": "13",
@@ -284,6 +308,8 @@
       "precision": 0.17266187050359713,
       "recall": 0.02768166089965398,
       "p_at_10": 0.4,
+      "ndcg_at_10": 0.3666819968378967,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "2ftw85xw",
         "hbs9inah",
@@ -308,6 +334,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "ta9g9ceh",
         "hbs9inah",
@@ -332,6 +360,8 @@
       "precision": 0.40217391304347827,
       "recall": 0.08747044917257683,
       "p_at_10": 0.7,
+      "ndcg_at_10": 0.6874708847784538,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "mx1kfy4o",
         "8pv1g1m0",
@@ -356,6 +386,8 @@
       "precision": 0.39166666666666666,
       "recall": 0.12144702842377261,
       "p_at_10": 0.7,
+      "ndcg_at_10": 0.6777277508780453,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "mx1kfy4o",
         "8pv1g1m0",
@@ -380,6 +412,8 @@
       "precision": 0.4230769230769231,
       "recall": 0.04940119760479042,
       "p_at_10": 0.5,
+      "ndcg_at_10": 0.2860446649976291,
+      "mrr_at_10": 0.5,
       "ranked_doc_ids": [
         "1eiw7bxh",
         "gqqdx2r5",
@@ -404,6 +438,8 @@
       "precision": 0.5263157894736842,
       "recall": 0.03184713375796178,
       "p_at_10": 0.7,
+      "ndcg_at_10": 0.7778721720600672,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "xx5xbjqu",
         "5fq150t1",
@@ -428,6 +464,8 @@
       "precision": 0.2,
       "recall": 0.04504504504504504,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.3268710744906292,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "c1n994j6",
         "0qfoc553",
@@ -452,6 +490,8 @@
       "precision": 0.7837837837837838,
       "recall": 0.04131054131054131,
       "p_at_10": 0.9,
+      "ndcg_at_10": 0.933745776545611,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "z3l6eden",
         "53107z56",
@@ -476,6 +516,8 @@
       "precision": 0.18181818181818182,
       "recall": 0.022222222222222223,
       "p_at_10": 0.6,
+      "ndcg_at_10": 0.5305455297539707,
+      "mrr_at_10": 0.5,
       "ranked_doc_ids": [
         "pam3etq4",
         "uaim3w9q",
@@ -500,6 +542,8 @@
       "precision": 0.4375,
       "recall": 0.02564102564102564,
       "p_at_10": 0.9,
+      "ndcg_at_10": 0.8176084868204424,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "ejsqsn59",
         "lfjud2aq",
@@ -524,6 +568,8 @@
       "precision": 0.05555555555555555,
       "recall": 0.016172506738544475,
       "p_at_10": 0.1,
+      "ndcg_at_10": 0.021206929399650572,
+      "mrr_at_10": 0.1,
       "ranked_doc_ids": [
         "ir6d85fr",
         "q7yavza2",
@@ -548,6 +594,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "goldilocks:24",
       "llm_calls": 1,
@@ -561,11 +609,13 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "goldilocks:25",
       "llm_calls": 1,
       "iterations": 8,
-      "final_query": "((biomark AND (predict* OR prognost* OR risk) AND (sever OR critic OR mortal) AND ((covid AND 19) OR (2019 AND ncov) OR (sar AND cov AND 2)) AND (clinic OR (disa OR (disa OR disab OR (disab AND (ilt OR ilt2 OR (ilt OR ilt2 OR (ilt OR ilt2 OR (ilt OR ilt2 OR (ilt OR ilt2 OR ilt4 OR iltoviru OR iltp) OR iltoviru OR iltp) OR iltoviru OR iltp) OR iltoviru OR iltp) OR iltoviru OR iltp)) OR disabl OR disaccharid) OR ((disa OR disab OR (disab AND (ilt OR ilt2 OR (ilt OR ilt2 OR (ilt OR ilt2 OR (ilt OR ilt2 OR (ilt OR ilt2 OR ilt4 OR iltoviru OR iltp) OR iltoviru OR iltp) OR iltoviru OR iltp) OR iltoviru OR iltp) OR iltoviru OR iltp)) OR disabl OR disaccharid) AND (ilt OR ilt2 OR (ilt OR ilt2 OR (ilt OR ilt2 OR (ilt OR ilt2 OR (ilt OR ilt2 OR ilt4 OR iltoviru OR iltp) OR iltoviru OR iltp) OR iltoviru OR iltp) OR iltoviru OR iltp) OR iltoviru OR iltp)) OR ((disa OR disab OR (disab AND (ilt OR ilt2 OR (ilt OR ilt2 OR (ilt OR ilt2 OR (ilt OR ilt2 OR (ilt OR ilt2 OR ilt4 OR iltoviru OR iltp) OR iltoviru OR iltp) OR iltoviru OR iltp) OR iltoviru OR iltp) OR iltoviru OR iltp)) OR disabl OR disaccharid) AND l) OR disaccharid))) AND cour)"
+      "final_query": "((biomark AND (predict* OR prognost* OR risk) AND (sever OR critic OR mortal) AND ((covid AND 19) OR (2019 AND ncov) OR (sar AND cov AND 2)) AND (clinic OR ((disa OR disab OR (disa AND (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR bilaminar))))) OR disabl OR (disa AND (cch OR cchc OR cchd OR cchf OR cchfv))) OR ((disa OR disab OR (disa AND (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR bilaminar))))) OR disabl OR (disa AND (cch OR cchc OR cchd OR cchf OR cchfv))) AND b) OR ((disa OR disab OR (disa AND (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR bilaminar))))) OR disabl OR (disa AND (cch OR cchc OR cchd OR cchf OR cchfv))) AND (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR bilaminar))))) OR ((disa OR disab OR (disa AND (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR bilaminar))))) OR disabl OR (disa AND (cch OR cchc OR cchd OR cchf OR cchfv))) AND bl) OR ((disa OR disab OR (disa AND (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR (bil OR bila OR bilal OR bilala OR bilaminar))))) OR disabl OR (disa AND (cch OR cchc OR cchd OR cchf OR cchfv))) AND (cch OR cchc OR cchd OR cchf OR cchfv))))) AND cour)"
     },
     {
       "qid": "26",
@@ -574,6 +624,8 @@
       "precision": 0.2777777777777778,
       "recall": 0.012853470437017995,
       "p_at_10": 0.6,
+      "ndcg_at_10": 0.4362115423097744,
+      "mrr_at_10": 0.2,
       "ranked_doc_ids": [
         "k3w39apy",
         "8lnb2tnz",
@@ -598,6 +650,8 @@
       "precision": 0.10909090909090909,
       "recall": 0.007067137809187279,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.15633336444022494,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "8du0s33p",
         "rs79r7kc",
@@ -622,6 +676,8 @@
       "precision": 0.6153846153846154,
       "recall": 0.20326678765880218,
       "p_at_10": 0.8,
+      "ndcg_at_10": 0.8482378089219647,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "wbkn7yjh",
         "7ttesiuu",
@@ -646,6 +702,8 @@
       "precision": 0.9333333333333333,
       "recall": 0.046357615894039736,
       "p_at_10": 0.9,
+      "ndcg_at_10": 0.8698739994728926,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "38d6gb7o",
         "2cvvkrx9",
@@ -670,6 +728,8 @@
       "precision": 0.5681818181818182,
       "recall": 0.2702702702702703,
       "p_at_10": 1.0,
+      "ndcg_at_10": 0.9537125187088151,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "aivub6mi",
         "r0znh1bi",
@@ -694,6 +754,8 @@
       "precision": 0.1623931623931624,
       "recall": 0.053824362606232294,
       "p_at_10": 0.7,
+      "ndcg_at_10": 0.6254622382255951,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "jitmsez2",
         "l11puhp4",
@@ -718,6 +780,8 @@
       "precision": 0.058823529411764705,
       "recall": 0.009259259259259259,
       "p_at_10": 0.2,
+      "ndcg_at_10": 0.1736666713479918,
+      "mrr_at_10": 0.3333333333333333,
       "ranked_doc_ids": [
         "m0xvqplq",
         "zr495eff",
@@ -742,6 +806,8 @@
       "precision": 0.3333333333333333,
       "recall": 0.0071174377224199285,
       "p_at_10": 0.2,
+      "ndcg_at_10": 0.05997716067039059,
+      "mrr_at_10": 0.25,
       "ranked_doc_ids": [
         "uqxl4xux",
         "kuwargnp",
@@ -753,7 +819,7 @@
       "retrieved_ids_key": "goldilocks:33",
       "llm_calls": 1,
       "iterations": 8,
-      "final_query": "((((covid AND 19) AND (can OR can1 OR cana OR canabi OR (can OR can1 OR cana OR canabi OR (can OR can1 OR cana OR canabi OR (can OR can1 OR cana OR canabi OR (can OR can1 OR cana OR canabi OR canad)))))) AND what) AND candid)"
+      "final_query": "((((covid AND 19) AND (can OR (can OR (can OR can1 OR cana OR canabi OR canad) OR (can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) OR ((can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) AND bi) OR ((can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) AND d)) OR (can OR (can OR (can OR can1 OR cana OR canabi OR canad) OR (can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) OR ((can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) AND bi) OR ((can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) AND d)) OR (can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) OR ((can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) AND bi) OR ((can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) AND d)) OR ((can OR (can OR (can OR can1 OR cana OR canabi OR canad) OR (can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) OR ((can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) AND bi) OR ((can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) AND d)) OR (can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) OR ((can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) AND bi) OR ((can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) AND d)) AND bi) OR ((can OR (can OR (can OR can1 OR cana OR canabi OR canad) OR (can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) OR ((can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) AND bi) OR ((can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) AND d)) OR (can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) OR ((can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) AND bi) OR ((can OR (can OR can1 OR cana OR canabi OR canad) OR cana OR canabi OR canad) AND d)) AND d))) AND what) AND candid)"
     },
     {
       "qid": "34",
@@ -762,6 +828,8 @@
       "precision": 0.029411764705882353,
       "recall": 0.011627906976744186,
       "p_at_10": 0.2,
+      "ndcg_at_10": 0.23365080824310533,
+      "mrr_at_10": 0.5,
       "ranked_doc_ids": [
         "47ltwfp8",
         "bhlp1acq",
@@ -786,6 +854,8 @@
       "precision": 0.08974358974358974,
       "recall": 0.06422018348623854,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.2906246349515899,
+      "mrr_at_10": 0.5,
       "ranked_doc_ids": [
         "8lu58q4k",
         "yfuq8na6",
@@ -810,6 +880,8 @@
       "precision": 0.7117117117117117,
       "recall": 0.12929623567921442,
       "p_at_10": 0.9,
+      "ndcg_at_10": 0.8769836981178636,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "yfn9vaan",
         "w2sbyfy2",
@@ -834,6 +906,8 @@
       "precision": 0.7166666666666667,
       "recall": 0.09555555555555556,
       "p_at_10": 0.7,
+      "ndcg_at_10": 0.5389661284531361,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "ltar1aa5",
         "aqkpnz0o",
@@ -858,6 +932,8 @@
       "precision": 0.5409836065573771,
       "recall": 0.026066350710900472,
       "p_at_10": 0.9,
+      "ndcg_at_10": 0.7069653132207588,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "8p5chz08",
         "lv7kt128",
@@ -882,6 +958,8 @@
       "precision": 0.5,
       "recall": 0.002325581395348837,
       "p_at_10": 0.2,
+      "ndcg_at_10": 0.13147032541923082,
+      "mrr_at_10": 0.3333333333333333,
       "ranked_doc_ids": [
         "9l5ajo4q",
         "55n1ttz4",
@@ -900,6 +978,8 @@
       "precision": 0.6777777777777778,
       "recall": 0.10971223021582734,
       "p_at_10": 0.9,
+      "ndcg_at_10": 0.92663607790064,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "lkdkdque",
         "0d9hzmyk",
@@ -924,6 +1004,8 @@
       "precision": 0.4888888888888889,
       "recall": 0.0707395498392283,
       "p_at_10": 0.9,
+      "ndcg_at_10": 0.9305687780632227,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "cuo7qdkj",
         "ubkl52d0",
@@ -948,6 +1030,8 @@
       "precision": 0.18072289156626506,
       "recall": 0.06172839506172839,
       "p_at_10": 0.7,
+      "ndcg_at_10": 0.6281460426238844,
+      "mrr_at_10": 0.5,
       "ranked_doc_ids": [
         "jarnavwl",
         "67gsn4sy",
@@ -972,6 +1056,8 @@
       "precision": 0.0390625,
       "recall": 0.019762845849802372,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "js77ymx4",
         "4crdebgq",
@@ -996,6 +1082,8 @@
       "precision": 0.07407407407407407,
       "recall": 0.004140786749482402,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "yu89n6rq",
         "s0w95qdn",
@@ -1020,6 +1108,8 @@
       "precision": 0.2608695652173913,
       "recall": 0.052109181141439205,
       "p_at_10": 1.0,
+      "ndcg_at_10": 0.9048032373092418,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "y9vx7coj",
         "reek3z4e",
@@ -1044,6 +1134,8 @@
       "precision": 1.0,
       "recall": 0.054945054945054944,
       "p_at_10": 1.0,
+      "ndcg_at_10": 1.0,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "ocguwlam",
         "hswuwtod",
@@ -1068,6 +1160,8 @@
       "precision": 0.4,
       "recall": 0.009523809523809525,
       "p_at_10": 0.4,
+      "ndcg_at_10": 0.5005962147771917,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "wjbh1z8y",
         "g592dfyz",
@@ -1083,7 +1177,7 @@
       "retrieved_ids_key": "goldilocks:47",
       "llm_calls": 1,
       "iterations": 8,
-      "final_query": "((covid AND (pediatr OR child OR children) AND (outcom OR outcom OR (seq OR (seq OR (seq OR (seq OR (seq OR (seq OR (seq OR seq194 OR seq2 OR seq2host OR seq2seq) OR seq2 OR seq2host OR seq2seq) OR seq2 OR seq2host OR seq2seq) OR seq2 OR seq2host OR seq2seq) OR seq2 OR seq2host OR seq2seq) OR seq2 OR seq2host OR seq2seq) OR seq2 OR seq2host OR seq2seq) OR complic OR morbid OR mortal)) AND contract)"
+      "final_query": "((covid AND (pediatr OR child OR children) AND (outcom OR outcom OR (seq OR seq194 OR seq2 OR (seq OR seq194 OR seq2 OR (seq OR seq194 OR seq2 OR (seq OR seq194 OR seq2 OR (seq OR seq194 OR seq2 OR (seq OR seq194 OR seq2 OR (seq OR seq194 OR seq2 OR seq2host OR seq2seq) OR seq2seq) OR seq2seq) OR seq2seq) OR seq2seq) OR seq2seq) OR seq2seq) OR complic OR morbid OR mortal)) AND contract)"
     },
     {
       "qid": "48",
@@ -1092,6 +1186,8 @@
       "precision": 0.1625,
       "recall": 0.02927927927927928,
       "p_at_10": 0.2,
+      "ndcg_at_10": 0.1951890007906611,
+      "mrr_at_10": 0.3333333333333333,
       "ranked_doc_ids": [
         "4f8v0tou",
         "4fwydrtj",
@@ -1116,6 +1212,8 @@
       "precision": 0.6296296296296297,
       "recall": 0.06882591093117409,
       "p_at_10": 0.9,
+      "ndcg_at_10": 0.8625913697059289,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "wdfzrzkt",
         "0tn06al2",
@@ -1140,6 +1238,8 @@
       "precision": 0.3333333333333333,
       "recall": 0.051094890510948905,
       "p_at_10": 0.5,
+      "ndcg_at_10": 0.5278821105339971,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "1v0f2dtx",
         "xbze5s3c",
@@ -1172,6 +1272,8 @@
       "precision": 1.0,
       "recall": 0.03821656050955414,
       "p_at_10": 1.0,
+      "ndcg_at_10": 0.955830517697074,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "aiwxlxzt",
         "eiek6olk",
@@ -1195,6 +1297,8 @@
       "precision": 0.484472049689441,
       "recall": 0.12420382165605096,
       "p_at_10": 0.6,
+      "ndcg_at_10": 0.6710163164833095,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "ukz73rp2",
         "buwz6lu3",
@@ -1223,6 +1327,8 @@
       "precision": 0.33146067415730335,
       "recall": 0.09609120521172639,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.2465505554475862,
+      "mrr_at_10": 0.25,
       "ranked_doc_ids": [
         "20eleh36",
         "ywaefpe8",
@@ -1261,6 +1367,8 @@
       "precision": 0.34394904458598724,
       "recall": 0.28272251308900526,
       "p_at_10": 0.2,
+      "ndcg_at_10": 0.17947710508581735,
+      "mrr_at_10": 0.3333333333333333,
       "ranked_doc_ids": [
         "woylyufz",
         "zlpz435d",
@@ -1284,6 +1392,8 @@
       "precision": 0.3416149068322981,
       "recall": 0.3473684210526316,
       "p_at_10": 0.6,
+      "ndcg_at_10": 0.6632851361158107,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "pn02p843",
         "ogqsi3ns",
@@ -1307,6 +1417,8 @@
       "precision": 0.17010309278350516,
       "recall": 0.07951807228915662,
       "p_at_10": 0.6,
+      "ndcg_at_10": 0.44589899989768544,
+      "mrr_at_10": 0.5,
       "ranked_doc_ids": [
         "6p6v6z9q",
         "ss8yikca",
@@ -1330,6 +1442,8 @@
       "precision": 0.16666666666666666,
       "recall": 0.00487012987012987,
       "p_at_10": 0.1,
+      "ndcg_at_10": 0.11004588314904008,
+      "mrr_at_10": 0.3333333333333333,
       "ranked_doc_ids": [
         "ax7tm4os",
         "zwjiv8lm",
@@ -1363,6 +1477,8 @@
       "precision": 0.8,
       "recall": 0.009456264775413711,
       "p_at_10": 0.4,
+      "ndcg_at_10": 0.37207773060601906,
+      "mrr_at_10": 0.5,
       "ranked_doc_ids": [
         "ywusapij",
         "qpc4hyvl",
@@ -1381,6 +1497,8 @@
       "precision": 0.7142857142857143,
       "recall": 0.012919896640826873,
       "p_at_10": 0.5,
+      "ndcg_at_10": 0.6489315753318465,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "qpc4hyvl",
         "ywusapij",
@@ -1401,6 +1519,8 @@
       "precision": 0.2809224318658281,
       "recall": 0.20059880239520958,
       "p_at_10": 0.6,
+      "ndcg_at_10": 0.5045411175298192,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "p7dto75b",
         "dtg18ob5",
@@ -1424,6 +1544,8 @@
       "precision": 1.0,
       "recall": 0.0031847133757961785,
       "p_at_10": 0.2,
+      "ndcg_at_10": 0.3589542101716347,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "mnjy6bq2",
         "ocpdwzrd"
@@ -1439,6 +1561,8 @@
       "precision": 0.14285714285714285,
       "recall": 0.009009009009009009,
       "p_at_10": 0.1,
+      "ndcg_at_10": 0.13886244387355454,
+      "mrr_at_10": 0.5,
       "ranked_doc_ids": [
         "0qfoc553",
         "y777xosr",
@@ -1464,6 +1588,8 @@
       "precision": 0.18181818181818182,
       "recall": 0.022222222222222223,
       "p_at_10": 0.6,
+      "ndcg_at_10": 0.5305455297539707,
+      "mrr_at_10": 0.5,
       "ranked_doc_ids": [
         "pam3etq4",
         "uaim3w9q",
@@ -1497,6 +1623,8 @@
       "precision": 0.3488372093023256,
       "recall": 0.22277227722772278,
       "p_at_10": 0.7,
+      "ndcg_at_10": 0.6733406737901081,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "grz8hhal",
         "118x15od",
@@ -1520,6 +1648,8 @@
       "precision": 0.53125,
       "recall": 0.22495274102079396,
       "p_at_10": 0.8,
+      "ndcg_at_10": 0.8454256604216017,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "qwiyqkxb",
         "tljjkvu5",
@@ -1543,6 +1673,8 @@
       "precision": 0.16778523489932887,
       "recall": 0.3213367609254499,
       "p_at_10": 0.1,
+      "ndcg_at_10": 0.06943122193677727,
+      "mrr_at_10": 0.125,
       "ranked_doc_ids": [
         "aimvn68x",
         "z7lz9syq",
@@ -1571,6 +1703,8 @@
       "precision": 0.6153846153846154,
       "recall": 0.20326678765880218,
       "p_at_10": 0.8,
+      "ndcg_at_10": 0.8482378089219647,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "wbkn7yjh",
         "7ttesiuu",
@@ -1594,6 +1728,8 @@
       "precision": 0.9333333333333333,
       "recall": 0.046357615894039736,
       "p_at_10": 0.9,
+      "ndcg_at_10": 0.8698739994728926,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "38d6gb7o",
         "2cvvkrx9",
@@ -1617,6 +1753,8 @@
       "precision": 0.4798657718120805,
       "recall": 0.3864864864864865,
       "p_at_10": 1.0,
+      "ndcg_at_10": 1.0,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "ioqvxhar",
         "aivub6mi",
@@ -1640,6 +1778,8 @@
       "precision": 0.09048723897911833,
       "recall": 0.22096317280453256,
       "p_at_10": 0.5,
+      "ndcg_at_10": 0.6059848036189865,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "jitmsez2",
         "pqvlh3eg",
@@ -1663,6 +1803,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "one_shot_llm_baseline:32",
       "query": "SARS-CoV-2 AND (subtype OR variant OR lineage OR clade OR strain) AND (PANGO OR VOC OR VOI)"
@@ -1675,6 +1817,8 @@
       "precision": 0.0038622129436325678,
       "recall": 0.7900355871886121,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "okqsvg8q",
         "qp0h50t3",
@@ -1703,6 +1847,8 @@
       "precision": 0.08974358974358974,
       "recall": 0.06422018348623854,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.2906246349515899,
+      "mrr_at_10": 0.5,
       "ranked_doc_ids": [
         "8lu58q4k",
         "yfuq8na6",
@@ -1726,6 +1872,8 @@
       "precision": 0.7117117117117117,
       "recall": 0.12929623567921442,
       "p_at_10": 0.9,
+      "ndcg_at_10": 0.8769836981178636,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "yfn9vaan",
         "w2sbyfy2",
@@ -1749,6 +1897,8 @@
       "precision": 0.7166666666666667,
       "recall": 0.09555555555555556,
       "p_at_10": 0.7,
+      "ndcg_at_10": 0.5389661284531361,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "ltar1aa5",
         "aqkpnz0o",
@@ -1772,6 +1922,8 @@
       "precision": 0.5409836065573771,
       "recall": 0.026066350710900472,
       "p_at_10": 0.9,
+      "ndcg_at_10": 0.7069653132207588,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "8p5chz08",
         "lv7kt128",
@@ -1795,6 +1947,8 @@
       "precision": 0.5163398692810458,
       "recall": 0.3674418604651163,
       "p_at_10": 1.0,
+      "ndcg_at_10": 0.8969504402810679,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "y4kohxgy",
         "iaatjew2",
@@ -1818,6 +1972,8 @@
       "precision": 0.6777777777777778,
       "recall": 0.10971223021582734,
       "p_at_10": 0.9,
+      "ndcg_at_10": 0.92663607790064,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "lkdkdque",
         "0d9hzmyk",
@@ -1841,6 +1997,8 @@
       "precision": 1.0,
       "recall": 0.006430868167202572,
       "p_at_10": 0.2,
+      "ndcg_at_10": 0.3589542101716347,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "fyna1euk",
         "ncfo2v89"
@@ -1856,6 +2014,8 @@
       "precision": 1.0,
       "recall": 0.012345679012345678,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.46900009332067477,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "dqqrulyx",
         "rtkb45lx",
@@ -1882,6 +2042,8 @@
       "precision": 0.3598654708520179,
       "recall": 0.39826302729528534,
       "p_at_10": 0.9,
+      "ndcg_at_10": 0.671900450329502,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "ub0tl046",
         "26yvryhw",
@@ -1905,6 +2067,8 @@
       "precision": 1.0,
       "recall": 0.054945054945054944,
       "p_at_10": 1.0,
+      "ndcg_at_10": 1.0,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "ocguwlam",
         "hswuwtod",
@@ -1928,6 +2092,8 @@
       "precision": 0.328,
       "recall": 0.3904761904761905,
       "p_at_10": 0.4,
+      "ndcg_at_10": 0.5388856921828065,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "njea7o4p",
         "k3ew4cyb",
@@ -1951,6 +2117,8 @@
       "precision": 1.0,
       "recall": 0.013513513513513514,
       "p_at_10": 0.6,
+      "ndcg_at_10": 0.7273298443105218,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "l8wu1b2q",
         "z2z0hu49",
@@ -1970,6 +2138,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "4aawkp8p",
         "vslevssr",
@@ -1986,6 +2156,8 @@
       "precision": 0.4375,
       "recall": 0.051094890510948905,
       "p_at_10": 0.5,
+      "ndcg_at_10": 0.5119729624705679,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "1v0f2dtx",
         "xbze5s3c",
@@ -2010,6 +2182,8 @@
       "precision": 0.12903225806451613,
       "recall": 0.012558869701726845,
       "p_at_10": 0.4,
+      "ndcg_at_10": 0.25672223463391236,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "dv9m19yk",
         "0paafp5j",
@@ -2031,6 +2205,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:2"
     },
@@ -2041,6 +2217,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:3"
     },
@@ -2051,6 +2229,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:4"
     },
@@ -2061,6 +2241,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "735dkles",
         "oq2jgo6z"
@@ -2074,6 +2256,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:6"
     },
@@ -2084,6 +2268,8 @@
       "precision": 0.7142857142857143,
       "recall": 0.02079002079002079,
       "p_at_10": 0.7,
+      "ndcg_at_10": 0.7885497208855956,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "wf5cozst",
         "ile2md92",
@@ -2105,6 +2291,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:8"
     },
@@ -2115,6 +2303,8 @@
       "precision": 0.4444444444444444,
       "recall": 0.020942408376963352,
       "p_at_10": 0.4,
+      "ndcg_at_10": 0.19825262405818622,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "zzvmj5qy",
         "u8hogdyf",
@@ -2135,6 +2325,8 @@
       "precision": 0.42857142857142855,
       "recall": 0.00631578947368421,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.1310927998821021,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "sb45v082",
         "zzgiluha",
@@ -2153,6 +2345,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "1vimqhdp"
       ],
@@ -2165,6 +2359,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:12"
     },
@@ -2175,6 +2371,8 @@
       "precision": 0.6,
       "recall": 0.0034602076124567475,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.28836984880427713,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "2ftw85xw",
         "7dxjqub6",
@@ -2191,6 +2389,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:14"
     },
@@ -2201,6 +2401,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:15"
     },
@@ -2211,6 +2413,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:16"
     },
@@ -2221,6 +2425,8 @@
       "precision": 0.6538461538461539,
       "recall": 0.025449101796407185,
       "p_at_10": 0.8,
+      "ndcg_at_10": 0.27456663113219026,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "iymmf4k6",
         "z17knvts",
@@ -2242,6 +2448,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "8patrxld",
         "how1mfvf",
@@ -2258,6 +2466,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:19"
     },
@@ -2268,6 +2478,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:20"
     },
@@ -2278,6 +2490,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "5zg3xr69",
         "xtpa84h2",
@@ -2294,6 +2508,8 @@
       "precision": 0.4375,
       "recall": 0.02564102564102564,
       "p_at_10": 0.9,
+      "ndcg_at_10": 0.8176084868204424,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "ejsqsn59",
         "lfjud2aq",
@@ -2315,6 +2531,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:23"
     },
@@ -2325,6 +2543,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:24"
     },
@@ -2335,6 +2555,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:25"
     },
@@ -2345,6 +2567,8 @@
       "precision": 0.2857142857142857,
       "recall": 0.005141388174807198,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.2899773651602119,
+      "mrr_at_10": 0.3333333333333333,
       "ranked_doc_ids": [
         "x96vp6r4",
         "s5oxr6es",
@@ -2366,6 +2590,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:27"
     },
@@ -2376,6 +2602,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:28"
     },
@@ -2386,6 +2614,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:29"
     },
@@ -2396,6 +2626,8 @@
       "precision": 0.5828220858895705,
       "recall": 0.25675675675675674,
       "p_at_10": 0.9,
+      "ndcg_at_10": 0.8881549192639215,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "2lwzhqer",
         "8n6eybze",
@@ -2417,6 +2649,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:31"
     },
@@ -2427,6 +2661,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:32"
     },
@@ -2437,6 +2673,8 @@
       "precision": 1.0,
       "recall": 0.0071174377224199285,
       "p_at_10": 0.2,
+      "ndcg_at_10": 0.3589542101716347,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "y883anmp",
         "khfiy0m2"
@@ -2450,6 +2688,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "tvs1snq8"
       ],
@@ -2462,6 +2702,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:35"
     },
@@ -2472,6 +2714,8 @@
       "precision": 0.6666666666666666,
       "recall": 0.006546644844517185,
       "p_at_10": 0.4,
+      "ndcg_at_10": 0.5541432109622958,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "7axo7k51",
         "9sbrxzxu",
@@ -2489,6 +2733,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "cndb031c"
       ],
@@ -2501,6 +2747,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:38"
     },
@@ -2511,6 +2759,8 @@
       "precision": 1.0,
       "recall": 0.0011627906976744186,
       "p_at_10": 0.1,
+      "ndcg_at_10": 0.22009176629808017,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "2u5zxc2i"
       ],
@@ -2523,6 +2773,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:40"
     },
@@ -2533,6 +2785,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:41"
     },
@@ -2543,6 +2797,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:42"
     },
@@ -2553,6 +2809,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:43"
     },
@@ -2563,6 +2821,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:44"
     },
@@ -2573,6 +2833,8 @@
       "precision": 0.4606741573033708,
       "recall": 0.05086848635235732,
       "p_at_10": 0.7,
+      "ndcg_at_10": 0.5829271839184499,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "nd4f7b6s",
         "ilk9u1a8",
@@ -2594,6 +2856,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:46"
     },
@@ -2604,6 +2868,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:47"
     },
@@ -2614,6 +2880,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:48"
     },
@@ -2624,6 +2892,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:49"
     },
@@ -2634,6 +2904,8 @@
       "precision": 0.0,
       "recall": 0.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [],
       "retrieved_ids_key": "and_baseline:50"
     }
@@ -2646,6 +2918,8 @@
       "precision": 0.004001346731586035,
       "recall": 0.9701726844583988,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "rzpbpxw2",
         "gdfxiosc",
@@ -2667,6 +2941,8 @@
       "precision": 0.002103863708008388,
       "recall": 0.9777070063694268,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "qnjo4iow",
         "eksiyh9q",
@@ -2688,6 +2964,8 @@
       "precision": 0.006383703994463324,
       "recall": 0.9840764331210191,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "ne9xika4",
         "wcnyncld",
@@ -2709,6 +2987,8 @@
       "precision": 0.004712664714494876,
       "recall": 0.9735349716446124,
       "p_at_10": 0.1,
+      "ndcg_at_10": 0.06943122193677727,
+      "mrr_at_10": 0.125,
       "ranked_doc_ids": [
         "rzpbpxw2",
         "gdfxiosc",
@@ -2730,6 +3010,8 @@
       "precision": 0.005408372628775062,
       "recall": 0.9788273615635179,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "jbbpu5yo",
         "kd35rzn5",
@@ -2751,6 +3033,8 @@
       "precision": 0.006519793459552495,
       "recall": 0.9874869655891554,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "rzpbpxw2",
         "gdfxiosc",
@@ -2772,6 +3056,8 @@
       "precision": 0.00393521771840045,
       "recall": 0.9896049896049897,
       "p_at_10": 0.5,
+      "ndcg_at_10": 0.4671034547999446,
+      "mrr_at_10": 0.5,
       "ranked_doc_ids": [
         "ywwg00jj",
         "3a52gw24",
@@ -2793,6 +3079,8 @@
       "precision": 0.006529690189328744,
       "recall": 0.9604430379746836,
       "p_at_10": 0.1,
+      "ndcg_at_10": 0.09478836436955079,
+      "mrr_at_10": 0.25,
       "ranked_doc_ids": [
         "efog9bri",
         "jiac7iaj",
@@ -2814,6 +3102,8 @@
       "precision": 0.0025471645300341487,
       "recall": 0.9528795811518325,
       "p_at_10": 0.4,
+      "ndcg_at_10": 0.3282216597421159,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "pi0rmaot",
         "c7cd91pg",
@@ -2835,6 +3125,8 @@
       "precision": 0.003066452748162716,
       "recall": 0.9978947368421053,
       "p_at_10": 0.1,
+      "ndcg_at_10": 0.022084741151463014,
+      "mrr_at_10": 0.1111111111111111,
       "ranked_doc_ids": [
         "w6lj0zvq",
         "0ufwlw87",
@@ -2856,6 +3148,8 @@
       "precision": 0.002621376190137153,
       "recall": 0.9759036144578314,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.2308642712863799,
+      "mrr_at_10": 0.5,
       "ranked_doc_ids": [
         "ir1ukbzy",
         "tkxsvybh",
@@ -2877,6 +3171,8 @@
       "precision": 0.006019280507876793,
       "recall": 0.8311688311688312,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.18562612777175935,
+      "mrr_at_10": 0.2,
       "ranked_doc_ids": [
         "jo9fgkwl",
         "mjsuk66x",
@@ -2898,6 +3194,8 @@
       "precision": 0.005761603418733403,
       "recall": 0.9734717416378316,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.19804967236922028,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "up54no93",
         "9hq8xdhi",
@@ -2919,6 +3217,8 @@
       "precision": 0.002237429466400358,
       "recall": 0.803921568627451,
       "p_at_10": 0.7,
+      "ndcg_at_10": 0.5058854424219427,
+      "mrr_at_10": 0.3333333333333333,
       "ranked_doc_ids": [
         "m005jyta",
         "zy1byu51",
@@ -2940,6 +3240,8 @@
       "precision": 0.002690325098063377,
       "recall": 0.9290780141843972,
       "p_at_10": 0.1,
+      "ndcg_at_10": 0.22009176629808017,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "959w9sln",
         "t51q537x",
@@ -2961,6 +3263,8 @@
       "precision": 0.005019652412748023,
       "recall": 0.8217054263565892,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "3o90pzw7",
         "7m5sr6ib",
@@ -2982,6 +3286,8 @@
       "precision": 0.0043598178978499985,
       "recall": 0.9820359281437125,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.13037159943867643,
+      "mrr_at_10": 0.2,
       "ranked_doc_ids": [
         "ik7ev4t0",
         "i00q5hfu",
@@ -3003,6 +3309,8 @@
       "precision": 0.003929682030062383,
       "recall": 0.9920382165605095,
       "p_at_10": 0.5,
+      "ndcg_at_10": 0.4396839150746801,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "e3icgsl9",
         "6urg16zc",
@@ -3024,6 +3332,8 @@
       "precision": 0.0011580706781279847,
       "recall": 0.8738738738738738,
       "p_at_10": 0.1,
+      "ndcg_at_10": 0.028381039213873666,
+      "mrr_at_10": 0.2,
       "ranked_doc_ids": [
         "cn58n6sc",
         "rzpbpxw2",
@@ -3045,6 +3355,8 @@
       "precision": 0.004706605642461917,
       "recall": 0.9814814814814815,
       "p_at_10": 0.6,
+      "ndcg_at_10": 0.46785915648013915,
+      "mrr_at_10": 0.3333333333333333,
       "ranked_doc_ids": [
         "gwnb6ofi",
         "zb68exyo",
@@ -3066,6 +3378,8 @@
       "precision": 0.004234444298376105,
       "recall": 0.9714285714285714,
       "p_at_10": 0.1,
+      "ndcg_at_10": 0.22009176629808017,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "l0k1biap",
         "rzpbpxw2",
@@ -3087,6 +3401,8 @@
       "precision": 0.0036961526726027017,
       "recall": 0.9761904761904762,
       "p_at_10": 0.4,
+      "ndcg_at_10": 0.45943722030177303,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "zfs45uvp",
         "emj1wdac",
@@ -3108,6 +3424,8 @@
       "precision": 0.0025367657279475133,
       "recall": 0.9838274932614556,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "a6xnzak5",
         "c90ruii0",
@@ -3129,6 +3447,8 @@
       "precision": 0.0028061596593711145,
       "recall": 1.0,
       "p_at_10": 0.4,
+      "ndcg_at_10": 0.4240172104351884,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "iim21pta",
         "6duc06et",
@@ -3150,6 +3470,8 @@
       "precision": 0.003537352271495175,
       "recall": 0.9867674858223062,
       "p_at_10": 0.1,
+      "ndcg_at_10": 0.13886244387355454,
+      "mrr_at_10": 0.5,
       "ranked_doc_ids": [
         "omjx453r",
         "86jwep6f",
@@ -3171,6 +3493,8 @@
       "precision": 0.004956821438252721,
       "recall": 0.987146529562982,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "rzpbpxw2",
         "gdfxiosc",
@@ -3192,6 +3516,8 @@
       "precision": 0.005669310538686102,
       "recall": 0.9858657243816255,
       "p_at_10": 0.5,
+      "ndcg_at_10": 0.5420423054868789,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "ls6cdive",
         "rzpbpxw2",
@@ -3213,6 +3539,8 @@
       "precision": 0.0034911129515193986,
       "recall": 0.9945553539019963,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.2999050316974944,
+      "mrr_at_10": 0.5,
       "ranked_doc_ids": [
         "16d0zvot",
         "xx8snj1h",
@@ -3234,6 +3562,8 @@
       "precision": 0.004326484264389872,
       "recall": 0.9966887417218543,
       "p_at_10": 0.1,
+      "ndcg_at_10": 0.07336392209936006,
+      "mrr_at_10": 0.14285714285714285,
       "ranked_doc_ids": [
         "1gkvdx71",
         "nq2mscyk",
@@ -3255,6 +3585,8 @@
       "precision": 0.0026124464412594288,
       "recall": 0.9837837837837838,
       "p_at_10": 0.8,
+      "ndcg_at_10": 0.8138114605194469,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "m2k6usaz",
         "928lhz2l",
@@ -3276,6 +3608,8 @@
       "precision": 0.002304523391932129,
       "recall": 0.9603399433427762,
       "p_at_10": 0.2,
+      "ndcg_at_10": 0.09949667842558517,
+      "mrr_at_10": 0.16666666666666666,
       "ranked_doc_ids": [
         "6kgliogi",
         "8azxyrpr",
@@ -3297,6 +3631,8 @@
       "precision": 0.002101628021706956,
       "recall": 0.9861111111111112,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "76xp953p",
         "ekbi2fg9",
@@ -3318,6 +3654,8 @@
       "precision": 0.0019463367162519116,
       "recall": 0.99644128113879,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "ltl4jsqi",
         "rzpbpxw2",
@@ -3339,6 +3677,8 @@
       "precision": 0.001091275572759194,
       "recall": 0.9883720930232558,
       "p_at_10": 0.1,
+      "ndcg_at_10": 0.07839826897867534,
+      "mrr_at_10": 0.16666666666666666,
       "ranked_doc_ids": [
         "rzpbpxw2",
         "gdfxiosc",
@@ -3360,6 +3700,8 @@
       "precision": 0.0018017867718821165,
       "recall": 0.9908256880733946,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "y2woo8lw",
         "rzpbpxw2",
@@ -3381,6 +3723,8 @@
       "precision": 0.004192800186651661,
       "recall": 1.0,
       "p_at_10": 0.2,
+      "ndcg_at_10": 0.2984900352767555,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "0e3pyxgb",
         "rzpbpxw2",
@@ -3402,6 +3746,8 @@
       "precision": 0.003053644175139502,
       "recall": 0.9911111111111112,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.20641593223508903,
+      "mrr_at_10": 0.14285714285714285,
       "ranked_doc_ids": [
         "rzpbpxw2",
         "gdfxiosc",
@@ -3423,6 +3769,8 @@
       "precision": 0.008108700416392724,
       "recall": 0.9936808846761453,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "rzpbpxw2",
         "gdfxiosc",
@@ -3444,6 +3792,8 @@
       "precision": 0.005501726537133433,
       "recall": 0.9930232558139535,
       "p_at_10": 1.0,
+      "ndcg_at_10": 0.8340611153182702,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "m6kxxio1",
         "0q16p6qz",
@@ -3465,6 +3815,8 @@
       "precision": 0.0037642951152815378,
       "recall": 0.9928057553956835,
       "p_at_10": 0.2,
+      "ndcg_at_10": 0.12987501165334076,
+      "mrr_at_10": 0.1111111111111111,
       "ranked_doc_ids": [
         "rzpbpxw2",
         "gdfxiosc",
@@ -3486,6 +3838,8 @@
       "precision": 0.0019810613103213937,
       "recall": 0.9935691318327974,
       "p_at_10": 0.7,
+      "ndcg_at_10": 0.7185745455493611,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "fs983x5g",
         "97mg41jl",
@@ -3507,6 +3861,8 @@
       "precision": 0.0026495792822855114,
       "recall": 0.9835390946502057,
       "p_at_10": 0.6,
+      "ndcg_at_10": 0.5779050396291793,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "9itdow8a",
         "rmzfng2s",
@@ -3528,6 +3884,8 @@
       "precision": 0.0016240357287860333,
       "recall": 0.9960474308300395,
       "p_at_10": 0.9,
+      "ndcg_at_10": 0.8899541168509599,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "xn795tcm",
         "k6j789p9",
@@ -3549,6 +3907,8 @@
       "precision": 0.0030825782736271885,
       "recall": 0.989648033126294,
       "p_at_10": 0.7,
+      "ndcg_at_10": 0.5742987258246682,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "e3icgsl9",
         "6urg16zc",
@@ -3570,6 +3930,8 @@
       "precision": 0.00516003829866533,
       "recall": 0.9962779156327544,
       "p_at_10": 1.0,
+      "ndcg_at_10": 0.5455596993062479,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "ub0tl046",
         "26yvryhw",
@@ -3591,6 +3953,8 @@
       "precision": 0.001298049340218015,
       "recall": 0.9945054945054945,
       "p_at_10": 1.0,
+      "ndcg_at_10": 0.9432379215722527,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "tw3luwll",
         "6l0kb0v3",
@@ -3612,6 +3976,8 @@
       "precision": 0.002648284950392174,
       "recall": 0.9952380952380953,
       "p_at_10": 0.1,
+      "ndcg_at_10": 0.07336392209936006,
+      "mrr_at_10": 0.14285714285714285,
       "ranked_doc_ids": [
         "f3vt33mk",
         "rzpbpxw2",
@@ -3633,6 +3999,8 @@
       "precision": 0.0028524988275201893,
       "recall": 1.0,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "pkcabhku",
         "znbvydos",
@@ -3654,6 +4022,8 @@
       "precision": 0.0017202556607599894,
       "recall": 0.9959514170040485,
       "p_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "mrr_at_10": 0.0,
       "ranked_doc_ids": [
         "iog4c1su",
         "ztnecvzf",
@@ -3675,6 +4045,8 @@
       "precision": 0.0009098093384955605,
       "recall": 1.0,
       "p_at_10": 0.3,
+      "ndcg_at_10": 0.38103895132309773,
+      "mrr_at_10": 1.0,
       "ranked_doc_ids": [
         "bchcy4hn",
         "6emy92i5",

@@ -6,6 +6,31 @@ import json
 import math
 
 
+def ndcg_at_10(ranked, qrels):
+    def gain(rank, grade):
+        return (2 ** grade - 1) / math.log2(rank + 1)
+
+    actual = sum(
+        gain(rank, qrels.get(doc_id, 0))
+        for rank, doc_id in enumerate(ranked[:10], start=1)
+    )
+    ideal = sum(
+        gain(rank, grade)
+        for rank, grade in enumerate(
+            sorted((score for score in qrels.values() if score > 0), reverse=True)[:10],
+            start=1,
+        )
+    )
+    return actual / ideal if ideal else 0.0
+
+
+def mrr_at_10(ranked, qrels):
+    for rank, doc_id in enumerate(ranked[:10], start=1):
+        if qrels.get(doc_id, 0) > 0:
+            return 1 / rank
+    return 0.0
+
+
 def main():
     with open("data/cache/qrels.json", "r", encoding="utf-8") as file:
         qrels = json.load(file)
@@ -40,6 +65,8 @@ def main():
                 "precision": precision,
                 "recall": recall,
                 "p_at_10": p_at_10,
+                "ndcg_at_10": ndcg_at_10(ranked, qrels[qid]),
+                "mrr_at_10": mrr_at_10(ranked, qrels[qid]),
             }
             if key != f"{method}:{qid}" or len(docs) != entry["hits"]:
                 failures.append(f"{method} topic {qid}: identifier count or key mismatch")
@@ -64,6 +91,8 @@ def main():
             "Avg Precision": sum(entry["precision"] for entry in available) / len(available),
             "Avg Recall": sum(entry["recall"] for entry in available) / len(available),
             "Avg P@10": sum(entry["p_at_10"] for entry in available) / len(available),
+            "Avg nDCG@10": sum(entry["ndcg_at_10"] for entry in available) / len(available),
+            "Avg MRR@10": sum(entry["mrr_at_10"] for entry in available) / len(available),
         }
         for name, value in expected_summary.items():
             tolerance = 0.051 if name in {"In Band %", "Avg Hits"} else 0.000051

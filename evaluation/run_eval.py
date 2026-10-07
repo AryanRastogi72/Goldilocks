@@ -22,6 +22,7 @@ import os
 import json
 import time
 import gzip
+import math
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -63,6 +64,33 @@ def compute_p_at_k(ranked_ext_ids, relevant_ext_ids, k=10):
     top_k = ranked_ext_ids[:k]
     relevant_count = sum(1 for doc_id in top_k if doc_id in relevant_ext_ids)
     return relevant_count / k
+
+
+def compute_ndcg_at_k(ranked_ext_ids, topic_qrels, k=10):
+    """Measure graded ranking quality against the topic judgments."""
+    if k <= 0:
+        return 0.0
+
+    def gain_at(rank, grade):
+        return (2 ** grade - 1) / math.log2(rank + 1)
+
+    actual = sum(
+        gain_at(rank, topic_qrels.get(doc_id, 0))
+        for rank, doc_id in enumerate(ranked_ext_ids[:k], start=1)
+    )
+    ideal_grades = sorted(
+        (grade for grade in topic_qrels.values() if grade > 0), reverse=True
+    )[:k]
+    ideal = sum(gain_at(rank, grade) for rank, grade in enumerate(ideal_grades, start=1))
+    return actual / ideal if ideal else 0.0
+
+
+def compute_mrr_at_k(ranked_ext_ids, topic_qrels, k=10):
+    """Measure the reciprocal rank of the first relevant result."""
+    for rank, doc_id in enumerate(ranked_ext_ids[:k], start=1):
+        if topic_qrels.get(doc_id, 0) > 0:
+            return 1 / rank
+    return 0.0
 
 
 def baseline_and_keywords(query_text, index, top_k=10):
@@ -188,6 +216,8 @@ def run_evaluation():
                 "in_band": target_low <= len(llm_result["docs"]) <= target_high,
                 "precision": llm_p, "recall": llm_r,
                 "p_at_10": compute_p_at_k(llm_ranked_ext, relevant, k=10),
+                "ndcg_at_10": compute_ndcg_at_k(llm_ranked_ext, qrels[qid], k=10),
+                "mrr_at_10": compute_mrr_at_k(llm_ranked_ext, qrels[qid], k=10),
                 "ranked_doc_ids": llm_ranked_ext,
                 "retrieved_ids_key": f"one_shot_llm_baseline:{qid}",
                 "query": llm_result["query"],
@@ -228,6 +258,8 @@ def run_evaluation():
                 "precision": gc_precision,
                 "recall": gc_recall,
                 "p_at_10": gc_p10,
+                "ndcg_at_10": compute_ndcg_at_k(gc_ranked_ext, qrels[qid], k=10),
+                "mrr_at_10": compute_mrr_at_k(gc_ranked_ext, qrels[qid], k=10),
                 "ranked_doc_ids": gc_ranked_ext,
                 "retrieved_ids_key": f"goldilocks:{qid}",
                 "llm_calls": ctrl_log.llm_calls,
@@ -241,6 +273,7 @@ def run_evaluation():
             results["goldilocks"].append({
                 "qid": qid, "hits": 0, "in_band": False,
                 "precision": 0, "recall": 0, "p_at_10": 0,
+                "ndcg_at_10": 0, "mrr_at_10": 0,
                 "ranked_doc_ids": [],
                 "retrieved_ids_key": f"goldilocks:{qid}",
                 "llm_calls": 0, "iterations": 0, "final_query": "ERROR",
@@ -262,6 +295,8 @@ def run_evaluation():
             "precision": and_p,
             "recall": and_r,
             "p_at_10": and_p10,
+            "ndcg_at_10": compute_ndcg_at_k(and_ranked_ext, qrels[qid], k=10),
+            "mrr_at_10": compute_mrr_at_k(and_ranked_ext, qrels[qid], k=10),
             "ranked_doc_ids": and_ranked_ext,
             "retrieved_ids_key": f"and_baseline:{qid}",
         })
@@ -283,6 +318,8 @@ def run_evaluation():
             "precision": or_p,
             "recall": or_r,
             "p_at_10": or_p10,
+            "ndcg_at_10": compute_ndcg_at_k(or_ranked_ext, qrels[qid], k=10),
+            "mrr_at_10": compute_mrr_at_k(or_ranked_ext, qrels[qid], k=10),
             "ranked_doc_ids": or_ranked_ext,
             "retrieved_ids_key": f"or_baseline:{qid}",
         })
@@ -307,6 +344,8 @@ def run_evaluation():
         avg_p = sum(e["precision"] for e in entries) / n
         avg_r = sum(e["recall"] for e in entries) / n
         avg_p10 = sum(e["p_at_10"] for e in entries) / n
+        avg_ndcg = sum(e["ndcg_at_10"] for e in entries) / n
+        avg_mrr = sum(e["mrr_at_10"] for e in entries) / n
 
         print(f"\n{method.upper()}:")
         print(f"  Queries evaluated: {n}")
@@ -315,6 +354,8 @@ def run_evaluation():
         print(f"  Avg precision:     {avg_p:.4f}")
         print(f"  Avg recall:        {avg_r:.4f}")
         print(f"  Avg P@10:          {avg_p10:.4f}")
+        print(f"  Avg nDCG@10:       {avg_ndcg:.4f}")
+        print(f"  Avg MRR@10:        {avg_mrr:.4f}")
 
         if method == "goldilocks":
             avg_llm = sum(e.get("llm_calls", 0) for e in entries) / n
@@ -354,7 +395,7 @@ def _save_summary_table(results, config):
         print("[warning] tabulate not installed, skipping table export")
         return
 
-    headers = ["Method", "In Band %", "Avg Hits", "Avg Precision", "Avg Recall", "Avg P@10"]
+    headers = ["Method", "In Band %", "Avg Hits", "Avg Precision", "Avg Recall", "Avg P@10", "Avg nDCG@10", "Avg MRR@10"]
     rows = []
 
     for method in ["goldilocks", "one_shot_llm_baseline", "and_baseline", "or_baseline"]:
@@ -367,7 +408,9 @@ def _save_summary_table(results, config):
         avg_p = sum(e["precision"] for e in entries) / n
         avg_r = sum(e["recall"] for e in entries) / n
         avg_p10 = sum(e["p_at_10"] for e in entries) / n
-        rows.append([method, f"{in_band_pct:.1f}", f"{avg_hits:.1f}", f"{avg_p:.4f}", f"{avg_r:.4f}", f"{avg_p10:.4f}"])
+        avg_ndcg = sum(e["ndcg_at_10"] for e in entries) / n
+        avg_mrr = sum(e["mrr_at_10"] for e in entries) / n
+        rows.append([method, f"{in_band_pct:.1f}", f"{avg_hits:.1f}", f"{avg_p:.4f}", f"{avg_r:.4f}", f"{avg_p10:.4f}", f"{avg_ndcg:.4f}", f"{avg_mrr:.4f}"])
 
     table_str = tab_fn(rows, headers=headers, tablefmt="grid")
     print("\n" + table_str)

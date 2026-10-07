@@ -142,7 +142,8 @@ def active_settings(config):
     return result
 
 
-def run_search(query, index, config):
+def run_search(query, index, config, context="", context_query=None):
+    st.session_state.pop("search_result", None)
     mode = st.session_state.get("proposal_mode", "Offline")
     api_key = effective_key()
     use_model = mode == "Groq"
@@ -155,7 +156,12 @@ def run_search(query, index, config):
                 if use_model:
                     with using_api_key(api_key):
                         ranked, trace, final_query = run_controller(
-                            query, index, config, use_llm=True
+                            query,
+                            index,
+                            config,
+                            use_llm=True,
+                            context=context,
+                            context_query=context_query,
                         )
                     if trace.llm_errors:
                         message = " ".join(str(item) for item in trace.llm_errors)
@@ -169,20 +175,28 @@ def run_search(query, index, config):
                         else:
                             error_message = "Groq was unavailable. The search used offline keywords."
                         ranked, trace, final_query = run_controller(
-                            query, index, config, use_llm=False
+                            query,
+                            index,
+                            config,
+                            use_llm=False,
+                            context_query=context_query,
                         )
                         mode_used = "Offline"
                     else:
                         mode_used = "Groq"
                 else:
                     ranked, trace, final_query = run_controller(
-                        query, index, config, use_llm=False
+                        query,
+                        index,
+                        config,
+                        use_llm=False,
+                        context_query=context_query,
                     )
                     mode_used = "Offline"
         except Exception:
             status.update(label="Search could not finish", state="error")
             st.error("Search could not finish. Check the query and index, then try again.")
-            return
+            return None
 
         elapsed = time.perf_counter() - started
         status.update(label="Search complete", state="complete")
@@ -196,7 +210,9 @@ def run_search(query, index, config):
         "settings": config.copy(),
         "elapsed": elapsed,
         "notice": error_message,
+        "context_used": bool(context_query),
     }
+    return st.session_state["search_result"]
 
 
 def log_position(value, total):
@@ -389,6 +405,26 @@ def render_search(root, index, config):
         st.error("The target minimum must be no greater than the target maximum.")
         return
 
+    history = st.session_state.setdefault("conversation_history", [])
+    if history:
+        with st.container(border=True):
+            st.markdown("### Recent conversation")
+            for turn in history[-3:]:
+                st.caption(f"Question: {turn['question']}")
+                st.caption(f"Last accepted query: {turn['final_query']}")
+            use_prior_context = st.checkbox(
+                "Use earlier searches as context",
+                value=True,
+                key=f"use_prior_context_{len(history)}",
+            )
+        if st.button("New conversation", key="new_conversation"):
+            st.session_state["conversation_history"] = []
+            st.session_state.pop("search_result", None)
+            st.session_state["search_query"] = ""
+            st.rerun()
+    else:
+        use_prior_context = False
+
     examples = ["COVID vaccine pregnancy", "COVID remdesivir pregnant treatment", "long COVID symptoms"]
     st.markdown('<div class="section-title">Start with a research question</div>', unsafe_allow_html=True)
     example_cols = st.columns(3)
@@ -414,7 +450,29 @@ def render_search(root, index, config):
         if not query.strip():
             st.warning("Enter a research question to search the collection.")
         else:
-            run_search(query.strip(), index, current_config)
+            context = ""
+            context_query = None
+            if use_prior_context and history:
+                context = "\n".join(
+                    f"Question: {turn['question']}\nAccepted Boolean query: {turn['final_query']}"
+                    for turn in history[-3:]
+                )
+                context_query = history[-1]["final_query"]
+            completed = run_search(
+                query.strip(),
+                index,
+                current_config,
+                context=context,
+                context_query=context_query,
+            )
+            if completed:
+                history.append(
+                    {
+                        "question": query.strip(),
+                        "final_query": completed["final_query"],
+                        "mode": completed["mode_used"],
+                    }
+                )
 
     result = st.session_state.get("search_result")
     if result is None:
@@ -487,6 +545,8 @@ def evaluation_rows(root):
                 "Precision": sum(item["precision"] for item in entries) / count,
                 "Recall": sum(item["recall"] for item in entries) / count,
                 "P at 10": sum(item["p_at_10"] for item in entries) / count,
+                "nDCG at 10": sum(item["ndcg_at_10"] for item in entries) / count,
+                "MRR at 10": sum(item["mrr_at_10"] for item in entries) / count,
             }
         )
     return data, summaries
@@ -518,6 +578,8 @@ def render_evaluation(root):
                     ("Precision", f"{summary['Precision']:.4f}"),
                     ("Recall", f"{summary['Recall']:.4f}"),
                     ("P at 10", f"{summary['P at 10']:.4f}"),
+                    ("nDCG at 10", f"{summary['nDCG at 10']:.4f}"),
+                    ("MRR at 10", f"{summary['MRR at 10']:.4f}"),
                 ]
                 value_html = "".join(
                     f'<div class="eval-item"><div class="eval-label">{safe(label)}</div>'
@@ -587,6 +649,16 @@ def render_evaluation(root):
                 "Measure": "P at 10",
                 "Goldilocks": f"{paired_mean(paired_gold, 'p_at_10'):.4f}",
                 "One shot Groq": f"{paired_mean(paired_one_shot, 'p_at_10'):.4f}",
+            },
+            {
+                "Measure": "nDCG at 10",
+                "Goldilocks": f"{paired_mean(paired_gold, 'ndcg_at_10'):.4f}",
+                "One shot Groq": f"{paired_mean(paired_one_shot, 'ndcg_at_10'):.4f}",
+            },
+            {
+                "Measure": "MRR at 10",
+                "Goldilocks": f"{paired_mean(paired_gold, 'mrr_at_10'):.4f}",
+                "One shot Groq": f"{paired_mean(paired_one_shot, 'mrr_at_10'):.4f}",
             },
         ]
         st.markdown('<div class="section-title">Paired comparison on the same topics</div>', unsafe_allow_html=True)
@@ -662,6 +734,8 @@ def render_evaluation(root):
                     "Precision": "Not scored",
                     "Recall": "Not scored",
                     "P at 10": "Not scored",
+                    "nDCG at 10": "Not scored",
+                    "MRR at 10": "Not scored",
                 }
             )
             continue
@@ -674,6 +748,8 @@ def render_evaluation(root):
                 "Precision": f"{summary['Precision']:.4f}",
                 "Recall": f"{summary['Recall']:.4f}",
                 "P at 10": f"{summary['P at 10']:.4f}",
+                "nDCG at 10": f"{summary['nDCG at 10']:.4f}",
+                "MRR at 10": f"{summary['MRR at 10']:.4f}",
             }
         )
     st.dataframe(pd.DataFrame(table_rows), hide_index=True, use_container_width=True)
