@@ -1,0 +1,45 @@
+# Private documentation stays local
+/docs_private/
+
+# Local environments and Python output
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Node output
+node_modules/
+.wrangler/
+
+# Raw data and generated caches
+/data/raw/
+/data/cache/
+/gemini_cache/
+
+# Private index backup and retired browser copies
+/index_out_original/
+/web/
+/archive/
+
+# Secrets
+.env
+.dev.vars
+*.key
+.streamlit/secrets.toml
+
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Course material
+*.pdf
+
+# Local Streamlit logs
+streamlit_server.*.log
