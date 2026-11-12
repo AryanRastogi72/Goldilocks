@@ -135,7 +135,7 @@ The project combines established retrieval components and follows known query re
 
 ## Team and AI use
 
-Raghav Garg built the original project, including the Python indexing and retrieval pipeline, controller and evaluation foundation. Aryan Rastogi tested the project, changed the model provider from Gemini to Groq, built and redesigned the Streamlit app, and led the audit and integration work. Codex assisted with debugging, the sorted postings intersection, rate limit handling, evaluation checks and documentation. Groq generated Boolean query proposals only. Search logic, controller decisions, ranking and evaluation run in project code.
+Raghav Garg built the original project, including the Python indexing and retrieval pipeline, controller and evaluation foundation. Aryan Rastogi tested the project, changed the model provider from Gemini to Groq, built and redesigned the Streamlit app, and led the audit and integration work. Groq generated Boolean query proposals only. Search logic, controller decisions, ranking and evaluation run in project code.
 
 ## Submission links
 

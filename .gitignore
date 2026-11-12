@@ -27,7 +27,8 @@ node_modules/
 
 # Private index backup and retired browser copies
 /index_out_original/
-/web/
+web/node_modules/
+web/dist/
 /archive/
 
 # Secrets
@@ -43,7 +44,12 @@ Thumbs.db
 .idea/
 
 # Course material
-*.pdf
+reference/
+reference/**/*.pdf
+
+# Agent scratch and review staging
+_trash_review/
+.scratch/
 
 # Local Streamlit logs
 streamlit_server.*.log
