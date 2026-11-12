@@ -81,7 +81,7 @@
               "detail": "leading cue 'only'"
             }
           ],
-          "boolean_query": "(vaccin OR quadrival OR bival OR immunis)",
+          "boolean_query": "((breastfeed OR mother OR breastf OR childbirth OR breast OR breastmilk OR breastfe) AND (pregnant OR pregnanc OR gestat OR women OR nonpregn OR birth OR nonprescript OR nonprespecifi OR nonpreg OR nonprenyl OR nonpretarget) AND (vaccin OR quadrival OR bival OR immunis))",
           "evidence_filter": "systematic_review_meta_analysis",
           "trace": [
             {
@@ -122,30 +122,14 @@
             },
             {
               "step": 7,
-              "decision": "RELAX_DROP_CONCEPT",
-              "actual_hits": 1,
-              "source": "rule"
-            },
-            {
-              "step": 8,
-              "decision": "RELAX_DROP_CONCEPT",
-              "actual_hits": 10,
-              "source": "rule"
-            },
-            {
-              "step": 9,
               "decision": "ACCEPT",
-              "actual_hits": 196,
+              "actual_hits": 1,
               "source": "rule"
             }
           ],
           "clarifications": [],
           "top_titles": [
-            "Immune and bioinformatics identification of T cell and B cell epitopes in the protein structure of SARS-CoV-2: A Systematic Review",
-            "Post-vaccination encephalomyelitis: Literature review and illustrative case",
-            "Potential Rapid Diagnostics, Vaccine and Therapeutics for 2019 Novel Coronavirus (2019-nCoV): A Systematic Review",
-            "The possible of immunotherapy for COVID-19: A systematic review",
-            "The Possible of Immunotherapy for COVID-19: a Systematic Review"
+            "XXIV World Allergy Congress 2015: Seoul, Korea. 14-17 October 2015"
           ]
         }
       ]

@@ -1,400 +1,193 @@
 """
 run_eval.py
-Evaluates the Goldilocks search system on TREC-COVID topics.
+Runs R0 to R5 on all TREC-COVID topics, both topic fields, to depth 1000, and scores them.
 
-Metrics computed:
-  - Fraction of queries landing in the target band (20 to 200 hits)
-  - Boolean set precision and recall (using qrels)
-  - P@10 after tf-idf cosine ranking
-  - Average controller steps per query
+  R0  midsem baseline: AND of the keyword stems, tf-idf ltc.ltc inside the set (set run)
+  R1  BM25, full collection
+  R2  tf-idf ltc.ltc, full collection
+  R3  BM25 + Rocchio pseudo-relevance feedback reranking
+  R4  EvidenceLens agent: controller v2.1 (no clarification), BM25 over the whole accepted set (set run)
+  R5  R4 with evidence_weight = 0.2 (value fixed by the designer before any R5 result existed; nothing else tuned)
 
-Baselines compared:
-  1. Controller (offline rules)
-  2. AND of all keywords (simple baseline)
-  3. OR of all keywords ranked by tf-idf (recall-oriented baseline)
-
-Outputs: tables (printed + saved as TSV) and charts (saved as PNG).
+Writes evaluation/runs/<run>_<field>.trec (topic Q0 ext_id rank score tag), evaluation/results.json and
+evaluation/summary.tsv. Usage: python -m evaluation.run_eval
 """
 
-import sys
-import os
 import json
+import os
+import sys
 import time
-import gzip
+from statistics import mean
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+from engine.controller import load_config, run_controller
+from engine.expansion import rank_bm25_prf
+from engine.ranker import rank_bm25, rank_documents
 from engine.search import SearchIndex
-from engine.boolean_parser import parse, collect_terms, ParseError
-from engine.ranker import rank_documents
-from evaluation.metrics import compute_p_at_k, compute_ndcg_at_k, compute_mrr_at_k
-from engine.controller import run_controller, load_config
-from pipeline.tokenizer import tokenize
+from evaluation.metrics import (
+    compute_map_at_k, compute_mrr_at_k, compute_ndcg_at_k, compute_p_at_k, compute_recall_at_k, compute_set_metrics,
+)
+from evaluation.quick_rank_eval import FIELDS, load_qrels, load_topics
+from pipeline.tokenizer import query_terms, tokenize
+
+DEPTH = 1000
+R5_EVIDENCE_WEIGHT = 0.2
+RUNS_DIR = os.path.join("evaluation", "runs")
+RESULTS_PATH = os.path.join("evaluation", "results.json")
+SUMMARY_PATH = os.path.join("evaluation", "summary.tsv")
+SET_RUNS = {"R0", "R4", "R5"}
+DESCRIPTIONS = {
+    "R0": "midsem baseline: AND of keyword stems, tf-idf ltc.ltc inside the set",
+    "R1": "BM25, full collection",
+    "R2": "tf-idf ltc.ltc, full collection",
+    "R3": "BM25 + Rocchio PRF reranking",
+    "R4": "EvidenceLens agent (controller v2.1, no clarification), BM25 over the accepted set",
+    "R5": f"R4 with evidence_weight {R5_EVIDENCE_WEIGHT}",
+}
 
 
-def keyword_terms(text):
-    """Return stemmed keyword terms, excluding Boolean operator words."""
-    return [term for term in tokenize(text) if term not in {"and", "or", "not"}]
+def midsem_keyword_terms(text):
+    """The midsem keyword stems: tokenize and stem, no stopword removal, boolean words dropped, length above 2."""
+    return [t for t in tokenize(text) if t not in {"and", "or", "not"} and len(t) > 2]
 
 
-def load_eval_data():
-    """Loads cached queries and qrels from data/cache/."""
-    with open("data/cache/queries.json", "r", encoding="utf-8") as f:
-        queries = json.load(f)
-    with open("data/cache/qrels.json", "r", encoding="utf-8") as f:
-        qrels = json.load(f)
-    return queries, qrels
+def run_r0(text, index, config):
+    stems = [s for s in midsem_keyword_terms(text) if index.get_df(s) > 0]
+    if not stems:
+        return [], set(), {}
+    docs = index.execute_boolean(("AND", [("TERM", s) for s in stems]))
+    return rank_documents(docs, stems, index, top_k=DEPTH), docs, {}
 
 
-def compute_precision_recall(retrieved_ext_ids, relevant_ext_ids):
-    """
-    Computes precision and recall given sets of retrieved and relevant doc IDs.
-    Both inputs should be sets of external (TREC) document IDs.
-    """
-    if not retrieved_ext_ids:
-        return 0.0, 0.0
-    tp = len(retrieved_ext_ids & relevant_ext_ids)
-    precision = tp / len(retrieved_ext_ids) if retrieved_ext_ids else 0
-    recall = tp / len(relevant_ext_ids) if relevant_ext_ids else 0
-    return precision, recall
+def run_r1(text, index, config):
+    ranked = rank_bm25(query_terms(text), index, top_k=DEPTH, k1=config["bm25_k1"], b=config["bm25_b"], title_boost=0.0)
+    return ranked, None, {}
 
 
-def baseline_and_keywords(query_text, index, top_k=10):
-    """
-    Baseline 1: AND all keywords from the query.
-    Returns (doc_ids_set, ranked_results, query_str)
-    """
-    stems = [term for term in keyword_terms(query_text) if len(term) > 2]
-    # filter to stems that exist in the index
-    valid_stems = [s for s in stems if index.get_df(s) > 0]
-    if not valid_stems:
-        return set(), [], "EMPTY"
-
-    query_str = " AND ".join(valid_stems)
-    try:
-        ast = parse(query_str)
-        result_docs = index.execute_boolean(ast)
-        query_terms = list(collect_terms(ast))
-        ranked = rank_documents(result_docs, query_terms, index, top_k=top_k)
-        return result_docs, ranked, query_str
-    except ParseError:
-        return set(), [], query_str
+def run_r2(text, index, config):
+    terms = query_terms(text)
+    candidates = {doc_id for term in set(terms) for doc_id, _ in index.get_postings(term)}
+    return rank_documents(candidates, terms, index, top_k=DEPTH), None, {}
 
 
-def baseline_or_keywords(query_text, index, top_k=10):
-    """
-    Baseline 2: OR all keywords from the query, rank by tf-idf.
-    Returns (doc_ids_set, ranked_results, query_str)
-    """
-    stems = [term for term in keyword_terms(query_text) if len(term) > 2]
-    valid_stems = [s for s in stems if index.get_df(s) > 0]
-    if not valid_stems:
-        return set(), [], "EMPTY"
-
-    query_str = " OR ".join(valid_stems)
-    try:
-        ast = parse(query_str)
-        result_docs = index.execute_boolean(ast)
-        query_terms = list(collect_terms(ast))
-        ranked = rank_documents(result_docs, query_terms, index, top_k=top_k)
-        return result_docs, ranked, query_str
-    except ParseError:
-        return set(), [], query_str
+def run_r3(text, index, config):
+    ranked = rank_bm25_prf(
+        query_terms(text), index, top_k=DEPTH, k1=config["bm25_k1"], b=config["bm25_b"],
+        title_boost=0.0, max_df_fraction=config["max_df_fraction"],
+    )
+    return ranked, None, {}
 
 
-def run_evaluation():
-    """
-    Runs the full evaluation on all TREC-COVID topics.
-    """
-    print("=" * 70)
-    print("PHASE 3: Evaluation on TREC-COVID Topics")
-    print("=" * 70)
+def run_agent(text, index, config):
+    ranked, log, final_query = run_controller(text, index, config, allow_clarify=False, top_k=DEPTH)
+    last = log.steps[-1]
+    return ranked, log.final_docs, {"final_query": final_query, "final_decision": last["decision"], "steps": len(log.steps)}
 
-    config = load_config()
-    target_low = config["target_band_low"]
-    target_high = config["target_band_high"]
-    top_k = config["top_k"]
 
-    # load index and evaluation data
-    index = SearchIndex(max_cached_shards=4)
-    queries, qrels = load_eval_data()
+def run_r4(text, index, config):
+    return run_agent(text, index, dict(config, evidence_weight=0.0))
 
-    print(f"Index: {index.num_docs} docs, {len(index.dictionary)} terms")
-    print(f"Queries: {len(queries)}, Qrels: {len(qrels)} topics")
-    print(f"Target band: [{target_low}, {target_high}]")
-    print()
 
-    # results storage
-    results = {
-        "goldilocks": [],
-        "and_baseline": [],
-        "or_baseline": [],
+def run_r5(text, index, config):
+    return run_agent(text, index, dict(config, evidence_weight=R5_EVIDENCE_WEIGHT))
+
+
+RUN_FUNCTIONS = {"R0": run_r0, "R1": run_r1, "R2": run_r2, "R3": run_r3, "R4": run_r4, "R5": run_r5}
+
+
+def score_ranking(ranked_ext_ids, topic_qrels):
+    relevant = {doc_id for doc_id, grade in topic_qrels.items() if grade > 0}
+    return {
+        "p_at_10": compute_p_at_k(ranked_ext_ids, relevant, k=10),
+        "ndcg_at_10": compute_ndcg_at_k(ranked_ext_ids, topic_qrels, k=10),
+        "mrr_at_10": compute_mrr_at_k(ranked_ext_ids, topic_qrels, k=10),
+        "map_at_100": compute_map_at_k(ranked_ext_ids, relevant, k=100),
+        "recall_at_100": compute_recall_at_k(ranked_ext_ids, relevant, k=100),
+        "recall_at_1000": compute_recall_at_k(ranked_ext_ids, relevant, k=1000),
     }
-    retrieved_ids = {name: {} for name in results}
-
-    # track metrics
-    total_queries = 0
-
-    for qid, query_text in queries.items():
-        # skip queries without qrels (cannot evaluate)
-        if qid not in qrels:
-            continue
-
-        total_queries += 1
-        print(f"\n--- Query {qid}: {query_text[:60]}... ---")
-
-        # get relevant docs for this query (qrels with score > 0)
-        relevant = {did for did, score in qrels[qid].items() if score > 0}
-
-        # ---- Goldilocks controller ----
-        try:
-            ranked_gc, ctrl_log, final_query = run_controller(query_text, index, config)
-            final_ast = parse(final_query)
-            final_doc_ids = index.execute_boolean(final_ast)
-            gc_docs = {index.get_ext_id(doc_id) for doc_id in final_doc_ids}
-            gc_ranked_ext = []
-            for score, doc_id in ranked_gc:
-                ext_id = index.get_ext_id(doc_id)
-                gc_ranked_ext.append(ext_id)
-
-            gc_actual = len(final_doc_ids)
-
-            gc_precision, gc_recall = compute_precision_recall(gc_docs, relevant)
-            gc_p10 = compute_p_at_k(gc_ranked_ext, relevant, k=10)
-            gc_in_band = target_low <= gc_actual <= target_high
-
-            results["goldilocks"].append({
-                "qid": qid,
-                "hits": gc_actual,
-                "in_band": gc_in_band,
-                "precision": gc_precision,
-                "recall": gc_recall,
-                "p_at_10": gc_p10,
-                "ndcg_at_10": compute_ndcg_at_k(gc_ranked_ext, qrels[qid], k=10),
-                "mrr_at_10": compute_mrr_at_k(gc_ranked_ext, qrels[qid], k=10),
-                "ranked_doc_ids": gc_ranked_ext,
-                "retrieved_ids_key": f"goldilocks:{qid}",
-                "iterations": len(ctrl_log.steps),
-                "final_query": final_query,
-            })
-            retrieved_ids["goldilocks"][qid] = sorted(gc_docs)
-            print(f"  [goldilocks] hits={gc_actual}, in_band={gc_in_band}, P@10={gc_p10:.3f}")
-        except Exception as e:
-            print(f"  [goldilocks] ERROR: {e}")
-            results["goldilocks"].append({
-                "qid": qid, "hits": 0, "in_band": False,
-                "precision": 0, "recall": 0, "p_at_10": 0,
-                "ndcg_at_10": 0, "mrr_at_10": 0,
-                "ranked_doc_ids": [],
-                "retrieved_ids_key": f"goldilocks:{qid}",
-                "iterations": 0, "final_query": "ERROR",
-            })
-            retrieved_ids["goldilocks"][qid] = []
-
-        # ---- AND baseline ----
-        and_docs, and_ranked, and_query = baseline_and_keywords(query_text, index, top_k)
-        and_ext = {index.get_ext_id(d) for d in and_docs}
-        and_ranked_ext = [index.get_ext_id(d) for _, d in and_ranked]
-        and_p, and_r = compute_precision_recall(and_ext, relevant)
-        and_p10 = compute_p_at_k(and_ranked_ext, relevant, k=10)
-        and_in_band = target_low <= len(and_docs) <= target_high
-
-        results["and_baseline"].append({
-            "qid": qid,
-            "hits": len(and_docs),
-            "in_band": and_in_band,
-            "precision": and_p,
-            "recall": and_r,
-            "p_at_10": and_p10,
-            "ndcg_at_10": compute_ndcg_at_k(and_ranked_ext, qrels[qid], k=10),
-            "mrr_at_10": compute_mrr_at_k(and_ranked_ext, qrels[qid], k=10),
-            "ranked_doc_ids": and_ranked_ext,
-            "retrieved_ids_key": f"and_baseline:{qid}",
-        })
-        retrieved_ids["and_baseline"][qid] = sorted(and_ext)
-        print(f"  [AND base] hits={len(and_docs)}, in_band={and_in_band}, P@10={and_p10:.3f}")
-
-        # ---- OR baseline ----
-        or_docs, or_ranked, or_query = baseline_or_keywords(query_text, index, top_k)
-        or_ext = {index.get_ext_id(d) for d in or_docs}
-        or_ranked_ext = [index.get_ext_id(d) for _, d in or_ranked]
-        or_p, or_r = compute_precision_recall(or_ext, relevant)
-        or_p10 = compute_p_at_k(or_ranked_ext, relevant, k=10)
-        or_in_band = target_low <= len(or_docs) <= target_high
-
-        results["or_baseline"].append({
-            "qid": qid,
-            "hits": len(or_docs),
-            "in_band": or_in_band,
-            "precision": or_p,
-            "recall": or_r,
-            "p_at_10": or_p10,
-            "ndcg_at_10": compute_ndcg_at_k(or_ranked_ext, qrels[qid], k=10),
-            "mrr_at_10": compute_mrr_at_k(or_ranked_ext, qrels[qid], k=10),
-            "ranked_doc_ids": or_ranked_ext,
-            "retrieved_ids_key": f"or_baseline:{qid}",
-        })
-        retrieved_ids["or_baseline"][qid] = sorted(or_ext)
-        print(f"  [OR  base] hits={len(or_docs)}, in_band={or_in_band}, P@10={or_p10:.3f}")
-
-    # ---- Aggregate and print results ----
-    print("\n" + "=" * 70)
-    print("AGGREGATE RESULTS")
-    print("=" * 70)
-
-    for method in ["goldilocks", "and_baseline", "or_baseline"]:
-        entries = [entry for entry in results[method] if entry.get("available", True)]
-        if not entries:
-            if results[method]:
-                print(f"\n{method.upper()}: no results")
-            continue
-
-        n = len(entries)
-        in_band = sum(1 for e in entries if e["in_band"])
-        avg_hits = sum(e["hits"] for e in entries) / n
-        avg_p = sum(e["precision"] for e in entries) / n
-        avg_r = sum(e["recall"] for e in entries) / n
-        avg_p10 = sum(e["p_at_10"] for e in entries) / n
-        avg_ndcg = sum(e["ndcg_at_10"] for e in entries) / n
-        avg_mrr = sum(e["mrr_at_10"] for e in entries) / n
-
-        print(f"\n{method.upper()}:")
-        print(f"  Queries evaluated: {n}")
-        print(f"  In target band:    {in_band}/{n} ({in_band * 100 / n:.1f}%)")
-        print(f"  Avg hits:          {avg_hits:.1f}")
-        print(f"  Avg precision:     {avg_p:.4f}")
-        print(f"  Avg recall:        {avg_r:.4f}")
-        print(f"  Avg P@10:          {avg_p10:.4f}")
-        print(f"  Avg nDCG@10:       {avg_ndcg:.4f}")
-        print(f"  Avg MRR@10:        {avg_mrr:.4f}")
-
-        if method == "goldilocks":
-            avg_iter = sum(e.get("iterations", 0) for e in entries) / n
-            print(f"  Avg iterations:    {avg_iter:.2f}")
-
-    # ---- Save results ----
-    os.makedirs("evaluation", exist_ok=True)
-    results_path = os.path.join("evaluation", "results.json")
-    with open(results_path, "w") as f:
-        json.dump(results, f, indent=2)
-    print(f"\nDetailed results saved to {results_path}")
-
-    retrieved_path = os.path.join("evaluation", "retrieved_ids.json.gz")
-    with gzip.open(retrieved_path, "wt", encoding="utf-8") as f:
-        json.dump(retrieved_ids, f, separators=(",", ":"))
-    print(f"Retrieved document identifiers saved to {retrieved_path}")
-
-    # ---- Generate charts ----
-    try:
-        _generate_charts(results, config)
-    except Exception as e:
-        print(f"[warning] Chart generation failed: {e}")
-
-    # ---- Save summary table ----
-    _save_summary_table(results, config)
-
-    return results
 
 
-def _save_summary_table(results, config):
-    """Saves a summary comparison table as TSV and printed text."""
-    try:
-        from tabulate import tabulate as tab_fn
-    except ImportError:
-        print("[warning] tabulate not installed, skipping table export")
-        return
-
-    headers = ["Method", "In Band %", "Avg Hits", "Avg Precision", "Avg Recall", "Avg P@10", "Avg nDCG@10", "Avg MRR@10"]
-    rows = []
-
-    for method in ["goldilocks", "and_baseline", "or_baseline"]:
-        entries = [entry for entry in results[method] if entry.get("available", True)]
-        if not entries:
-            continue
-        n = len(entries)
-        in_band_pct = sum(1 for e in entries if e["in_band"]) * 100 / n
-        avg_hits = sum(e["hits"] for e in entries) / n
-        avg_p = sum(e["precision"] for e in entries) / n
-        avg_r = sum(e["recall"] for e in entries) / n
-        avg_p10 = sum(e["p_at_10"] for e in entries) / n
-        avg_ndcg = sum(e["ndcg_at_10"] for e in entries) / n
-        avg_mrr = sum(e["mrr_at_10"] for e in entries) / n
-        rows.append([method, f"{in_band_pct:.1f}", f"{avg_hits:.1f}", f"{avg_p:.4f}", f"{avg_r:.4f}", f"{avg_p10:.4f}", f"{avg_ndcg:.4f}", f"{avg_mrr:.4f}"])
-
-    table_str = tab_fn(rows, headers=headers, tablefmt="grid")
-    print("\n" + table_str)
-
-    # save as TSV
-    tsv_path = os.path.join("evaluation", "summary.tsv")
-    with open(tsv_path, "w") as f:
-        f.write("\t".join(headers) + "\n")
-        for row in rows:
-            f.write("\t".join(str(v) for v in row) + "\n")
-    print(f"Summary table saved to {tsv_path}")
+def score_set(set_ext_ids, topic_qrels, config):
+    relevant = {doc_id for doc_id, grade in topic_qrels.items() if grade > 0}
+    scores = compute_set_metrics(set_ext_ids, relevant)
+    scores["hits"] = len(set_ext_ids)
+    scores["in_band"] = config["target_band_low"] <= len(set_ext_ids) <= config["target_band_high"]
+    return scores
 
 
-def _generate_charts(results, config):
-    """Generates comparison charts and saves as PNG."""
-    import matplotlib
-    matplotlib.use("Agg")  # non-interactive backend
-    import matplotlib.pyplot as plt
+def trec_path(run_name, field_name):
+    return os.path.join(RUNS_DIR, f"{run_name}_{field_name.replace('.', '_')}.trec")
 
-    target_low = config["target_band_low"]
-    target_high = config["target_band_high"]
 
-    # Chart 1: Hit count distribution per method
-    methods = ["goldilocks", "and_baseline", "or_baseline"]
-    titles = ["Controller", "AND Baseline", "OR Baseline"]
-    fig, axes = plt.subplots(1, len(methods), figsize=(5 * len(methods), 5))
+def write_trec(path, rankings, tag):
+    with open(path, "w", encoding="utf-8") as f:
+        for topic_id, scored in rankings.items():
+            for rank, (ext_id, score) in enumerate(scored, start=1):
+                f.write(f"{topic_id} Q0 {ext_id} {rank} {score:.8f} {tag}\n")
 
-    for ax, method, title in zip(axes, methods, titles):
-        entries = [e for e in results[method] if e.get("available", True)]
-        hits = [e["hits"] for e in entries]
-        if hits:
-            ax.hist(hits, bins=30, color="steelblue", edgecolor="white", alpha=0.8)
-        else:
-            ax.text(0.5, 0.5, "No results", ha="center", va="center", transform=ax.transAxes)
-        ax.axvline(x=target_low, color="green", linestyle="--", label=f"Target low ({target_low})")
-        ax.axvline(x=target_high, color="red", linestyle="--", label=f"Target high ({target_high})")
-        ax.set_title(title)
-        ax.set_xlabel("Hit Count")
-        ax.set_ylabel("Number of Queries")
-        ax.legend(fontsize=8)
 
-    plt.tight_layout()
-    chart_path = os.path.join("evaluation", "hit_distribution.png")
-    plt.savefig(chart_path, dpi=150)
-    plt.close()
-    print(f"Chart saved to {chart_path}")
+def evaluate_run(run_name, field_name, field_getter, topics, qrels, index, config):
+    function = RUN_FUNCTIONS[run_name]
+    per_topic, rankings = {}, {}
+    for topic in topics:
+        topic_id = topic["_id"]
+        start = time.perf_counter()
+        ranked, doc_set, extra = function(field_getter(topic), index, config)
+        latency = time.perf_counter() - start
+        scored = [(index.get_ext_id(doc_id), score) for score, doc_id in ranked]
+        rankings[topic_id] = scored
+        record = score_ranking([ext_id for ext_id, _ in scored], qrels[topic_id])
+        record["retrieved"] = len(scored)
+        record["latency_s"] = latency
+        if run_name in SET_RUNS:
+            record.update(score_set({index.get_ext_id(d) for d in doc_set}, qrels[topic_id], config))
+        record.update(extra)
+        per_topic[topic_id] = record
+    write_trec(trec_path(run_name, field_name), rankings, f"{run_name}_{field_name.replace('.', '_')}")
+    numeric = [k for k, v in next(iter(per_topic.values())).items() if isinstance(v, (int, float, bool))]
+    means = {k: mean(float(r[k]) for r in per_topic.values()) for k in numeric}
+    return {"mean": means, "mean_latency_s": means["latency_s"], "per_topic": per_topic}
 
-    # Chart 2: P@10 comparison bar chart
-    fig, ax = plt.subplots(figsize=(8, 5))
-    chart_methods = []
-    method_names = []
-    p10_values = []
-    for method in methods:
-        entries = [entry for entry in results[method] if entry.get("available", True)]
-        if entries:
-            chart_methods.append(method)
-            method_names.append(titles[methods.index(method)])
-            p10_values.append(sum(e["p_at_10"] for e in entries) / len(entries))
 
-    colors = {"goldilocks": "#2196F3",
-              "and_baseline": "#FF9800", "or_baseline": "#4CAF50"}
-    bars = ax.bar(method_names, p10_values, color=[colors[method] for method in chart_methods], edgecolor="white")
-    ax.set_ylabel("Average P@10")
-    ax.set_title("Precision at 10 Comparison")
-    ax.set_ylim(0, max(p10_values) * 1.3 if p10_values and max(p10_values) > 0 else 1)
-    for bar, val in zip(bars, p10_values):
-        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.01,
-                f"{val:.3f}", ha="center", fontsize=10)
+def write_summary_tsv(results):
+    columns = ["p_at_10", "ndcg_at_10", "mrr_at_10", "map_at_100", "recall_at_100", "recall_at_1000", "mean_latency_s",
+               "hits", "set_precision", "set_recall", "set_f1", "in_band"]
+    with open(SUMMARY_PATH, "w", encoding="utf-8") as f:
+        f.write("\t".join(["run", "field"] + columns) + "\n")
+        for run_name, run in results["runs"].items():
+            for field_name, field in run["fields"].items():
+                values = dict(field["mean"], mean_latency_s=field["mean_latency_s"])
+                cells = [f"{values[c]:.4f}" if c in values else "" for c in columns]
+                f.write("\t".join([run_name, field_name] + cells) + "\n")
 
-    plt.tight_layout()
-    chart_path = os.path.join("evaluation", "p10_comparison.png")
-    plt.savefig(chart_path, dpi=150)
-    plt.close()
-    print(f"Chart saved to {chart_path}")
+
+def main():
+    started = time.time()
+    os.makedirs(RUNS_DIR, exist_ok=True)
+    config = load_config()
+    index = SearchIndex()
+    topics, qrels = load_topics(), load_qrels()
+    results = {
+        "note": "R5 evidence_weight 0.2 was chosen by the designer before any R5 result existed; nothing else was tuned",
+        "depth": DEPTH,
+        "band": [config["target_band_low"], config["target_band_high"]],
+        "runs": {},
+    }
+    for run_name in RUN_FUNCTIONS:
+        kind = "set" if run_name in SET_RUNS else "ranking"
+        results["runs"][run_name] = {"description": DESCRIPTIONS[run_name], "kind": kind, "fields": {}}
+        for field_name, field_getter in FIELDS.items():
+            run_started = time.time()
+            field_result = evaluate_run(run_name, field_name, field_getter, topics, qrels, index, config)
+            results["runs"][run_name]["fields"][field_name] = field_result
+            means = field_result["mean"]
+            print(f"{run_name} {field_name:15} nDCG@10={means['ndcg_at_10']:.4f} P@10={means['p_at_10']:.4f} ({time.time() - run_started:.0f}s)", flush=True)
+    with open(RESULTS_PATH, "w", encoding="utf-8") as f:
+        json.dump(results, f, indent=1)
+    write_summary_tsv(results)
+    print(f"Saved {RESULTS_PATH}, {SUMMARY_PATH} and 12 run files in {RUNS_DIR}. Total time {time.time() - started:.0f}s")
 
 
 if __name__ == "__main__":
-    run_evaluation()
+    main()

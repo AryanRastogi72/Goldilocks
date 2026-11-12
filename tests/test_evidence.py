@@ -185,5 +185,14 @@ class ScorerTests(unittest.TestCase):
                 score(sample, predictions, os.path.join(folder, "none.json"))
 
 
+class AiLabelTests(unittest.TestCase):
+    def test_ai_labels_never_touch_human_label(self):
+        from evaluation.score_evidence_labels import ai_sample_rows
+        rows = ai_sample_rows()
+        self.assertEqual(len(rows), 120)
+        self.assertTrue(all(row["human_label"] == "" for row in rows))
+        self.assertTrue(all(row["ai_label"] in CLASSES for row in rows))
+
+
 if __name__ == "__main__":
     unittest.main()

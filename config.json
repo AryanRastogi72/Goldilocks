@@ -35,9 +35,9 @@
         "randomized_controlled_trial": 0.85,
         "observational": 0.6,
         "case_report_series": 0.4,
-        "modelling_simulation": 0.3,
-        "lab_animal": 0.25,
-        "opinion_editorial": 0.1,
+        "lab_animal": 0.15,
+        "opinion_editorial": 0.15,
+        "modelling_simulation": 0.5,
         "other": 0.5
     }
 }

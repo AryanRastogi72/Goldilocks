@@ -1,0 +1,23 @@
+{
+  "classes": [
+    "other",
+    "observational",
+    "lab_animal",
+    "systematic_review_meta_analysis",
+    "modelling_simulation",
+    "case_report_series",
+    "opinion_editorial",
+    "randomized_controlled_trial"
+  ],
+  "documents": [
+    122502,
+    14849,
+    14059,
+    5153,
+    4664,
+    3892,
+    3512,
+    2701
+  ],
+  "total": 171332
+}

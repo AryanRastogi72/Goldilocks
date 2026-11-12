@@ -1,0 +1,11 @@
+{
+  "source": "Thakur N, Reimers N, Ruckle A, Srivastava A, Gurevych I. BEIR: A Heterogenous Benchmark for Zero-shot Evaluation of Information Retrieval Models. arXiv:2104.08663; NeurIPS 2021 Datasets and Benchmarks Track",
+  "paper_version_read": "v4 (21 Oct 2021)",
+  "table": "2 (nDCG@10, zero-shot performance)",
+  "row": "TREC-COVID",
+  "column": "BM25",
+  "bm25_trec_covid_ndcg10": 0.656,
+  "beir_k1": 0.9,
+  "beir_b": 0.4,
+  "read_from": "PDF text of arxiv.org/pdf/2104.08663v4 extracted with pdftotext on 2026-11-12; Table 1 also lists 493.5 average relevant documents per query for TREC-COVID"
+}

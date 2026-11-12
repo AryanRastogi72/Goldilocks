@@ -39,6 +39,7 @@ class ControllerLog:
         self.concepts = concepts
         self.steps = []
         self.clarifications = []
+        self.final_docs = set()
 
     def add(self, query, df_table, estimated_hits, actual_hits, decision, reason, source):
         self.steps.append({
@@ -210,6 +211,7 @@ def relax_drop_concept(state, docs, index, config):
 
 
 RELAX_MOVES = [relax_expand_synonyms, relax_wildcard, relax_drop_concept]
+RELAX_MOVES_UNDER_FILTER = [relax_expand_synonyms, relax_wildcard]
 
 
 # ---- main loop ----
@@ -242,6 +244,17 @@ def hold_back_extra_concepts(concepts, initial_concepts):
         concept["held"] = True
 
 
+def log_below_band(log, ast, index, docs, evidence_filter, low, reason):
+    """Ends the loop below the band. Under an evidence filter, concepts are never dropped, so a small set is accepted."""
+    if evidence_filter and docs:
+        message = f"evidence filter active: showing all {len(docs)} matching {evidence_filter} papers (below band)"
+        log_step(log, ast, index, docs, "ACCEPT", message, "rule")
+    elif evidence_filter:
+        log_step(log, ast, index, docs, "EXHAUSTED", f"no {evidence_filter} papers match this topic", "rule")
+    else:
+        log_step(log, ast, index, docs, "EXHAUSTED", reason, "rule")
+
+
 def log_clarify(log, ast, index, docs, concepts, config, allow_clarify, reason):
     if not allow_clarify:
         log_step(log, ast, index, docs, "CLARIFY", f"{reason}; clarification not offered", "rule")
@@ -257,12 +270,13 @@ def matching_docs(ast, index, evidence_docs):
     return docs if evidence_docs is None else docs & evidence_docs
 
 
-def run_controller(text, index, config=None, concepts=None, allow_clarify=False, evidence_filter=None):
+def run_controller(text, index, config=None, concepts=None, allow_clarify=False, evidence_filter=None, top_k=None):
     """
     Understands the query (or uses the given concepts), then loops: run the Boolean query, compare the
     hit count with the band, and tighten or relax. Returns (ranked, log, final_query).
     With allow_clarify the log may carry clarification choices; without it a CLARIFY step is only logged.
     With evidence_filter (a class id) the Boolean result is intersected with that class before every band check.
+    top_k overrides config top_k for the final ranking (evaluation ranks the whole accepted set).
     """
     config = config or load_config()
     low, high = config["target_band_low"], config["target_band_high"]
@@ -292,20 +306,22 @@ def run_controller(text, index, config=None, concepts=None, allow_clarify=False,
             if too_many:
                 log_clarify(log, ast, index, docs, concepts, config, allow_clarify, f"iteration limit reached with {len(docs)} hits")
             else:
-                log_step(log, ast, index, docs, "EXHAUSTED", f"Iteration limit reached with {len(docs)} hits", "rule")
+                log_below_band(log, ast, index, docs, evidence_filter, low, f"Iteration limit reached with {len(docs)} hits")
             break
-        outcome = first_applicable_move(TIGHTEN_MOVES if too_many else RELAX_MOVES, state, docs, index, config)
+        relax_moves = RELAX_MOVES_UNDER_FILTER if evidence_filter else RELAX_MOVES
+        outcome = first_applicable_move(TIGHTEN_MOVES if too_many else relax_moves, state, docs, index, config)
         if outcome is None and too_many:
             log_clarify(log, ast, index, docs, concepts, config, allow_clarify, f"{len(docs)} hits is above {high} and no tighten move applies")
             break
         if outcome is None:
-            log_step(log, ast, index, docs, "EXHAUSTED", f"{len(docs)} hits is below {low} and no relax move applies", "rule")
+            log_below_band(log, ast, index, docs, evidence_filter, low, f"{len(docs)} hits is below {low} and no relax move applies")
             break
         log_step(log, ast, index, docs, *outcome)
 
     ast = build_ast(concepts, state["extra_nodes"])
     docs = matching_docs(ast, index, evidence_docs)
-    ranked = rank_final(ast, docs, concepts, index, config, log, evidence_docs)
+    ranked = rank_final(ast, docs, concepts, index, config, log, evidence_docs, top_k)
+    log.final_docs = docs
     return ranked, log, ast_to_string(ast)
 
 
@@ -315,15 +331,17 @@ def ranking_stems(ast, concepts):
     return sorted({stem for c in wanted for stem in c["stems"]} | collect_terms(ast))
 
 
-def rank_final(ast, docs, concepts, index, config, log, evidence_docs=None):
+def rank_final(ast, docs, concepts, index, config, log, evidence_docs=None, top_k=None):
     weight = config["evidence_weight"]
-    top_k = config["top_k"]
+    top_k = top_k or config["top_k"]
     ranking_options = dict(k1=config["bm25_k1"], b=config["bm25_b"], title_boost=config["title_boost"])
-    candidates = config["evidence_candidates"] if weight else top_k
+    candidates = max(config["evidence_candidates"], top_k) if weight else top_k
     wanted = [c for c in concepts if not c.get("excluded")]
     all_stems = sorted({stem for c in wanted for stem in c["stems"]})
     if docs:
         ranked = rank_bm25(ranking_stems(ast, concepts), index, top_k=candidates, doc_ids=docs, **ranking_options)
+    elif evidence_docs is not None:
+        return []
     else:
         reason = "no Boolean match; full-collection BM25 ranking shown"
         if log.steps[-1]["decision"] == "EXHAUSTED":

@@ -42,3 +42,24 @@ def compute_mrr_at_k(ranked_ext_ids, topic_qrels, k=10):
         if topic_qrels.get(doc_id, 0) > 0:
             return 1 / rank
     return 0.0
+
+
+def compute_map_at_k(ranked_ext_ids, relevant_ext_ids, k=100):
+    """trec_eval map_cut: sum of precision at each relevant rank up to k, divided by the number of relevant documents."""
+    if not relevant_ext_ids:
+        return 0.0
+    found, precision_sum = 0, 0.0
+    for rank, doc_id in enumerate(ranked_ext_ids[:k], start=1):
+        if doc_id in relevant_ext_ids:
+            found += 1
+            precision_sum += found / rank
+    return precision_sum / len(relevant_ext_ids)
+
+
+def compute_set_metrics(retrieved_ext_ids, relevant_ext_ids):
+    """Precision, recall and F1 of a retrieved set (not a ranking)."""
+    hits = len(retrieved_ext_ids & relevant_ext_ids)
+    precision = hits / len(retrieved_ext_ids) if retrieved_ext_ids else 0.0
+    recall = hits / len(relevant_ext_ids) if relevant_ext_ids else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+    return {"set_precision": precision, "set_recall": recall, "set_f1": f1}
