@@ -32,6 +32,11 @@ class SearchRequest(BaseModel):
         return value
 
 
+class RerankRequest(BaseModel):
+    session_id: str = Field(pattern=SESSION_ID_PATTERN)
+    ranker: Literal["agent", "bm25"]
+
+
 class ClarifyRequest(BaseModel):
     session_id: str = Field(pattern=SESSION_ID_PATTERN)
     choice_id: int

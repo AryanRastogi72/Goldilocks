@@ -22,9 +22,9 @@ from fastapi.responses import FileResponse, JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from api.eval_data import build_eval_payload
-from api.schemas import SESSION_ID_PATTERN, ClarifyRequest, SearchRequest
+from api.schemas import SESSION_ID_PATTERN, ClarifyRequest, RerankRequest, SearchRequest
 from engine.controller import load_config
-from engine.conversation import KEEP_FILTER, SESSIONS, apply_clarification, handle_turn
+from engine.conversation import KEEP_FILTER, SESSIONS, apply_clarification, handle_turn, rerank_turn
 from engine.explain import explain
 from engine.search import SearchIndex
 
@@ -235,6 +235,22 @@ def create_app(dist_dir=DEFAULT_DIST, load_engine=True):
             result = apply_clarification(body.session_id, body.choice_id, state.index, state.config)
             controller_ms = (time.perf_counter() - started) * 1000
             return build_response(body.session_id, result, state.config, state.index, started, controller_ms)
+
+    @app.post("/api/rerank")
+    def rerank(body: RerankRequest, request: Request):
+        """Ranks the session's current turn again with the other ranker. No new turn is added."""
+        state = request.app.state
+        with state.engine_lock:
+            if body.session_id not in SESSIONS:
+                raise ApiError(404, "unknown_session", "This session does not exist or has expired. Start a new search.")
+            if not SESSIONS[body.session_id]["turns"]:
+                raise ApiError(422, "no_turn", "There is no search in this session to rank again.")
+            started = time.perf_counter()
+            result = rerank_turn(body.session_id, body.ranker, state.index, state.config)
+            controller_ms = (time.perf_counter() - started) * 1000
+            response = build_response(body.session_id, result, state.config, state.index, started, controller_ms)
+            response["new_session"] = False
+            return response
 
     @app.get("/api/doc/{ext_id}")
     def document(request: Request, ext_id: str = PathParam(pattern=SESSION_ID_PATTERN),

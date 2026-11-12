@@ -124,6 +124,28 @@ class SearchTests(unittest.TestCase):
         self.assertIsNone(cleared["evidence_filter"])
 
 
+class RerankTests(unittest.TestCase):
+    def test_rerank_switches_the_ranker_in_place(self):
+        agent = search("covid vaccine pregnant", "api_rerank").json()
+        bm25 = client.post("/api/rerank", json={"session_id": "api_rerank", "ranker": "bm25"})
+        self.assertEqual(bm25.status_code, 200)
+        body = bm25.json()
+        self.assertEqual(body["ranker"], "bm25")
+        self.assertEqual(body["rewritten_query"], agent["rewritten_query"])
+        self.assertEqual(body["trace"][0]["decision"], "BM25_FULL_COLLECTION")
+        self.assertEqual(len(SESSIONS["api_rerank"]["turns"]), 1)
+        back = client.post("/api/rerank", json={"session_id": "api_rerank", "ranker": "agent"}).json()
+        self.assertEqual(back["boolean_query"], agent["boolean_query"])
+        self.assertEqual([r["ext_id"] for r in back["results"]], [r["ext_id"] for r in agent["results"]])
+        self.assertEqual(len(SESSIONS["api_rerank"]["turns"]), 1)
+
+    def test_rerank_errors(self):
+        assert_error(self, client.post("/api/rerank", json={"session_id": "api_no_such", "ranker": "bm25"}), 404, "unknown_session")
+        assert_error(self, client.post("/api/rerank", json={"session_id": "api_rerank", "ranker": "magic"}), 422, "invalid_request")
+        SESSIONS.setdefault("api_empty", {"turns": [], "concepts": [], "clarifications": [], "evidence_filter": None})
+        assert_error(self, client.post("/api/rerank", json={"session_id": "api_empty", "ranker": "bm25"}), 422, "no_turn")
+
+
 class WarmUpTests(unittest.TestCase):
     def test_warm_up_runs_one_search_and_leaves_no_session(self):
         from api.main import warm_up

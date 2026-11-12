@@ -229,7 +229,7 @@ def agent_turn(text, concepts, session, index, config, allow_clarify):
     return ranked, log.steps, log.clarifications, log.ranking_stems, len(log.final_docs), boolean_query, statuses
 
 
-def finish_turn(session, text, concepts, index, config, allow_clarify, rules, ranker="agent"):
+def finish_turn(session, text, concepts, index, config, allow_clarify, rules, ranker="agent", record_turn=True):
     mark_elimination(concepts, index, config)
     if ranker == "bm25":
         ranked, trace, clarifications, stems, hits = bm25_full_collection(concepts, session, index, config)
@@ -261,8 +261,17 @@ def finish_turn(session, text, concepts, index, config, allow_clarify, rules, ra
         "hits": hits,
         "ranker": ranker,
     }
-    session["turns"].append({"text": text, "rewritten_query": result["rewritten_query"], "rules_fired": rules})
+    if record_turn:
+        session["turns"].append({"text": text, "rewritten_query": result["rewritten_query"], "rules_fired": rules})
     return result
+
+
+def rerank_turn(session_id, ranker, index, config):
+    """Ranks the current turn again with the chosen ranker, in place: no new turn, same concepts, filter and rules."""
+    session = SESSIONS[session_id]
+    last = session["turns"][-1]
+    concepts = [dict(c, stems=list(c["stems"])) for c in session["concepts"]]
+    return finish_turn(session, last["text"], concepts, index, config, ranker == "agent", last["rules_fired"], ranker, record_turn=False)
 
 
 def handle_turn(session_id, text, index, config, allow_clarify=True, ranker="agent", evidence_filter=KEEP_FILTER):

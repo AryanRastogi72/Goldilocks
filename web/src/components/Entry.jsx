@@ -55,7 +55,7 @@ export function RulesFired({ rules }) {
   );
 }
 
-export default function Entry({ turn, number, animate }) {
+export default function Entry({ turn, number, animate, openSteps = true }) {
   const rewritten = turn.rewritten_query;
   return (
     <article className="entry" aria-label={`Notebook entry ${number}`}>
@@ -73,7 +73,7 @@ export default function Entry({ turn, number, animate }) {
       <div className="mt-3 pl-10">
         <Concepts concepts={turn.concepts} />
       </div>
-      <details className="mt-4" open>
+      <details className="mt-4" open={openSteps}>
         <summary className="flex cursor-pointer flex-wrap items-baseline justify-between gap-2 pl-10">
           <h2 className="m-0 inline text-base font-bold">
             Steps{turn.ranker === "bm25" ? "" : `: ${formatNumber(turn.hits)} ${turn.hits === 1 ? "paper" : "papers"} in the set`}

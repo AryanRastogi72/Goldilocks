@@ -71,4 +71,25 @@ export function longDateLabel(date = new Date()) {
   return date.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
 }
 
+// One plain sentence for a follow-up rule that fired. The rule names stay inside the "How did I get this?" sheet.
+export function plainRule(rule) {
+  const swap = /:\s*(.+?) -> (.+)$/.exec(rule.detail);
+  switch (rule.rule) {
+    case "FOLLOWUP_DETECT":
+      return "Read as a follow-up: your earlier topic is kept.";
+    case "FACET_SWAP":
+      return swap ? `Replaced ${pretty(swap[1])} with ${pretty(swap[2])}.` : "Replaced an earlier concept.";
+    case "TOPIC_SWITCH":
+      return "New topic: started fresh.";
+    case "EVIDENCE_FILTER":
+      return `Only ${evidenceLabel(rule.detail)} papers.`;
+    case "EXCLUSION":
+      return `Left out: ${pretty(rule.detail)}.`;
+    case "CLARIFY_CHOSEN":
+      return "Added the group you picked.";
+    default:
+      return rule.detail;
+  }
+}
+
 export const EXAMPLE_QUERIES = ["covid vaccine pregnant", "masks", "what is the origin of covid-19"];

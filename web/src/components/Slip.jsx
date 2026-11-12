@@ -3,8 +3,6 @@ import { motion, useReducedMotion } from "motion/react";
 import { documentFor } from "../api.js";
 import { evidenceLabel, formatFixed, highlightPieces, stampLabel } from "../lib.js";
 
-const LONG_TITLE = 150;
-
 const WINDOW = 280;
 
 // Shows about three lines around the first highlight; the whole sentence stays one click away.
@@ -91,11 +89,9 @@ function TermParts({ terms, score }) {
 export default function Slip({ result, sessionId }) {
   const panelId = useId();
   const [open, setOpen] = useState(false);
-  const [expandedTitle, setExpandedTitle] = useState(false);
-  const [showDuplicates, setShowDuplicates] = useState(false);
   const [abstract, setAbstract] = useState(null);
   const [abstractError, setAbstractError] = useState("");
-  const longTitle = result.title.length > LONG_TITLE;
+  const duplicateCount = result.duplicates.length;
 
   async function toggleAbstract() {
     if (abstract !== null) {
@@ -118,21 +114,18 @@ export default function Slip({ result, sessionId }) {
           {result.rank}
         </span>
         <div className="min-w-0 flex-1">
-          <h3 className="slip-title" data-clamped={longTitle && !expandedTitle} title={result.title}>
+          <h3 className="slip-title" data-clamped="true" title={result.title}>
             {result.title}
           </h3>
-          {longTitle && (
-            <button type="button" className="link-button text-sm" aria-expanded={expandedTitle} onClick={() => setExpandedTitle(!expandedTitle)}>
-              {expandedTitle ? "Shorter title" : "Full title"}
-            </button>
-          )}
-          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
             <span className="stamp" data-class={result.evidence_class} title={evidenceLabel(result.evidence_class)}>
               {stampLabel(result.evidence_class)}
             </span>
-            <span className="mono pencil">
-              {result.ext_id} · score {formatFixed(result.score, 2)}
-            </span>
+            {duplicateCount > 0 && (
+              <span className="pencil text-sm" title={`Same title, other ids: ${result.duplicates.join(", ")}`}>
+                +{duplicateCount} duplicate record{duplicateCount > 1 ? "s" : ""}
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -143,25 +136,19 @@ export default function Slip({ result, sessionId }) {
         <p className="no-abstract">No abstract on record for this paper. It was ranked on its title only, so there is no sentence to show.</p>
       )}
 
-      <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm">
+      <div className="mt-2 text-sm">
         <button type="button" className="link-button" aria-expanded={open} aria-controls={panelId} onClick={() => setOpen(!open)}>
           {open ? "Hide why this result" : "Why this result"}
         </button>
-        {result.duplicates.length > 0 && (
-          <button type="button" className="link-button" aria-expanded={showDuplicates} onClick={() => setShowDuplicates(!showDuplicates)}>
-            +{result.duplicates.length} duplicate record{result.duplicates.length > 1 ? "s" : ""}
-          </button>
-        )}
       </div>
-      {showDuplicates && (
-        <p className="mono m-0 mt-1" style={{ overflowWrap: "anywhere" }}>
-          Same title, other ids: {result.duplicates.join(", ")}
-        </p>
-      )}
 
       {open && (
         <div className="why" id={panelId}>
-          <div className="font-bold">BM25 contribution of each matched term</div>
+          <p className="mono m-0 pencil" style={{ overflowWrap: "anywhere" }}>
+            {result.ext_id} · score {formatFixed(result.score, 2)}
+            {duplicateCount > 0 ? ` · same title, other ids: ${result.duplicates.join(", ")}` : ""}
+          </p>
+          <div className="mt-2 font-bold">BM25 contribution of each matched term</div>
           {result.matched_terms.length ? <TermParts terms={result.matched_terms} score={result.score} /> : <p>No query term matched.</p>}
           <div className="mt-3 font-bold">Study type</div>
           <p className="m-0">

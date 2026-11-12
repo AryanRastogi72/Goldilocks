@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import * as api from "../api.js";
 import { ClassBars, HitHistogram, RunBars, TopicDifferences, VersionBars } from "./charts.jsx";
 import { formatFixed, formatNumber } from "../lib.js";
 
@@ -350,16 +348,8 @@ function ControllerVersions({ versions }) {
   );
 }
 
-export default function Evaluation() {
-  const [state, setState] = useState({ status: "loading" });
-  useEffect(() => {
-    api
-      .evaluation()
-      .then((data) => setState({ status: "ready", data }))
-      .catch((failure) => setState({ status: "failed", message: failure.message }));
-  }, []);
-
-  if (state.status === "loading") return <p aria-live="polite">Loading the saved evaluation…</p>;
+export default function Evaluation({ state }) {
+  if (state.status === "idle" || state.status === "loading") return <p aria-live="polite">Loading the saved evaluation…</p>;
   if (state.status === "failed")
     return (
       <p className="margin-note" role="alert">

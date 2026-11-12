@@ -27,6 +27,7 @@ const post = (path, payload) =>
 
 export const health = () => request("/api/health");
 export const search = (payload) => post("/api/search", payload);
+export const rerank = (payload) => post("/api/rerank", payload);
 export const clarify = (payload) => post("/api/clarify", payload);
 export const evaluation = () => request("/api/eval");
 export const documentFor = (extId, sessionId) =>
