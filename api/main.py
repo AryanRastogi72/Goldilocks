@@ -33,7 +33,8 @@ MAX_SESSIONS = 500
 IDLE_SESSION_SECONDS = 60 * 60
 DEFAULT_DIST = Path(__file__).resolve().parent.parent / "web" / "dist"
 DEV_ORIGIN = "http://localhost:5173"
-LOG = logging.getLogger("evidencelens.api")
+WARM_UP_QUERY = "covid"
+LOG = logging.getLogger("uvicorn.error.evidencelens")
 
 
 class ApiError(Exception):
@@ -66,9 +67,9 @@ def group_duplicates(items):
     return groups
 
 
-def concept_view(concept):
-    keys = ("label", "stems", "idf", "required", "eliminated", "excluded", "source", "facet")
-    return {key: concept[key] for key in keys if key in concept}
+def concept_view(concept, status):
+    keys = ("label", "stems", "idf", "required", "excluded", "source", "facet")
+    return dict({key: concept[key] for key in keys if key in concept}, status=status)
 
 
 def matched_terms(explanation):
@@ -107,12 +108,13 @@ def build_response(session_id, result, config, index, started, controller_ms):
         "rewritten_query": result["rewritten_query"],
         "resolution_rules": result["rules_fired"],
         "boolean_query": result["boolean_query"],
-        "concepts": [concept_view(c) for c in result["concepts"]],
+        "concepts": [concept_view(c, result["concept_statuses"][c["label"]]) for c in result["concepts"]],
         "trace": result["trace"],
         "clarifications": result["clarifications"],
         "results": results,
         "hits": result["hits"],
         "in_band": low <= result["hits"] <= high if result["ranker"] == "agent" else None,
+        "band": [low, high],
         "evidence_filter": result["evidence_filter"],
         "ranker": result["ranker"],
         "timings": {
@@ -169,6 +171,15 @@ def register_static_files(app, dist_dir):
         return FileResponse(dist / "index.html")
 
 
+def warm_up(state):
+    """One throwaway search at startup so the first real request does not pay for loading shards."""
+    started = time.perf_counter()
+    result = handle_turn("_warm_up", WARM_UP_QUERY, state.index, state.config, allow_clarify=False)
+    build_results(result, state.index, state.config)
+    SESSIONS.pop("_warm_up")
+    LOG.info("Warm-up search finished in %.0f ms", (time.perf_counter() - started) * 1000)
+
+
 def create_app(dist_dir=DEFAULT_DIST, load_engine=True):
     """Builds the app. load_engine=False skips loading the index (for tests of routes that do not need it)."""
 
@@ -179,6 +190,7 @@ def create_app(dist_dir=DEFAULT_DIST, load_engine=True):
             app.state.index = SearchIndex()
             app.state.eval_payload = build_eval_payload()
             SESSIONS.configure(MAX_SESSIONS, IDLE_SESSION_SECONDS)
+            warm_up(app.state)
         yield
         if load_engine:
             app.state.index.close()

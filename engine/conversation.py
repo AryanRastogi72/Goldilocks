@@ -210,11 +210,23 @@ def bm25_full_collection(concepts, session, index, config):
     return ranked, trace, [], stems, len(matching)
 
 
+def concept_status(concept):
+    """How a concept took part in the last run: active, left_out (held back or too common, never added), dropped or excluded."""
+    if concept.get("excluded"):
+        return "excluded"
+    if concept.get("dropped"):
+        return "dropped"
+    if concept.get("held") or concept["eliminated"]:
+        return "left_out"
+    return "active"
+
+
 def agent_turn(text, concepts, session, index, config, allow_clarify):
     ranked, log, boolean_query = run_controller(
         text, index, config, concepts=concepts, allow_clarify=allow_clarify, evidence_filter=session["evidence_filter"]
     )
-    return ranked, log.steps, log.clarifications, log.ranking_stems, len(log.final_docs), boolean_query
+    statuses = {c["label"]: concept_status(c) for c in log.concepts}
+    return ranked, log.steps, log.clarifications, log.ranking_stems, len(log.final_docs), boolean_query, statuses
 
 
 def finish_turn(session, text, concepts, index, config, allow_clarify, rules, ranker="agent"):
@@ -222,8 +234,9 @@ def finish_turn(session, text, concepts, index, config, allow_clarify, rules, ra
     if ranker == "bm25":
         ranked, trace, clarifications, stems, hits = bm25_full_collection(concepts, session, index, config)
         boolean_query = ""
+        statuses = {c["label"]: "excluded" if c.get("excluded") else "active" for c in concepts}
     else:
-        ranked, trace, clarifications, stems, hits, boolean_query = agent_turn(text, concepts, session, index, config, allow_clarify)
+        ranked, trace, clarifications, stems, hits, boolean_query, statuses = agent_turn(text, concepts, session, index, config, allow_clarify)
     session["concepts"] = concepts
     session["boolean_query"] = boolean_query
     session["ranking_stems"] = stems
@@ -243,6 +256,7 @@ def finish_turn(session, text, concepts, index, config, allow_clarify, rules, ra
         ],
         "evidence_filter": session["evidence_filter"],
         "concepts": concepts,
+        "concept_statuses": statuses,
         "ranking_stems": stems,
         "hits": hits,
         "ranker": ranker,

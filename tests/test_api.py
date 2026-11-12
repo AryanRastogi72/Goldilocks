@@ -66,6 +66,18 @@ class SearchTests(unittest.TestCase):
             total = sum(t["bm25"] + t["title_boost"] for t in result["matched_terms"])
             self.assertAlmostEqual(total, result["score"], places=6)
 
+    def test_concepts_carry_a_status_and_the_band_is_returned(self):
+        body = search("covid vaccine pregnant").json()
+        self.assertEqual(body["band"], [20, 200])
+        statuses = {c["label"]: c["status"] for c in body["concepts"]}
+        self.assertEqual(set(statuses.values()) - {"active", "left_out", "dropped", "excluded"}, set())
+        self.assertEqual(statuses["pregnancy"], "active")
+
+    def test_dropped_and_excluded_concepts_are_marked(self):
+        search("coronavirus remdesivir", "api_status")
+        body = search("except hydroxychloroquine", "api_status").json()
+        self.assertEqual({c["label"]: c["status"] for c in body["concepts"]}["hydroxychloroquine"], "excluded")
+
     def test_follow_up_turn_fires_rules(self):
         first = search("covid vaccine pregnant", "api_followup").json()
         second = search("what about breastfeeding", "api_followup").json()
@@ -102,6 +114,13 @@ class SearchTests(unittest.TestCase):
         search("masks", "api_filter", evidence_filter="randomized_controlled_trial")
         cleared = search("masks", "api_filter", evidence_filter=None).json()
         self.assertIsNone(cleared["evidence_filter"])
+
+
+class WarmUpTests(unittest.TestCase):
+    def test_warm_up_runs_one_search_and_leaves_no_session(self):
+        from api.main import warm_up
+        warm_up(app.state)
+        self.assertNotIn("_warm_up", SESSIONS)
 
 
 class DocumentAndEvalTests(unittest.TestCase):

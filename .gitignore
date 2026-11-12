@@ -58,3 +58,6 @@ streamlit_server.*.log
 
 # Local browser test output
 .playwright-cli/
+
+# Generated design review screenshots
+.impeccable/review/
