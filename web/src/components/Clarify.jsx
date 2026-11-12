@@ -18,7 +18,7 @@ export default function Clarify({ turn, onChoose, onSkip, busy }) {
         ))}
       </ul>
       <button type="button" className="link-button self-start text-sm" onClick={onSkip}>
-        Skip the question and show the top {turn.results.length} anyway
+        Skip the question and show the top results anyway
       </button>
     </section>
   );

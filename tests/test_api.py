@@ -85,6 +85,14 @@ class SearchTests(unittest.TestCase):
         self.assertEqual(second["resolution_rules"][0]["rule"], "FOLLOWUP_DETECT")
         self.assertIn("breastfeeding", second["rewritten_query"])
 
+    def test_unknown_session_id_is_reported_as_a_new_session(self):
+        SESSIONS.pop("api_never_seen", None)
+        first = search("masks", "api_never_seen").json()
+        again = search("masks", "api_never_seen").json()
+        self.assertTrue(first["new_session"])
+        self.assertFalse(again["new_session"])
+        self.assertFalse(search("masks").json()["new_session"])
+
     def test_missing_session_id_creates_one(self):
         self.assertRegex(search("masks").json()["session_id"], r"^[A-Za-z0-9_-]{1,64}$")
 

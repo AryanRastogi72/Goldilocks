@@ -1,6 +1,8 @@
 import { forwardRef } from "react";
 import { EVIDENCE_CLASSES } from "../lib.js";
 
+const MAX_QUESTION = 300;
+
 const NAV = [
   ["#/", "Search", "search"],
   ["#/how", "How it works", "how"],
@@ -49,12 +51,13 @@ const Head = forwardRef(function Head(
             className="search-field"
             type="search"
             value={query}
-            maxLength={300}
+            aria-describedby="length-note"
+            aria-invalid={query.length > MAX_QUESTION}
             autoComplete="off"
             placeholder="Ask, or follow up   ( / )"
             onChange={(event) => onQuery(event.target.value)}
           />
-          <button type="submit" className="btn" disabled={loading}>
+          <button type="submit" className="btn" disabled={loading || query.length > MAX_QUESTION}>
             {loading ? "Searching" : "Search"}
           </button>
           <fieldset className="segmented" aria-label="Ranker">
@@ -67,6 +70,11 @@ const Head = forwardRef(function Head(
               BM25, whole collection
             </label>
           </fieldset>
+          {query.length > MAX_QUESTION && (
+            <p id="length-note" className="m-0 w-full text-sm" style={{ color: "var(--color-margin-text)" }} role="alert">
+              Questions can be up to {MAX_QUESTION} characters. This one has {query.length}.
+            </p>
+          )}
           <label className="flex items-center gap-2 text-sm">
             <span className="pencil">Study type</span>
             <select className="select" value={filter} onChange={(event) => onFilter(event.target.value)}>

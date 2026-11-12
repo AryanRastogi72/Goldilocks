@@ -18,7 +18,7 @@
   --unit: 16px;
   --major: 80px;
   --rail: 148px;
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   color-scheme: light;
 }
 
@@ -331,9 +331,17 @@ a {
 .chip[data-status="excluded"] {
   border-style: dotted;
   color: var(--color-pencil-text);
-  text-decoration: line-through;
-  text-decoration-thickness: 2px;
-  text-decoration-color: var(--color-margin);
+  position: relative;
+}
+.chip[data-status="dropped"]::after,
+.chip[data-status="excluded"]::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: 52%;
+  border-top: 2px solid var(--color-margin);
+  transform-origin: left center;
 }
 .chip-note {
   font-size: 0.75rem;
@@ -943,5 +951,47 @@ figure.chart text {
 @media (max-width: 640px) {
   .page-head {
     position: static;
+  }
+}
+
+/* ---------- interaction details ---------- */
+.btn,
+.btn-quiet,
+.clarify-choice,
+.chip {
+  transition: transform 160ms var(--ease-out), background-color 160ms ease, border-color 160ms ease;
+}
+.btn:active:not(:disabled),
+.btn-quiet:active,
+.clarify-choice:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.slip {
+  transition: background-color 160ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .slip:hover {
+    background: #ffffff;
+  }
+}
+.link-button {
+  transition: text-decoration-thickness 120ms ease;
+}
+
+/* A new entry stacks under the stub of the last one; a dropped or excluded concept is struck as it appears. */
+@media (prefers-reduced-motion: no-preference) {
+  .stub {
+    transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out);
+    @starting-style {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+  .chip[data-status="dropped"]::after,
+  .chip[data-status="excluded"]::after {
+    transition: transform 200ms var(--ease-out) 120ms;
+    @starting-style {
+      transform: scaleX(0);
+    }
   }
 }

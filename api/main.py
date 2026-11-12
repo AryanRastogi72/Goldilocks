@@ -214,10 +214,13 @@ def create_app(dist_dir=DEFAULT_DIST, load_engine=True):
         session_id = body.session_id or uuid.uuid4().hex[:16]
         options = {"evidence_filter": body.evidence_filter} if "evidence_filter" in body.model_fields_set else {}
         with state.engine_lock:
+            new_session = body.session_id is not None and body.session_id not in SESSIONS
             started = time.perf_counter()
             result = handle_turn(session_id, body.text, state.index, state.config, allow_clarify=body.ranker == "agent", ranker=body.ranker, **options)
             controller_ms = (time.perf_counter() - started) * 1000
-            return build_response(session_id, result, state.config, state.index, started, controller_ms)
+            response = build_response(session_id, result, state.config, state.index, started, controller_ms)
+            response["new_session"] = new_session
+            return response
 
     @app.post("/api/clarify")
     def clarify(body: ClarifyRequest, request: Request):

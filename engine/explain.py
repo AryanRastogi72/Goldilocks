@@ -12,7 +12,8 @@ import math
 import os
 import re
 import sys
-from collections import Counter
+from collections import Counter, defaultdict
+from functools import lru_cache
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -23,6 +24,11 @@ from engine.search import SearchIndex
 from pipeline.tokenizer import stem_term, tokenize
 
 WORD_RE = re.compile(r"[A-Za-z0-9]+")
+
+
+@lru_cache(maxsize=200_000)
+def cached_stem(word):
+    return stem_term(word)
 ABBREVIATIONS = ["e.g.", "i.e.", "et al.", "vs.", "approx.", "fig.", "no."]
 SENTENCE_END = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9(\[])")
 DOT_PLACEHOLDER = "\u0001"
@@ -70,7 +76,7 @@ def ltc_vector(text, index):
 
 def highlight_offsets(sentence, stems):
     """Character (start, end) offsets of the words in the sentence whose stem is a query stem."""
-    return [(m.start(), m.end()) for m in WORD_RE.finditer(sentence) if stem_term(m.group(0)) in stems]
+    return [(m.start(), m.end()) for m in WORD_RE.finditer(sentence) if cached_stem(m.group(0)) in stems]
 
 
 def best_sentence(abstract, stems, index):
@@ -97,13 +103,12 @@ def explain(doc_id, concepts, index, config, extra_stems=()):
     parts = bm25_contributions(doc_id, stems, index, config)
     class_id, rule_id, matched = classify(title, abstract)
     sentence, missing_reason = best_sentence(abstract or "", stems, index)
+    forms = surface_forms_by_stem(f"{title} {abstract}", {p["stem"] for p in parts})
     return {
         "doc_id": doc_id,
         "ext_id": index.get_ext_id(doc_id),
         "title": title,
-        "matched_stems": [
-            {"stem": p["stem"], "tf": p["tf"], "surface_forms": surface_forms(p["stem"], title, abstract)} for p in parts
-        ],
+        "matched_stems": [{"stem": p["stem"], "tf": p["tf"], "surface_forms": forms[p["stem"]]} for p in parts],
         "contributions": parts,
         "bm25_score": sum(p["bm25"] + p["title_boost"] for p in parts),
         "evidence": {"class": class_id, "rule_id": rule_id, "matched_text": matched},
@@ -112,9 +117,15 @@ def explain(doc_id, concepts, index, config, extra_stems=()):
     }
 
 
-def surface_forms(stem, title, abstract):
-    words = (m.group(0).lower() for m in WORD_RE.finditer(f"{title} {abstract}"))
-    return sorted({w for w in words if stem_term(w) == stem})
+def surface_forms_by_stem(text, stems):
+    """The words of the text that stem to each wanted stem, found in one pass over the text."""
+    forms = defaultdict(set)
+    for match in WORD_RE.finditer(text):
+        word = match.group(0).lower()
+        stem = cached_stem(word)
+        if stem in stems:
+            forms[stem].add(word)
+    return {stem: sorted(forms[stem]) for stem in stems}
 
 
 def format_explanation(result):

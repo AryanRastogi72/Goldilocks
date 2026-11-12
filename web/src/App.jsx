@@ -5,7 +5,7 @@ import Hero from "./components/Hero.jsx";
 import Entry, { Stub } from "./components/Entry.jsx";
 import Slip from "./components/Slip.jsx";
 import Clarify from "./components/Clarify.jsx";
-import { BackendDown, BandNote, EmptyPage, ErrorNote, Loading, ZeroResults } from "./components/Notes.jsx";
+import { BackendDown, BandNote, EmptyPage, ErrorNote, Loading, SessionLostNote, ZeroResults } from "./components/Notes.jsx";
 import HowItWorks from "./pages/HowItWorks.jsx";
 import Evaluation from "./pages/Evaluation.jsx";
 
@@ -40,6 +40,8 @@ export default function App() {
   const [error, setError] = useState("");
   const [down, setDown] = useState("");
   const [showAnyway, setShowAnyway] = useState(false);
+  const [searchedOnce, setSearchedOnce] = useState(false);
+  const [sessionLost, setSessionLost] = useState(false);
   const sessionId = useRef(null);
 
   const checkServer = useCallback(async () => {
@@ -69,6 +71,7 @@ export default function App() {
 
   const finishTurn = useCallback((response, asked) => {
     sessionId.current = response.session_id;
+    setSessionLost(Boolean(response.new_session));
     setTurns((previous) => [...previous, { ...response, asked }]);
     setFilter(response.evidence_filter ?? "");
     setShowAnyway(false);
@@ -89,6 +92,7 @@ export default function App() {
         return;
       }
       setError("");
+      setSessionLost(false);
       setLoadingText(trimmed);
       try {
         const payload = { text: trimmed, ranker, evidence_filter: evidenceFilter || null };
@@ -98,6 +102,7 @@ export default function App() {
         fail(failure);
       } finally {
         setLoadingText("");
+        setSearchedOnce(true);
       }
     },
     [query, filter, ranker, finishTurn, fail],
@@ -113,6 +118,7 @@ export default function App() {
         fail(failure);
       } finally {
         setLoadingText("");
+        setSearchedOnce(true);
       }
     },
     [finishTurn, fail],
@@ -133,6 +139,7 @@ export default function App() {
     if (lastQuestion) submit(lastQuestion.asked, "");
   }, [turns, submit]);
 
+  const errorIsSessionLoss = error.startsWith("This session does not exist");
   const current = turns[turns.length - 1];
   const earlier = turns.slice(0, -1);
   const asking = current && current.clarifications.length > 0 && !showAnyway;
@@ -162,7 +169,7 @@ export default function App() {
           <div className="grid gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
             {down && <BackendDown message={down} onRetry={checkServer} />}
             {!down && !turns.length && !loadingText && <EmptyPage onExample={(example) => submit(example)} />}
-            {!down && loadingText && !turns.length && <Loading text={loadingText} />}
+            {!down && loadingText && !turns.length && <Loading text={loadingText} firstSearch={!searchedOnce} />}
             {turns.length > 0 && (
               <>
                 <div className="flex min-w-0 flex-col gap-3">
@@ -172,8 +179,9 @@ export default function App() {
                   <Entry key={turns.length} turn={current} number={turns.length} animate />
                 </div>
                 <section className="flex min-w-0 flex-col gap-4" aria-label="Results" aria-busy={Boolean(loadingText)}>
-                  {error && <ErrorNote message={error} />}
-                  {loadingText && <Loading text={loadingText} />}
+                  {error && <ErrorNote message={error} onNewPage={errorIsSessionLoss ? reset : undefined} />}
+                  {sessionLost && !loadingText && <SessionLostNote />}
+                  {loadingText && <Loading text={loadingText} firstSearch={!searchedOnce} />}
                   <BandNote turn={current} />
                   {asking ? (
                     <Clarify turn={current} busy={Boolean(loadingText)} onChoose={choose} onSkip={() => setShowAnyway(true)} />

@@ -71,11 +71,11 @@ export function RunBars({ data, runs }) {
   const panelHeight = 150;
   const slot = width / data[fields[0]].runs.length;
   return (
-    <svg viewBox="0 0 560 470" role="img" aria-label={`nDCG at 10 and precision at 10 for runs R0 to R5, ${fields.map((f) => FIELD_LABELS[f]).join(" and ")}`}>
+    <svg viewBox="0 0 560 490" role="img" aria-label={`nDCG at 10 and precision at 10 for runs R0 to R5, ${fields.map((f) => FIELD_LABELS[f]).join(" and ")}`}>
       <Defs />
       <Legend items={[{ label: "nDCG@10", fill: INK }, { label: "P@10", fill: "url(#hatch-ink)", stroke: INK }]} />
       {fields.map((field, panel) => {
-        const top = 64 + panel * 196;
+        const top = 64 + panel * 216;
         const entry = data[field];
         return (
           <g key={field}>
@@ -247,11 +247,11 @@ export function VersionBars({ data }) {
   const panelHeight = 120;
   const slot = width / data[fields[0]].metrics.length;
   return (
-    <svg viewBox="0 0 560 390" role="img" aria-label="Controller version 2.0 compared with version 2.1: in-band rate, nDCG at 10 and P at 10, both fields">
+    <svg viewBox="0 0 560 410" role="img" aria-label="Controller version 2.0 compared with version 2.1: in-band rate, nDCG at 10 and P at 10, both fields">
       <Defs />
       <Legend items={[{ label: "v2.0", fill: "url(#hatch-pencil)", stroke: PENCIL }, { label: "v2.1 (revised)", fill: INK }]} />
       {fields.map((field, panel) => {
-        const top = 66 + panel * 168;
+        const top = 66 + panel * 184;
         const entry = data[field];
         return (
           <g key={field}>

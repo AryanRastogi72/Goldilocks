@@ -48,7 +48,7 @@ function EmptyExplanation({ onExample }) {
   );
 }
 
-export function Loading({ text }) {
+export function Loading({ text, firstSearch }) {
   return (
     <section className="sheet" style={{ gridColumn: "1 / -1" }} aria-live="polite" aria-busy="true" aria-label="Searching">
       <div className="written-label">Searching for</div>
@@ -58,7 +58,7 @@ export function Loading({ text }) {
         <span style={{ width: "70%" }} />
         <span style={{ width: "80%" }} />
       </div>
-      <p className="pencil m-0 text-sm">The first search after the server starts can take a moment while the index warms up.</p>
+      {firstSearch && <p className="pencil m-0 text-sm">The first search after the server starts can take a moment while the index warms up.</p>}
     </section>
   );
 }
@@ -78,10 +78,25 @@ export function BackendDown({ message, onRetry }) {
   );
 }
 
-export function ErrorNote({ message }) {
+export function ErrorNote({ message, onNewPage }) {
   return (
-    <p className="margin-note m-0" role="alert">
+    <div className="margin-note" role="alert">
       <strong>That did not go through.</strong> {message}
+      {onNewPage && (
+        <p className="mb-0 mt-2">
+          <button type="button" className="btn-quiet" onClick={onNewPage}>
+            Start a new page
+          </button>
+        </p>
+      )}
+    </div>
+  );
+}
+
+export function SessionLostNote() {
+  return (
+    <p className="margin-note m-0" role="status">
+      <strong>This started a new page.</strong> The server no longer had your earlier turns (it restarted, or the session expired after an hour without use), so this question was read on its own.
     </p>
   );
 }
