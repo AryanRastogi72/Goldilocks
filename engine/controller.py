@@ -6,12 +6,16 @@ index, and tightens or relaxes the query with rules until the hit count is in th
 Every decision uses only index statistics (df, estimated hits, actual hits). No model API is called.
 Every step is logged with the source that proposed the move:
   query, lexicon, thesaurus, prf, kgram or rule.
+
+v2.1: the first query ANDs only the top `initial_concepts` concepts (plus required ones). Too many hits are
+tightened with the user's own words first (more concepts, then the title zone) and only then with feedback terms.
 """
 
 import json
 import os
 
 from engine.boolean_parser import ast_to_string, collect_terms
+from engine.clarify import build_clarifications
 from engine.expansion import prf_terms, thesaurus_neighbours
 from engine.query_understanding import union_df, understand
 from engine.ranker import rank_bm25
@@ -33,6 +37,7 @@ class ControllerLog:
     def __init__(self, concepts):
         self.concepts = concepts
         self.steps = []
+        self.clarifications = []
 
     def add(self, query, df_table, estimated_hits, actual_hits, decision, reason, source):
         self.steps.append({
@@ -47,13 +52,13 @@ class ControllerLog:
         })
 
     def to_dict(self):
-        return {"concepts": self.concepts, "steps": self.steps}
+        return {"concepts": self.concepts, "steps": self.steps, "clarifications": self.clarifications}
 
     def print_concepts(self):
         print(f"{'concept':<24}{'stems':<44}{'idf':>6}  flags")
         for concept in self.concepts:
             flags = ", ".join(
-                name for name in ("required", "eliminated") if concept.get(name)
+                name for name in ("required", "eliminated", "held", "excluded") if concept.get(name)
             ) or "-"
             print(f"{concept['label']:<24}{' '.join(concept['stems']):<44}{concept['idf']:>6.2f}  {flags}")
 
@@ -69,7 +74,7 @@ class ControllerLog:
 # ---- query building ----
 
 def is_active(concept):
-    return not concept["eliminated"] and not concept.get("dropped", False)
+    return not (concept["eliminated"] or concept.get("held") or concept.get("dropped") or concept.get("excluded"))
 
 
 def concept_node(concept):
@@ -78,7 +83,9 @@ def concept_node(concept):
 
 
 def build_ast(concepts, extra_nodes):
-    children = [concept_node(c) for c in concepts if is_active(c)] + extra_nodes
+    included = [concept_node(c) for c in concepts if is_active(c)] + extra_nodes
+    excluded = [("NOT", concept_node(c)) for c in concepts if c.get("excluded")]
+    children = included + excluded
     return children[0] if len(children) == 1 else ("AND", children)
 
 
@@ -105,13 +112,21 @@ def mark_used(state, move, key):
 # ---- tighten moves: each returns (decision, reason, source) or None ----
 
 def tighten_add_concept(state, docs, index, config):
-    candidates = [c for c in state["concepts"] if c["eliminated"] and not already_used(state, "TIGHTEN_ADD_CONCEPT", c["label"])]
-    for concept in sorted(candidates, key=lambda c: -c["idf"]):
+    """Adds the next unused user concept: held ones first (by idf), then eliminated common ones."""
+    pending = [
+        c for c in state["concepts"]
+        if (c.get("held") or c["eliminated"]) and not c.get("dropped") and not c.get("excluded")
+        and not already_used(state, "TIGHTEN_ADD_CONCEPT", c["label"])
+    ]
+    for concept in sorted(pending, key=lambda c: (c["eliminated"], -c["idf"])):
         hits = len(docs & concept_docs(concept, index))
         if hits >= config["target_band_low"]:
             mark_used(state, "TIGHTEN_ADD_CONCEPT", concept["label"])
+            was_common = concept["eliminated"]
             concept["eliminated"] = False
-            return "TIGHTEN_ADD_CONCEPT", f"Re-added common concept '{concept['label']}' (idf {concept['idf']:.2f}); {hits} hits remain", "rule"
+            concept["held"] = False
+            kind = "common concept" if was_common else "concept"
+            return "TIGHTEN_ADD_CONCEPT", f"Added {kind} '{concept['label']}' (idf {concept['idf']:.2f}); {hits} hits remain", "rule"
     return None
 
 
@@ -129,7 +144,7 @@ def tighten_add_prf(state, docs, index, config):
 
 
 def tighten_title_zone(state, docs, index, config):
-    for concept in sorted(active_concepts(state, False), key=lambda c: -c["idf"]):
+    for concept in sorted(active_concepts(state, True), key=lambda c: -c["idf"]):
         if already_used(state, "TIGHTEN_TITLE_ZONE", concept["label"]):
             continue
         best_stem = min(concept["stems"], key=index.get_df)
@@ -141,7 +156,7 @@ def tighten_title_zone(state, docs, index, config):
     return None
 
 
-TIGHTEN_MOVES = [tighten_add_concept, tighten_add_prf, tighten_title_zone]
+TIGHTEN_MOVES = [tighten_add_concept, tighten_title_zone, tighten_add_prf]
 
 
 # ---- relax moves ----
@@ -210,19 +225,47 @@ def log_step(log, ast, index, docs, decision, reason, source):
     log.add(ast_to_string(ast), index.get_df_table(ast), index.estimate_hits(ast), len(docs), decision, reason, source)
 
 
-def run_controller(text, index, config=None):
+def fresh_concepts(concepts):
+    """Copies concepts and clears the per-run flags."""
+    copies = [dict(c, stems=list(c["stems"])) for c in concepts]
+    for concept in copies:
+        concept.pop("held", None)
+        concept.pop("dropped", None)
+    return copies
+
+
+def hold_back_extra_concepts(concepts, initial_concepts):
+    """Marks concepts beyond the top `initial_concepts` (non-eliminated, non-required, by idf) as held."""
+    candidates = [c for c in concepts if not (c["eliminated"] or c["required"] or c.get("excluded"))]
+    for concept in sorted(candidates, key=lambda c: -c["idf"])[initial_concepts:]:
+        concept["held"] = True
+
+
+def log_clarify(log, ast, index, docs, concepts, config, allow_clarify, reason):
+    if not allow_clarify:
+        log_step(log, ast, index, docs, "CLARIFY", f"{reason}; clarification not offered", "rule")
+        return
+    log.clarifications = build_clarifications(docs, concepts, index, config)
+    outcome = f"{len(log.clarifications)} choices offered" if log.clarifications else "no clear clusters, ranking the current set"
+    log_step(log, ast, index, docs, "CLARIFY", f"{reason}; {outcome}", "rule")
+
+
+def run_controller(text, index, config=None, concepts=None, allow_clarify=False):
     """
-    Understands the query, then loops: run the Boolean query, compare the hit count with the band,
-    and tighten or relax. Returns (ranked, log, final_query).
+    Understands the query (or uses the given concepts), then loops: run the Boolean query, compare the
+    hit count with the band, and tighten or relax. Returns (ranked, log, final_query).
+    With allow_clarify the log may carry clarification choices; without it a CLARIFY step is only logged.
     """
     config = config or load_config()
     low, high = config["target_band_low"], config["target_band_high"]
-    concepts = [dict(c, stems=list(c["stems"])) for c in understand(text, index, config)]
+    concepts = fresh_concepts(understand(text, index, config) if concepts is None else concepts)
+    hold_back_extra_concepts(concepts, config["initial_concepts"])
     log = ControllerLog(concepts)
-    if not concepts:
+    if not any(not c.get("excluded") for c in concepts):
         log.add("", {}, 0, 0, "EXHAUSTED", "no searchable terms in the question", "rule")
         return [], log, ""
     state = {"concepts": concepts, "extra_nodes": [], "used_moves": set()}
+    comparable_concepts = [c for c in concepts if not c["eliminated"] and not c.get("excluded")]
 
     for step in range(1, config["max_iterations"] + 1):
         ast = build_ast(concepts, state["extra_nodes"])
@@ -231,18 +274,21 @@ def run_controller(text, index, config=None):
             log_step(log, ast, index, docs, "ACCEPT", f"Hit count {len(docs)} is in target band [{low}, {high}]", "rule")
             break
         too_many = len(docs) > high
+        if too_many and step == 1 and allow_clarify and len(comparable_concepts) == 1:
+            log_clarify(log, ast, index, docs, concepts, config, allow_clarify, f"one concept with {len(docs)} hits (above {high})")
+            break
         if step == config["max_iterations"]:
-            decision = "CLARIFY" if too_many else "EXHAUSTED"
-            log_step(log, ast, index, docs, decision, f"Iteration limit reached with {len(docs)} hits", "rule")
+            if too_many:
+                log_clarify(log, ast, index, docs, concepts, config, allow_clarify, f"iteration limit reached with {len(docs)} hits")
+            else:
+                log_step(log, ast, index, docs, "EXHAUSTED", f"Iteration limit reached with {len(docs)} hits", "rule")
             break
         outcome = first_applicable_move(TIGHTEN_MOVES if too_many else RELAX_MOVES, state, docs, index, config)
+        if outcome is None and too_many:
+            log_clarify(log, ast, index, docs, concepts, config, allow_clarify, f"{len(docs)} hits is above {high} and no tighten move applies")
+            break
         if outcome is None:
-            decision, reason = (
-                ("CLARIFY", f"{len(docs)} hits is above {high} and no tighten move applies; the user should narrow the question")
-                if too_many
-                else ("EXHAUSTED", f"{len(docs)} hits is below {low} and no relax move applies")
-            )
-            log_step(log, ast, index, docs, decision, reason, "rule")
+            log_step(log, ast, index, docs, "EXHAUSTED", f"{len(docs)} hits is below {low} and no relax move applies", "rule")
             break
         log_step(log, ast, index, docs, *outcome)
 
@@ -254,9 +300,10 @@ def run_controller(text, index, config=None):
 
 def rank_final(ast, docs, concepts, index, config, log):
     ranking_options = dict(top_k=config["top_k"], k1=config["bm25_k1"], b=config["bm25_b"], title_boost=config["title_boost"])
-    all_stems = sorted({stem for c in concepts for stem in c["stems"]})
+    wanted = [c for c in concepts if not c.get("excluded")]
+    all_stems = sorted({stem for c in wanted for stem in c["stems"]})
     if docs:
-        ranking_stems = {stem for c in concepts if not c.get("dropped") for stem in c["stems"]} | collect_terms(ast)
+        ranking_stems = {stem for c in wanted if not c.get("dropped") for stem in c["stems"]} | collect_terms(ast)
         return rank_bm25(sorted(ranking_stems), index, doc_ids=docs, **ranking_options)
     reason = "no Boolean match; full-collection BM25 ranking shown"
     if log.steps[-1]["decision"] == "EXHAUSTED":

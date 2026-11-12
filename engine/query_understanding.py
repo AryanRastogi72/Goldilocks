@@ -46,9 +46,9 @@ def union_df(stems, index):
     return len({doc_id for stem in stems for doc_id, _ in index.get_postings(stem)})
 
 
-def make_concept(label, stems, index, required, source):
+def make_concept(label, stems, index, required, source, facet=None):
     df = union_df(stems, index)
-    return {
+    concept = {
         "label": label,
         "stems": stems,
         "df": df,
@@ -57,6 +57,9 @@ def make_concept(label, stems, index, required, source):
         "source": source,
         "eliminated": False,
     }
+    if facet:
+        concept["facet"] = facet
+    return concept
 
 
 def _required_concepts(text, index):
@@ -85,7 +88,7 @@ def _lexicon_concepts(tokens, index, lexicon):
         if start >= 0 and stems:
             used.update(range(start, start + len(wanted)))
             matched_ids.add(group["id"])
-            concepts.append(make_concept(group["id"], stems, index, False, "lexicon"))
+            concepts.append(make_concept(group["id"], stems, index, False, "lexicon", group.get("facet")))
     return concepts, used
 
 
@@ -110,12 +113,15 @@ def understand(text, index, config):
     required = _required_concepts(text, index)
     remaining_tokens = tokenize_no_stem(QUOTED_RE.sub(" ", text))
     lexicon_concepts, used = _lexicon_concepts(remaining_tokens, index, load_lexicon())
-    concepts = required + lexicon_concepts + _word_concepts(remaining_tokens, used, index)
+    return mark_elimination(required + lexicon_concepts + _word_concepts(remaining_tokens, used, index), index, config)
 
+
+def mark_elimination(concepts, index, config):
+    """Flags too-common concepts as eliminated (keeping at least one) and sorts by idf, highest first."""
     for concept in concepts:
         too_common = concept["df"] / index.num_docs > config["max_df_fraction"]
-        concept["eliminated"] = too_common and not concept["required"]
+        concept["eliminated"] = too_common and not (concept["required"] or concept.get("excluded"))
     concepts.sort(key=lambda c: -c["idf"])
-    if concepts and all(c["eliminated"] for c in concepts):
-        concepts[0]["eliminated"] = False
+    if concepts and all(c["eliminated"] for c in concepts if not c.get("excluded")):
+        next(c for c in concepts if not c.get("excluded"))["eliminated"] = False
     return concepts

@@ -9,7 +9,7 @@
     "bm25_k1": 1.2,
     "bm25_b": 0.75,
     "title_boost": 0.0,
-    "max_df_fraction": 0.10,
+    "max_df_fraction": 0.1,
     "thesaurus": {
         "vector_size": 100,
         "window": 5,
@@ -21,5 +21,10 @@
         "min_df": 5,
         "min_similarity": 0.6,
         "top_neighbours": 5
-    }
+    },
+    "initial_concepts": 3,
+    "seed": 42,
+    "clarify_candidates": 300,
+    "clarify_min_size": 10,
+    "topic_switch_jaccard": 0.2
 }

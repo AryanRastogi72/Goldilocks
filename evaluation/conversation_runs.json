@@ -1,0 +1,1166 @@
+{
+  "note": "case studies, not a benchmark",
+  "sessions": [
+    {
+      "id": "pregnancy_breastfeeding_reviews",
+      "description": "follow-up cue, then an evidence filter",
+      "turns": [
+        {
+          "turn": "covid vaccine pregnant",
+          "rewritten_query": "pregnancy AND vaccine AND covid19",
+          "rules_fired": [],
+          "boolean_query": "((pregnant OR pregnanc OR gestat) AND vaccin AND (covid OR covid19 OR sarscov2 OR ncov OR cov2 OR coronaviru))",
+          "evidence_filter": null,
+          "trace": [
+            {
+              "step": 1,
+              "decision": "TIGHTEN_ADD_CONCEPT",
+              "actual_hits": 239,
+              "source": "rule"
+            },
+            {
+              "step": 2,
+              "decision": "ACCEPT",
+              "actual_hits": 58,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [],
+          "top_titles": [
+            "Potential Maternal and Infant Outcomes from (Wuhan) Coronavirus 2019-nCoV Infecting Pregnant Women: Lessons from SARS, MERS, and Other Human Coronavirus Infections",
+            "Potential Maternal and Infant Outcomes from Coronavirus 2019-nCoV (SARS-CoV-2) Infecting Pregnant Women: Lessons from SARS, MERS, and Other Human Coronavirus Infections",
+            "Host Factors Affecting Generation of Immunity Against Porcine Epidemic Diarrhea Virus in Pregnant and Lactating Swine and Passive Protection of Neonates",
+            "Host Factors Affecting Generation of Immunity Against Porcine Epidemic Diarrhea Virus in Pregnant and Lactating Swine and Passive Protection of Neonates",
+            "Demonstration of passive protection in neonatal calves against colibacillosis following immunization of pregnant heifers at 3 months of gestation."
+          ]
+        },
+        {
+          "turn": "what about breastfeeding",
+          "rewritten_query": "breastfeeding AND pregnancy AND vaccine AND covid19",
+          "rules_fired": [
+            {
+              "rule": "FOLLOWUP_DETECT",
+              "detail": "leading cue 'what about'"
+            }
+          ],
+          "boolean_query": "((breastfeed OR mother OR breastf OR childbirth) AND (pregnant OR pregnanc OR gestat) AND vaccin)",
+          "evidence_filter": null,
+          "trace": [
+            {
+              "step": 1,
+              "decision": "RELAX_EXPAND_SYNONYMS",
+              "actual_hits": 3,
+              "source": "thesaurus"
+            },
+            {
+              "step": 2,
+              "decision": "ACCEPT",
+              "actual_hits": 31,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [],
+          "top_titles": [
+            "Vaccination during pregnancy: current and possible future recommendations",
+            "Neonatal Outcomes After Antenatal Influenza Immunization During the 2009 H1N1 Influenza Pandemic: Impact on Preterm Birth, Birth Weight, and Small for Gestational Age Birth",
+            "Maternal Influenza Immunization and Reduced Likelihood of Prematurity and Small for Gestational Age Births: A Retrospective Cohort Study",
+            "Protection by Exclusion: Another Missed Opportunity to Include Pregnant Women in Research During the Coronavirus Disease 2019 (COVID-19) Pandemic",
+            "Protection by Exclusion: Another Missed Opportunity to Include Pregnant Women in Research During the Coronavirus Disease 2019 (COVID-19) Pandemic"
+          ]
+        },
+        {
+          "turn": "only reviews",
+          "rewritten_query": "breastfeeding AND pregnancy AND vaccine AND covid19 [only: systematic_review_meta_analysis]",
+          "rules_fired": [
+            {
+              "rule": "EVIDENCE_FILTER",
+              "detail": "systematic_review_meta_analysis"
+            },
+            {
+              "rule": "FOLLOWUP_DETECT",
+              "detail": "leading cue 'only'"
+            }
+          ],
+          "boolean_query": "((breastfeed OR mother OR breastf OR childbirth) AND (pregnant OR pregnanc OR gestat) AND vaccin)",
+          "evidence_filter": "systematic_review_meta_analysis",
+          "trace": [
+            {
+              "step": 1,
+              "decision": "RELAX_EXPAND_SYNONYMS",
+              "actual_hits": 3,
+              "source": "thesaurus"
+            },
+            {
+              "step": 2,
+              "decision": "ACCEPT",
+              "actual_hits": 31,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [],
+          "top_titles": [
+            "Vaccination during pregnancy: current and possible future recommendations",
+            "Neonatal Outcomes After Antenatal Influenza Immunization During the 2009 H1N1 Influenza Pandemic: Impact on Preterm Birth, Birth Weight, and Small for Gestational Age Birth",
+            "Maternal Influenza Immunization and Reduced Likelihood of Prematurity and Small for Gestational Age Births: A Retrospective Cohort Study",
+            "Protection by Exclusion: Another Missed Opportunity to Include Pregnant Women in Research During the Coronavirus Disease 2019 (COVID-19) Pandemic",
+            "Protection by Exclusion: Another Missed Opportunity to Include Pregnant Women in Research During the Coronavirus Disease 2019 (COVID-19) Pandemic"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "remdesivir_exclusion",
+      "description": "exclusion of a lexicon group",
+      "turns": [
+        {
+          "turn": "coronavirus remdesivir",
+          "rewritten_query": "remdesivir AND covid19",
+          "rules_fired": [],
+          "boolean_query": "remdesivir",
+          "evidence_filter": null,
+          "trace": [
+            {
+              "step": 1,
+              "decision": "CLARIFY",
+              "actual_hits": 570,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [
+            {
+              "id": 1,
+              "label_terms": [
+                "lopinavir",
+                "ritonavir",
+                "favipiravir"
+              ],
+              "label_stems": [
+                "lopinavir",
+                "ritonavir",
+                "favipiravir"
+              ],
+              "size": 85
+            },
+            {
+              "id": 2,
+              "label_terms": [
+                "compassionate",
+                "bei",
+                "hope"
+              ],
+              "label_stems": [
+                "compassion",
+                "bei",
+                "hope"
+              ],
+              "size": 65
+            },
+            {
+              "id": 3,
+              "label_terms": [
+                "benefit",
+                "received",
+                "placebo"
+              ],
+              "label_stems": [
+                "benefit",
+                "receiv",
+                "placebo"
+              ],
+              "size": 24
+            },
+            {
+              "id": 4,
+              "label_terms": [
+                "gs",
+                "triphosphate",
+                "metabolite"
+              ],
+              "label_stems": [
+                "gs",
+                "triphosph",
+                "metabolit"
+              ],
+              "size": 17
+            }
+          ],
+          "top_titles": [
+            "Treatment options in people with COVID19: Selecting the best armamentarium against the novel virus.",
+            "Treatment options in people with COVID19: Selecting the best armamentarium against the novel virus",
+            "Remdesivir (GS-5734) as a therapeutic option of 2019-nCOV main protease - in silico approach",
+            "Remdesivir (GS-5734) as a therapeutic option of 2019-nCOV main protease \u2013 in silico approach",
+            "Remdesivir and chloroquine effectively inhibit the recently emerged novel coronavirus (2019-nCoV) in vitro"
+          ]
+        },
+        {
+          "turn": "except hydroxychloroquine",
+          "rewritten_query": "remdesivir AND covid19 AND NOT hydroxychloroquine",
+          "rules_fired": [
+            {
+              "rule": "EXCLUSION",
+              "detail": "hydroxychloroquine"
+            },
+            {
+              "rule": "FOLLOWUP_DETECT",
+              "detail": "leading cue 'except'"
+            }
+          ],
+          "boolean_query": "(remdesivir AND NOT (hydroxychloroquin OR hcq OR plaquenil))",
+          "evidence_filter": null,
+          "trace": [
+            {
+              "step": 1,
+              "decision": "CLARIFY",
+              "actual_hits": 398,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [
+            {
+              "id": 1,
+              "label_terms": [
+                "rhesus",
+                "macaque",
+                "hope"
+              ],
+              "label_stems": [
+                "rhesu",
+                "macaqu",
+                "hope"
+              ],
+              "size": 72
+            },
+            {
+              "id": 2,
+              "label_terms": [
+                "gilead",
+                "trials",
+                "options"
+              ],
+              "label_stems": [
+                "gilead",
+                "trial",
+                "option"
+              ],
+              "size": 58
+            },
+            {
+              "id": 3,
+              "label_terms": [
+                "nsp12",
+                "rdrp",
+                "nsp8"
+              ],
+              "label_stems": [
+                "nsp12",
+                "rdrp",
+                "nsp8"
+              ],
+              "size": 22
+            },
+            {
+              "id": 4,
+              "label_terms": [
+                "rdrp",
+                "rna",
+                "drug"
+              ],
+              "label_stems": [
+                "rdrp",
+                "rna",
+                "drug"
+              ],
+              "size": 22
+            }
+          ],
+          "top_titles": [
+            "Remdesivir (GS-5734) as a therapeutic option of 2019-nCOV main protease - in silico approach",
+            "Remdesivir (GS-5734) as a therapeutic option of 2019-nCOV main protease \u2013 in silico approach",
+            "Remdesivir and chloroquine effectively inhibit the recently emerged novel coronavirus (2019-nCoV) in vitro",
+            "[Potential antiviral therapeutics for 2019 Novel Coronavirus].",
+            "[Potential antiviral therapeutics for 2019 Novel Coronavirus]."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pregnancy_to_children_swap",
+      "description": "facet swap on the population facet",
+      "turns": [
+        {
+          "turn": "covid vaccine pregnant",
+          "rewritten_query": "pregnancy AND vaccine AND covid19",
+          "rules_fired": [],
+          "boolean_query": "((pregnant OR pregnanc OR gestat) AND vaccin AND (covid OR covid19 OR sarscov2 OR ncov OR cov2 OR coronaviru))",
+          "evidence_filter": null,
+          "trace": [
+            {
+              "step": 1,
+              "decision": "TIGHTEN_ADD_CONCEPT",
+              "actual_hits": 239,
+              "source": "rule"
+            },
+            {
+              "step": 2,
+              "decision": "ACCEPT",
+              "actual_hits": 58,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [],
+          "top_titles": [
+            "Potential Maternal and Infant Outcomes from (Wuhan) Coronavirus 2019-nCoV Infecting Pregnant Women: Lessons from SARS, MERS, and Other Human Coronavirus Infections",
+            "Potential Maternal and Infant Outcomes from Coronavirus 2019-nCoV (SARS-CoV-2) Infecting Pregnant Women: Lessons from SARS, MERS, and Other Human Coronavirus Infections",
+            "Host Factors Affecting Generation of Immunity Against Porcine Epidemic Diarrhea Virus in Pregnant and Lactating Swine and Passive Protection of Neonates",
+            "Host Factors Affecting Generation of Immunity Against Porcine Epidemic Diarrhea Virus in Pregnant and Lactating Swine and Passive Protection of Neonates",
+            "Demonstration of passive protection in neonatal calves against colibacillosis following immunization of pregnant heifers at 3 months of gestation."
+          ]
+        },
+        {
+          "turn": "what about children",
+          "rewritten_query": "children AND vaccine AND covid19",
+          "rules_fired": [
+            {
+              "rule": "FOLLOWUP_DETECT",
+              "detail": "leading cue 'what about'"
+            },
+            {
+              "rule": "FACET_SWAP",
+              "detail": "population: pregnancy -> children"
+            }
+          ],
+          "boolean_query": "((children OR child OR paediatr OR pediatr) AND vaccin AND (covid OR covid19 OR sarscov2 OR ncov OR cov2 OR coronaviru))",
+          "evidence_filter": null,
+          "trace": [
+            {
+              "step": 1,
+              "decision": "TIGHTEN_ADD_CONCEPT",
+              "actual_hits": 824,
+              "source": "rule"
+            },
+            {
+              "step": 2,
+              "decision": "ACCEPT",
+              "actual_hits": 167,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [],
+          "top_titles": [
+            "Provision of Pediatric Immunization Services During the COVID-19 Pandemic: an Assessment of Capacity Among Pediatric Immunization Providers Participating in the Vaccines for Children Program - United ...",
+            "Provision of Pediatric Immunization Services During the COVID-19 Pandemic: an Assessment of Capacity Among Pediatric Immunization Providers Participating in the Vaccines for Children Program - United ...",
+            "Human and novel coronavirus infections in children: a review.",
+            "Human and novel coronavirus infections in children: a review",
+            "Infections in pediatrics: old and new diseases."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "topic_switch_ace2",
+      "description": "low concept overlap starts a new topic",
+      "turns": [
+        {
+          "turn": "covid vaccine pregnant",
+          "rewritten_query": "pregnancy AND vaccine AND covid19",
+          "rules_fired": [],
+          "boolean_query": "((pregnant OR pregnanc OR gestat) AND vaccin AND (covid OR covid19 OR sarscov2 OR ncov OR cov2 OR coronaviru))",
+          "evidence_filter": null,
+          "trace": [
+            {
+              "step": 1,
+              "decision": "TIGHTEN_ADD_CONCEPT",
+              "actual_hits": 239,
+              "source": "rule"
+            },
+            {
+              "step": 2,
+              "decision": "ACCEPT",
+              "actual_hits": 58,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [],
+          "top_titles": [
+            "Potential Maternal and Infant Outcomes from (Wuhan) Coronavirus 2019-nCoV Infecting Pregnant Women: Lessons from SARS, MERS, and Other Human Coronavirus Infections",
+            "Potential Maternal and Infant Outcomes from Coronavirus 2019-nCoV (SARS-CoV-2) Infecting Pregnant Women: Lessons from SARS, MERS, and Other Human Coronavirus Infections",
+            "Host Factors Affecting Generation of Immunity Against Porcine Epidemic Diarrhea Virus in Pregnant and Lactating Swine and Passive Protection of Neonates",
+            "Host Factors Affecting Generation of Immunity Against Porcine Epidemic Diarrhea Virus in Pregnant and Lactating Swine and Passive Protection of Neonates",
+            "Demonstration of passive protection in neonatal calves against colibacillosis following immunization of pregnant heifers at 3 months of gestation."
+          ]
+        },
+        {
+          "turn": "ace2 hypertension",
+          "rewritten_query": "ace2 AND hypertension",
+          "rules_fired": [
+            {
+              "rule": "TOPIC_SWITCH",
+              "detail": "concept overlap 0.00 is below 0.2; new topic"
+            }
+          ],
+          "boolean_query": "(ace2 AND hypertens AND title:ace2)",
+          "evidence_filter": null,
+          "trace": [
+            {
+              "step": 1,
+              "decision": "TIGHTEN_TITLE_ZONE",
+              "actual_hits": 240,
+              "source": "rule"
+            },
+            {
+              "step": 2,
+              "decision": "ACCEPT",
+              "actual_hits": 82,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [],
+          "top_titles": [
+            "From gene to protein\u2014experimental and clinical studies of ACE2 in blood pressure control and arterial hypertension",
+            "Renal ACE2 expression and activity is unaltered during established hypertension in adult SHRSP and TGR(mREN2)27.",
+            "Angiotensin-converting enzyme 2 (ACE2) and ACE activities display tissue-specific sensitivity to undernutrition-programmed hypertension in the adult rat.",
+            "Clinical Relevance and Role of Neuronal AT1 Receptors in ADAM17-Mediated ACE2 Shedding in Neurogenic Hypertension.",
+            "Angiotensin-converting enzyme (ACE1, ACE2) gene variants are associated with COVID19 severity depending on the hypertension status."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "masks_clarification",
+      "description": "one weak concept, then a clarification choice by id",
+      "turns": [
+        {
+          "turn": "masks",
+          "rewritten_query": "face_mask",
+          "rules_fired": [],
+          "boolean_query": "(mask OR respir OR n95)",
+          "evidence_filter": null,
+          "trace": [
+            {
+              "step": 1,
+              "decision": "CLARIFY",
+              "actual_hits": 2658,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [
+            {
+              "id": 1,
+              "label_terms": [
+                "decontamination",
+                "reuse",
+                "fit"
+              ],
+              "label_stems": [
+                "decontamin",
+                "reus",
+                "fit"
+              ],
+              "size": 64
+            },
+            {
+              "id": 2,
+              "label_terms": [
+                "diaper",
+                "pressure",
+                "skin"
+              ],
+              "label_stems": [
+                "diaper",
+                "pressur",
+                "skin"
+              ],
+              "size": 63
+            },
+            {
+              "id": 3,
+              "label_terms": [
+                "airborne",
+                "hcws",
+                "droplets"
+              ],
+              "label_stems": [
+                "airborn",
+                "hcw",
+                "droplet"
+              ],
+              "size": 21
+            },
+            {
+              "id": 4,
+              "label_terms": [
+                "rcts",
+                "randomized",
+                "trials"
+              ],
+              "label_stems": [
+                "rct",
+                "random",
+                "trial"
+              ],
+              "size": 19
+            }
+          ],
+          "top_titles": [
+            "Surgical mask vs N95 respirator for preventing influenza among health care workers: a randomized trial.",
+            "Respiratory performance offered by N95 respirators and surgical masks: human subject evaluation with NaCl aerosol representing bacterial and viral particle size range.",
+            "A randomized clinical trial of three options for N95 respirators and medical masks in health workers.",
+            "A cluster randomized clinical trial comparing fit\u2010tested and non\u2010fit\u2010tested N95 respirators to medical masks to prevent respiratory virus infection in health care workers",
+            "A Scalable Method of Applying Heat and Humidity for Decontamination of N95 Respirators During the COVID-19 Crisis"
+          ]
+        },
+        {
+          "turn": "#1",
+          "rewritten_query": "decontamination reuse fit AND face_mask",
+          "rules_fired": [
+            {
+              "rule": "CLARIFY_CHOSEN",
+              "detail": "choice 1: decontamination reuse fit"
+            }
+          ],
+          "boolean_query": "((decontamin OR reus OR fit) AND (mask OR respir OR n95) AND title:reus)",
+          "evidence_filter": null,
+          "trace": [
+            {
+              "step": 0,
+              "decision": "CLARIFY_CHOSEN",
+              "actual_hits": 0,
+              "source": "rule"
+            },
+            {
+              "step": 1,
+              "decision": "TIGHTEN_TITLE_ZONE",
+              "actual_hits": 347,
+              "source": "rule"
+            },
+            {
+              "step": 2,
+              "decision": "ACCEPT",
+              "actual_hits": 39,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [],
+          "top_titles": [
+            "Effectiveness of N95 Respirator Decontamination and Reuse against SARS-CoV-2 Virus.",
+            "Effectiveness of N95 Respirator Decontamination and Reuse against SARS-CoV-2 Virus",
+            "Efficacy of moist heat decontamination against various pathogens for the reuse of N95 respirators in the COVID-19 emergency",
+            "Vaporized H2O2 decontamination against surrogate viruses for the reuse of N95 respirators in the COVID-19 emergency",
+            "Vapor H2O2 sterilization as a decontamination method for the reuse of N95 respirators in the COVID-19 emergency"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vaccine_clarification",
+      "description": "clarification on a second one-concept query",
+      "turns": [
+        {
+          "turn": "covid vaccine",
+          "rewritten_query": "vaccine AND covid19",
+          "rules_fired": [],
+          "boolean_query": "vaccin",
+          "evidence_filter": null,
+          "trace": [
+            {
+              "step": 1,
+              "decision": "CLARIFY",
+              "actual_hits": 10959,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [
+            {
+              "id": 1,
+              "label_terms": [
+                "mers",
+                "syndrome",
+                "east"
+              ],
+              "label_stems": [
+                "mer",
+                "syndrom",
+                "east"
+              ],
+              "size": 61
+            },
+            {
+              "id": 2,
+              "label_terms": [
+                "ace2",
+                "protein",
+                "receptor"
+              ],
+              "label_stems": [
+                "ace2",
+                "protein",
+                "receptor"
+              ],
+              "size": 49
+            },
+            {
+              "id": 3,
+              "label_terms": [
+                "cytokine",
+                "inflammatory",
+                "storm"
+              ],
+              "label_stems": [
+                "cytokin",
+                "inflammatori",
+                "storm"
+              ],
+              "size": 30
+            },
+            {
+              "id": 4,
+              "label_terms": [
+                "epitopes",
+                "peptides",
+                "immunoinformatics"
+              ],
+              "label_stems": [
+                "epitop",
+                "peptid",
+                "immunoinformat"
+              ],
+              "size": 25
+            }
+          ],
+          "top_titles": [
+            "in-silica Analysis of SARS-CoV-2 viral strain using Reverse Vaccinology Approach: A Case Study for USA",
+            "Immune and bioinformatics identification of T cell and B cell epitopes in the protein structure of SARS-CoV-2: A Systematic Review",
+            "Structural basis to design multi-epitope vaccines against Novel Coronavirus 19 (COVID19) infection, the ongoing pandemic emergency: an in silico approach",
+            "Covid-19 Pandemic and Current Medical Interventions",
+            "Covid-19 Pandemic and Current Medical Interventions"
+          ]
+        },
+        {
+          "turn": "#2",
+          "rewritten_query": "vaccine AND ace2 protein receptor AND covid19",
+          "rules_fired": [
+            {
+              "rule": "CLARIFY_CHOSEN",
+              "detail": "choice 2: ace2 protein receptor"
+            }
+          ],
+          "boolean_query": "(vaccin AND (ace2 OR protein OR receptor) AND (covid OR covid19 OR sarscov2 OR ncov OR cov2 OR coronaviru) AND title:vaccin AND rbd)",
+          "evidence_filter": null,
+          "trace": [
+            {
+              "step": 0,
+              "decision": "CLARIFY_CHOSEN",
+              "actual_hits": 0,
+              "source": "rule"
+            },
+            {
+              "step": 1,
+              "decision": "TIGHTEN_ADD_CONCEPT",
+              "actual_hits": 3273,
+              "source": "rule"
+            },
+            {
+              "step": 2,
+              "decision": "TIGHTEN_TITLE_ZONE",
+              "actual_hits": 1439,
+              "source": "rule"
+            },
+            {
+              "step": 3,
+              "decision": "TIGHTEN_ADD_PRF",
+              "actual_hits": 365,
+              "source": "prf"
+            },
+            {
+              "step": 4,
+              "decision": "ACCEPT",
+              "actual_hits": 56,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [],
+          "top_titles": [
+            "Characterization of the receptor-binding domain (RBD) of 2019 novel coronavirus: implication for development of RBD protein as a viral attachment inhibitor and vaccine",
+            "Development of a COVID-19 vaccine based on the receptor binding domain displayed on virus-like particles",
+            "Elucidation of Cellular Targets and Exploitation of the Receptor Binding Domain of SARS-CoV-2 for vaccine and monoclonal antibody synthesis",
+            "Elucidation of Cellular Targets and Exploitation of the Receptor Binding Domain of SARS\u2010CoV\u20102 for vaccine and monoclonal antibody synthesis",
+            "Receptor-binding domain of SARS-CoV spike protein induces highly potent neutralizing antibodies: implication for developing subunit vaccine"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pronoun_followup",
+      "description": "pronoun follow-up and an RCT filter",
+      "turns": [
+        {
+          "turn": "remdesivir covid",
+          "rewritten_query": "remdesivir AND covid19",
+          "rules_fired": [],
+          "boolean_query": "remdesivir",
+          "evidence_filter": null,
+          "trace": [
+            {
+              "step": 1,
+              "decision": "CLARIFY",
+              "actual_hits": 570,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [
+            {
+              "id": 1,
+              "label_terms": [
+                "lopinavir",
+                "ritonavir",
+                "favipiravir"
+              ],
+              "label_stems": [
+                "lopinavir",
+                "ritonavir",
+                "favipiravir"
+              ],
+              "size": 85
+            },
+            {
+              "id": 2,
+              "label_terms": [
+                "compassionate",
+                "bei",
+                "hope"
+              ],
+              "label_stems": [
+                "compassion",
+                "bei",
+                "hope"
+              ],
+              "size": 65
+            },
+            {
+              "id": 3,
+              "label_terms": [
+                "benefit",
+                "received",
+                "placebo"
+              ],
+              "label_stems": [
+                "benefit",
+                "receiv",
+                "placebo"
+              ],
+              "size": 24
+            },
+            {
+              "id": 4,
+              "label_terms": [
+                "gs",
+                "triphosphate",
+                "metabolite"
+              ],
+              "label_stems": [
+                "gs",
+                "triphosph",
+                "metabolit"
+              ],
+              "size": 17
+            }
+          ],
+          "top_titles": [
+            "Treatment options in people with COVID19: Selecting the best armamentarium against the novel virus.",
+            "Treatment options in people with COVID19: Selecting the best armamentarium against the novel virus",
+            "Remdesivir (GS-5734) as a therapeutic option of 2019-nCOV main protease - in silico approach",
+            "Remdesivir (GS-5734) as a therapeutic option of 2019-nCOV main protease \u2013 in silico approach",
+            "Remdesivir and chloroquine effectively inhibit the recently emerged novel coronavirus (2019-nCoV) in vitro"
+          ]
+        },
+        {
+          "turn": "does it work in children",
+          "rewritten_query": "remdesivir AND children AND work AND covid19",
+          "rules_fired": [
+            {
+              "rule": "FOLLOWUP_DETECT",
+              "detail": "pronoun 'it'"
+            }
+          ],
+          "boolean_query": "((children OR child OR paediatr OR pediatr OR infant OR adult OR hemato OR hematolog OR hemagglutinin OR hematopoiet OR hemagglutin OR hematoma) AND (work OR tirelessli OR ourselv OR informatician OR informaticist))",
+          "evidence_filter": null,
+          "trace": [
+            {
+              "step": 1,
+              "decision": "RELAX_EXPAND_SYNONYMS",
+              "actual_hits": 1,
+              "source": "thesaurus"
+            },
+            {
+              "step": 2,
+              "decision": "RELAX_EXPAND_SYNONYMS",
+              "actual_hits": 3,
+              "source": "thesaurus"
+            },
+            {
+              "step": 3,
+              "decision": "RELAX_EXPAND_SYNONYMS",
+              "actual_hits": 6,
+              "source": "thesaurus"
+            },
+            {
+              "step": 4,
+              "decision": "RELAX_WILDCARD",
+              "actual_hits": 6,
+              "source": "kgram"
+            },
+            {
+              "step": 5,
+              "decision": "RELAX_WILDCARD",
+              "actual_hits": 6,
+              "source": "kgram"
+            },
+            {
+              "step": 6,
+              "decision": "RELAX_WILDCARD",
+              "actual_hits": 6,
+              "source": "kgram"
+            },
+            {
+              "step": 7,
+              "decision": "RELAX_DROP_CONCEPT",
+              "actual_hits": 6,
+              "source": "rule"
+            },
+            {
+              "step": 8,
+              "decision": "CLARIFY",
+              "actual_hits": 877,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [
+            {
+              "id": 1,
+              "label_terms": [
+                "perinatal",
+                "ensure",
+                "prevention"
+              ],
+              "label_stems": [
+                "perinat",
+                "ensur",
+                "prevent"
+              ],
+              "size": 39
+            },
+            {
+              "id": 2,
+              "label_terms": [
+                "mental",
+                "older",
+                "skills"
+              ],
+              "label_stems": [
+                "mental",
+                "older",
+                "skill"
+              ],
+              "size": 38
+            },
+            {
+              "id": 3,
+              "label_terms": [
+                "home",
+                "parents",
+                "care"
+              ],
+              "label_stems": [
+                "home",
+                "parent",
+                "care"
+              ],
+              "size": 35
+            },
+            {
+              "id": 4,
+              "label_terms": [
+                "intervention",
+                "systematic",
+                "search"
+              ],
+              "label_stems": [
+                "intervent",
+                "systemat",
+                "search"
+              ],
+              "size": 23
+            }
+          ],
+          "top_titles": [
+            "Recomendaciones sobre el manejo cl\u00ednico de la infecci\u00f3n por el \u00abnuevo coronavirus\u00bc SARS-CoV2. Grupo de trabajo de la Asociaci\u00f3n Espa\u00f1ola de Pediatr\u00eda (AEP)./ [Recommendations on the clinical managemen...",
+            "Recommendations on the clinical management of the COVID-19 infection by the \u00abnew coronavirus\u00bb SARS-CoV2. Spanish Paediatric Association working group",
+            "Recomendaciones sobre el manejo cl\u00ednico de la infecci\u00f3n por el \u00abnuevo coronavirus\u00bb SARS-CoV2. Grupo de trabajo de la Asociaci\u00f3n Espa\u00f1ola de Pediatr\u00eda (AEP)",
+            "Chinese expert consensus on the perinatal and neonatal management for the prevention and control of the 2019 novel coronavirus infection (First edition).",
+            "European consensus recommendations for neonatal and paediatric retrievals of positive or suspected COVID-19 patients."
+          ]
+        },
+        {
+          "turn": "only randomized trials",
+          "rewritten_query": "remdesivir AND children AND work AND covid19 [only: randomized_controlled_trial]",
+          "rules_fired": [
+            {
+              "rule": "EVIDENCE_FILTER",
+              "detail": "randomized_controlled_trial"
+            },
+            {
+              "rule": "FOLLOWUP_DETECT",
+              "detail": "leading cue 'only'"
+            }
+          ],
+          "boolean_query": "((children OR child OR paediatr OR pediatr OR infant OR adult OR hemato OR hematolog OR hemagglutinin OR hematopoiet OR hemagglutin OR hematoma) AND (work OR tirelessli OR ourselv OR informatician OR informaticist))",
+          "evidence_filter": "randomized_controlled_trial",
+          "trace": [
+            {
+              "step": 1,
+              "decision": "RELAX_EXPAND_SYNONYMS",
+              "actual_hits": 1,
+              "source": "thesaurus"
+            },
+            {
+              "step": 2,
+              "decision": "RELAX_EXPAND_SYNONYMS",
+              "actual_hits": 3,
+              "source": "thesaurus"
+            },
+            {
+              "step": 3,
+              "decision": "RELAX_EXPAND_SYNONYMS",
+              "actual_hits": 6,
+              "source": "thesaurus"
+            },
+            {
+              "step": 4,
+              "decision": "RELAX_WILDCARD",
+              "actual_hits": 6,
+              "source": "kgram"
+            },
+            {
+              "step": 5,
+              "decision": "RELAX_WILDCARD",
+              "actual_hits": 6,
+              "source": "kgram"
+            },
+            {
+              "step": 6,
+              "decision": "RELAX_WILDCARD",
+              "actual_hits": 6,
+              "source": "kgram"
+            },
+            {
+              "step": 7,
+              "decision": "RELAX_DROP_CONCEPT",
+              "actual_hits": 6,
+              "source": "rule"
+            },
+            {
+              "step": 8,
+              "decision": "CLARIFY",
+              "actual_hits": 877,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [
+            {
+              "id": 1,
+              "label_terms": [
+                "perinatal",
+                "ensure",
+                "prevention"
+              ],
+              "label_stems": [
+                "perinat",
+                "ensur",
+                "prevent"
+              ],
+              "size": 39
+            },
+            {
+              "id": 2,
+              "label_terms": [
+                "mental",
+                "older",
+                "skills"
+              ],
+              "label_stems": [
+                "mental",
+                "older",
+                "skill"
+              ],
+              "size": 38
+            },
+            {
+              "id": 3,
+              "label_terms": [
+                "home",
+                "parents",
+                "care"
+              ],
+              "label_stems": [
+                "home",
+                "parent",
+                "care"
+              ],
+              "size": 35
+            },
+            {
+              "id": 4,
+              "label_terms": [
+                "intervention",
+                "systematic",
+                "search"
+              ],
+              "label_stems": [
+                "intervent",
+                "systemat",
+                "search"
+              ],
+              "size": 23
+            }
+          ],
+          "top_titles": [
+            "Recomendaciones sobre el manejo cl\u00ednico de la infecci\u00f3n por el \u00abnuevo coronavirus\u00bc SARS-CoV2. Grupo de trabajo de la Asociaci\u00f3n Espa\u00f1ola de Pediatr\u00eda (AEP)./ [Recommendations on the clinical managemen...",
+            "Recommendations on the clinical management of the COVID-19 infection by the \u00abnew coronavirus\u00bb SARS-CoV2. Spanish Paediatric Association working group",
+            "Recomendaciones sobre el manejo cl\u00ednico de la infecci\u00f3n por el \u00abnuevo coronavirus\u00bb SARS-CoV2. Grupo de trabajo de la Asociaci\u00f3n Espa\u00f1ola de Pediatr\u00eda (AEP)",
+            "Chinese expert consensus on the perinatal and neonatal management for the prevention and control of the 2019 novel coronavirus infection (First edition).",
+            "European consensus recommendations for neonatal and paediatric retrievals of positive or suspected COVID-19 patients."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "asymptomatic_cohort_exclusion",
+      "description": "evidence filter and an exclusion in one session",
+      "turns": [
+        {
+          "turn": "coronavirus asymptomatic transmission",
+          "rewritten_query": "asymptomatic AND transmission AND covid19",
+          "rules_fired": [],
+          "boolean_query": "(asymptomat AND transmiss AND (covid OR covid19 OR sarscov2 OR ncov OR cov2 OR coronaviru) AND title:asymptomat)",
+          "evidence_filter": null,
+          "trace": [
+            {
+              "step": 1,
+              "decision": "TIGHTEN_ADD_CONCEPT",
+              "actual_hits": 929,
+              "source": "rule"
+            },
+            {
+              "step": 2,
+              "decision": "TIGHTEN_TITLE_ZONE",
+              "actual_hits": 772,
+              "source": "rule"
+            },
+            {
+              "step": 3,
+              "decision": "ACCEPT",
+              "actual_hits": 144,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [],
+          "top_titles": [
+            "Healthcare Personnel Exposure to a Patient with Asymptomatic SARS-CoV2 Infection during a Prolonged Surgical Intervention",
+            "Predicting the impact of asymptomatic transmission, non-pharmaceutical intervention and testing on the spread of COVID19 COVID19",
+            "Transmission of 2019-nCoV Infection from an Asymptomatic Contact in Germany",
+            "Beware of asymptomatic transmission: Study on 2019-nCoV prevention and control measures based on extended SEIR model",
+            "Comparison of transmissibility of coronavirus between symptomatic and asymptomatic patients: Reanalysis of the Ningbo Covid-19 data"
+          ]
+        },
+        {
+          "turn": "only cohort studies",
+          "rewritten_query": "asymptomatic AND transmission AND covid19 [only: observational]",
+          "rules_fired": [
+            {
+              "rule": "EVIDENCE_FILTER",
+              "detail": "observational"
+            },
+            {
+              "rule": "FOLLOWUP_DETECT",
+              "detail": "leading cue 'only'"
+            }
+          ],
+          "boolean_query": "(asymptomat AND transmiss AND (covid OR covid19 OR sarscov2 OR ncov OR cov2 OR coronaviru) AND title:asymptomat)",
+          "evidence_filter": "observational",
+          "trace": [
+            {
+              "step": 1,
+              "decision": "TIGHTEN_ADD_CONCEPT",
+              "actual_hits": 929,
+              "source": "rule"
+            },
+            {
+              "step": 2,
+              "decision": "TIGHTEN_TITLE_ZONE",
+              "actual_hits": 772,
+              "source": "rule"
+            },
+            {
+              "step": 3,
+              "decision": "ACCEPT",
+              "actual_hits": 144,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [],
+          "top_titles": [
+            "Healthcare Personnel Exposure to a Patient with Asymptomatic SARS-CoV2 Infection during a Prolonged Surgical Intervention",
+            "Predicting the impact of asymptomatic transmission, non-pharmaceutical intervention and testing on the spread of COVID19 COVID19",
+            "Transmission of 2019-nCoV Infection from an Asymptomatic Contact in Germany",
+            "Beware of asymptomatic transmission: Study on 2019-nCoV prevention and control measures based on extended SEIR model",
+            "Comparison of transmissibility of coronavirus between symptomatic and asymptomatic patients: Reanalysis of the Ningbo Covid-19 data"
+          ]
+        },
+        {
+          "turn": "not children",
+          "rewritten_query": "asymptomatic AND transmission AND covid19 AND NOT children [only: observational]",
+          "rules_fired": [
+            {
+              "rule": "EXCLUSION",
+              "detail": "children"
+            },
+            {
+              "rule": "FOLLOWUP_DETECT",
+              "detail": "at most 2 concepts"
+            }
+          ],
+          "boolean_query": "(asymptomat AND transmiss AND (covid OR covid19 OR sarscov2 OR ncov OR cov2 OR coronaviru) AND title:asymptomat AND NOT (children OR child OR paediatr OR pediatr))",
+          "evidence_filter": "observational",
+          "trace": [
+            {
+              "step": 1,
+              "decision": "TIGHTEN_ADD_CONCEPT",
+              "actual_hits": 789,
+              "source": "rule"
+            },
+            {
+              "step": 2,
+              "decision": "TIGHTEN_TITLE_ZONE",
+              "actual_hits": 654,
+              "source": "rule"
+            },
+            {
+              "step": 3,
+              "decision": "ACCEPT",
+              "actual_hits": 130,
+              "source": "rule"
+            }
+          ],
+          "clarifications": [],
+          "top_titles": [
+            "Healthcare Personnel Exposure to a Patient with Asymptomatic SARS-CoV2 Infection during a Prolonged Surgical Intervention",
+            "Predicting the impact of asymptomatic transmission, non-pharmaceutical intervention and testing on the spread of COVID19 COVID19",
+            "Transmission of 2019-nCoV Infection from an Asymptomatic Contact in Germany",
+            "Beware of asymptomatic transmission: Study on 2019-nCoV prevention and control measures based on extended SEIR model",
+            "Comparison of transmissibility of coronavirus between symptomatic and asymptomatic patients: Reanalysis of the Ningbo Covid-19 data"
+          ]
+        }
+      ]
+    }
+  ]
+}

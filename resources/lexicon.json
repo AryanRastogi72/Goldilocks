@@ -17,6 +17,17 @@
     "source": "WHO / ICTV naming (COVID-19, SARS-CoV-2, 2019-nCoV)"
   },
   {
+    "id": "vaccine",
+    "variants": [
+      "vaccine",
+      "vaccines",
+      "vaccination",
+      "vaccinated"
+    ],
+    "source": "common clinical usage",
+    "facet": "intervention"
+  },
+  {
     "id": "mechanical_ventilation",
     "variants": [
       "ventilator",
@@ -25,7 +36,8 @@
       "mechanical ventilation",
       "artificial respiration"
     ],
-    "source": "common clinical usage; related MeSH heading: Respiration, Artificial (entry terms not checked)"
+    "source": "common clinical usage; related MeSH heading: Respiration, Artificial (entry terms not checked)",
+    "facet": "intervention"
   },
   {
     "id": "face_mask",
@@ -40,7 +52,8 @@
       "respirators",
       "n95"
     ],
-    "source": "common clinical usage; related MeSH heading: Masks (entry terms not checked)"
+    "source": "common clinical usage; related MeSH heading: Masks (entry terms not checked)",
+    "facet": "intervention"
   },
   {
     "id": "children",
@@ -52,7 +65,8 @@
       "paediatrics",
       "pediatrics"
     ],
-    "source": "common clinical usage; related MeSH heading: Child; plus British and American spellings (entry terms not checked)"
+    "source": "common clinical usage; related MeSH heading: Child; plus British and American spellings (entry terms not checked)",
+    "facet": "population"
   },
   {
     "id": "pregnancy",
@@ -63,7 +77,8 @@
       "gestational",
       "pregnant women"
     ],
-    "source": "common clinical usage; related MeSH heading: Pregnancy (entry terms not checked)"
+    "source": "common clinical usage; related MeSH heading: Pregnancy (entry terms not checked)",
+    "facet": "population"
   },
   {
     "id": "mortality",
@@ -75,7 +90,8 @@
       "fatalities",
       "case fatality"
     ],
-    "source": "common clinical usage; related MeSH heading: Mortality (entry terms not checked)"
+    "source": "common clinical usage; related MeSH heading: Mortality (entry terms not checked)",
+    "facet": "outcome"
   },
   {
     "id": "ace2",
@@ -93,7 +109,8 @@
       "hcq",
       "plaquenil"
     ],
-    "source": "common clinical usage: generic and brand drug names"
+    "source": "common clinical usage: generic and brand drug names",
+    "facet": "intervention"
   },
   {
     "id": "remdesivir",
@@ -101,7 +118,8 @@
       "remdesivir",
       "veklury"
     ],
-    "source": "common clinical usage: generic and brand drug names"
+    "source": "common clinical usage: generic and brand drug names",
+    "facet": "intervention"
   },
   {
     "id": "hypertension",
@@ -139,7 +157,8 @@
       "smell loss",
       "loss of smell"
     ],
-    "source": "common clinical usage; related MeSH heading: Anosmia (entry terms not checked)"
+    "source": "common clinical usage; related MeSH heading: Anosmia (entry terms not checked)",
+    "facet": "outcome"
   },
   {
     "id": "elderly",
@@ -150,7 +169,8 @@
       "aged",
       "geriatric"
     ],
-    "source": "common clinical usage; related MeSH heading: Aged (entry terms not checked)"
+    "source": "common clinical usage; related MeSH heading: Aged (entry terms not checked)",
+    "facet": "population"
   },
   {
     "id": "kidney",

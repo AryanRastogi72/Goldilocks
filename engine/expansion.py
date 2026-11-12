@@ -27,7 +27,7 @@ def thesaurus_neighbours(stem, index):
     return _thesaurus[index.index_dir].get(stem, [])
 
 
-def _stemmed_stopwords():
+def stemmed_stopwords():
     global _stopword_stems
     if _stopword_stems is None:
         _stopword_stems = {stem_term(word) for word in load_query_stopwords()}
@@ -44,7 +44,7 @@ def prf_terms(query_stems, doc_ids, index, n_docs=10, n_terms=10, max_df_fractio
     Returns [(stem, weight)], highest first.
     """
     top_docs = rank_bm25(query_stems, index, top_k=n_docs, doc_ids=doc_ids)
-    excluded = set(query_stems) | _stemmed_stopwords()
+    excluded = set(query_stems) | stemmed_stopwords()
     weights = Counter()
     for _, doc_id in top_docs:
         title, abstract = index.get_title_and_abstract(doc_id)

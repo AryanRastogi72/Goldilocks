@@ -1,0 +1,69 @@
+[
+  {
+    "id": "pregnancy_breastfeeding_reviews",
+    "description": "follow-up cue, then an evidence filter",
+    "turns": [
+      "covid vaccine pregnant",
+      "what about breastfeeding",
+      "only reviews"
+    ]
+  },
+  {
+    "id": "remdesivir_exclusion",
+    "description": "exclusion of a lexicon group",
+    "turns": [
+      "coronavirus remdesivir",
+      "except hydroxychloroquine"
+    ]
+  },
+  {
+    "id": "pregnancy_to_children_swap",
+    "description": "facet swap on the population facet",
+    "turns": [
+      "covid vaccine pregnant",
+      "what about children"
+    ]
+  },
+  {
+    "id": "topic_switch_ace2",
+    "description": "low concept overlap starts a new topic",
+    "turns": [
+      "covid vaccine pregnant",
+      "ace2 hypertension"
+    ]
+  },
+  {
+    "id": "masks_clarification",
+    "description": "one weak concept, then a clarification choice by id",
+    "turns": [
+      "masks",
+      "#1"
+    ]
+  },
+  {
+    "id": "vaccine_clarification",
+    "description": "clarification on a second one-concept query",
+    "turns": [
+      "covid vaccine",
+      "#2"
+    ]
+  },
+  {
+    "id": "pronoun_followup",
+    "description": "pronoun follow-up and an RCT filter",
+    "turns": [
+      "remdesivir covid",
+      "does it work in children",
+      "only randomized trials"
+    ]
+  },
+  {
+    "id": "asymptomatic_cohort_exclusion",
+    "description": "evidence filter and an exclusion in one session",
+    "turns": [
+      "coronavirus asymptomatic transmission",
+      "only cohort studies",
+      "not children"
+    ]
+  }
+]
