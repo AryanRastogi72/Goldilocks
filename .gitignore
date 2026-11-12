@@ -21,6 +21,7 @@ node_modules/
 # Raw data and generated caches
 /data/raw/
 /data/cache/
+index_out/abstracts.sqlite
 /llm_cache/
 /gemini_cache/
 /tmp/

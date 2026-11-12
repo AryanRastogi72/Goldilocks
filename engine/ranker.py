@@ -107,6 +107,44 @@ def rank_documents(doc_ids, query_terms, index, top_k=10):
     return top
 
 
+def bm25_idf(index, term):
+    """Lucene idf: ln(1 + (N - df + 0.5) / (df + 0.5)), always positive."""
+    df = index.get_df(term)
+    return math.log(1 + (index.num_docs - df + 0.5) / (df + 0.5))
+
+
+def rank_bm25(query_terms, index, top_k=10, doc_ids=None, k1=1.2, b=0.75, title_boost=0.0):
+    """
+    Okapi BM25 with an optional title-zone boost.
+
+    score(d) = sum over distinct query terms t of
+               idf(t) * tf * (k1 + 1) / (tf + k1 * (1 - b + b * len(d) / avg_dl))
+    final(d) = score(d) + title_boost * sum of idf(t) for query terms in the title of d
+
+    doc_ids=None scores every document that contains a query term.
+    Otherwise only the given documents are scored.
+    Returns: list of (score, doc_id), highest score first, ties by smaller doc_id.
+    """
+    allowed = None if doc_ids is None else set(doc_ids)
+    avg_dl = index.get_avg_doc_length()
+    scores = {}
+
+    for term in set(query_terms):
+        idf = bm25_idf(index, term)
+        for doc_id, tf in index.get_postings(term):
+            if allowed is not None and doc_id not in allowed:
+                continue
+            length_norm = 1 - b + b * index.get_doc_length(doc_id) / avg_dl
+            scores[doc_id] = scores.get(doc_id, 0.0) + idf * tf * (k1 + 1) / (tf + k1 * length_norm)
+        if title_boost:
+            for doc_id, _ in index.get_title_postings(term):
+                if allowed is None or doc_id in allowed:
+                    scores[doc_id] = scores.get(doc_id, 0.0) + title_boost * idf
+
+    best = heapq.nsmallest(top_k, ((-score, doc_id) for doc_id, score in scores.items()))
+    return [(-negative_score, doc_id) for negative_score, doc_id in best]
+
+
 if __name__ == "__main__":
     # quick test
     from engine.search import SearchIndex

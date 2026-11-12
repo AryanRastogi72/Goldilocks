@@ -49,6 +49,7 @@ class SearchIndex:
 
         # cache for loaded shards (shard_id -> {term: [[doc_id, tf], ...]})
         self._shard_cache = OrderedDict()
+        self._title_postings = None
 
     def get_df(self, term):
         """Returns document frequency for a term, or 0 if not in vocabulary."""
@@ -96,6 +97,20 @@ class SearchIndex:
         if meta is None:
             return 1.0  # fallback to avoid division by zero
         return meta.get("norm", 1.0)
+
+    def get_doc_length(self, doc_id):
+        """Returns the number of indexed tokens in a document."""
+        return self.doc_meta[str(doc_id)]["len"]
+
+    def get_avg_doc_length(self):
+        return self.corpus_stats["avg_dl"]
+
+    def get_title_postings(self, term):
+        """Returns [[doc_id, tf], ...] for documents whose title contains the term."""
+        if self._title_postings is None:
+            with open(os.path.join(self.index_dir, "title_postings.json"), "r") as f:
+                self._title_postings = json.load(f)
+        return self._title_postings.get(term, [])
 
     def get_doc_title(self, doc_id):
         """Returns the title of a document given its internal integer ID."""

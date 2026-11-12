@@ -22,13 +22,13 @@ import os
 import json
 import time
 import gzip
-import math
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from engine.search import SearchIndex
 from engine.boolean_parser import parse, collect_terms, ParseError
 from engine.ranker import rank_documents
+from evaluation.metrics import compute_p_at_k, compute_ndcg_at_k, compute_mrr_at_k
 from engine.controller import run_controller, load_config, keyword_terms
 from engine.llm_client import propose_boolean_query
 
@@ -53,44 +53,6 @@ def compute_precision_recall(retrieved_ext_ids, relevant_ext_ids):
     precision = tp / len(retrieved_ext_ids) if retrieved_ext_ids else 0
     recall = tp / len(relevant_ext_ids) if relevant_ext_ids else 0
     return precision, recall
-
-
-def compute_p_at_k(ranked_ext_ids, relevant_ext_ids, k=10):
-    """
-    Precision at K: fraction of the top K ranked results that are relevant.
-    """
-    if k <= 0:
-        return 0.0
-    top_k = ranked_ext_ids[:k]
-    relevant_count = sum(1 for doc_id in top_k if doc_id in relevant_ext_ids)
-    return relevant_count / k
-
-
-def compute_ndcg_at_k(ranked_ext_ids, topic_qrels, k=10):
-    """Measure graded ranking quality against the topic judgments."""
-    if k <= 0:
-        return 0.0
-
-    def gain_at(rank, grade):
-        return (2 ** grade - 1) / math.log2(rank + 1)
-
-    actual = sum(
-        gain_at(rank, topic_qrels.get(doc_id, 0))
-        for rank, doc_id in enumerate(ranked_ext_ids[:k], start=1)
-    )
-    ideal_grades = sorted(
-        (grade for grade in topic_qrels.values() if grade > 0), reverse=True
-    )[:k]
-    ideal = sum(gain_at(rank, grade) for rank, grade in enumerate(ideal_grades, start=1))
-    return actual / ideal if ideal else 0.0
-
-
-def compute_mrr_at_k(ranked_ext_ids, topic_qrels, k=10):
-    """Measure the reciprocal rank of the first relevant result."""
-    for rank, doc_id in enumerate(ranked_ext_ids[:k], start=1):
-        if topic_qrels.get(doc_id, 0) > 0:
-            return 1 / rank
-    return 0.0
 
 
 def baseline_and_keywords(query_text, index, top_k=10):

@@ -8,7 +8,9 @@ Usage: python -m pipeline.build_index
 What it produces (in index_out/):
   - postings_NNN.json: sharded postings lists (term -> list of [doc_id_int, tf])
   - dictionary.json: term -> {df, shard_id, offset}  (the dictionary for lookups)
-  - doc_meta.json: int_id -> {ext_id, title, norm}  (doc metadata and L2 norms)
+  - doc_meta.json: int_id -> {ext_id, title, norm, len}  (metadata, L2 norms, token counts)
+  - title_postings.json: term -> list of [doc_id_int, tf] for title tokens only
+  - abstracts.sqlite: table docs(doc_id, ext_id, title, abstract) with full text
   - kgram_index.json: k-gram -> list of terms containing that k-gram
   - corpus_stats.json: {num_docs, avg_dl, total_terms}
 """
@@ -18,6 +20,7 @@ import sys
 import json
 import math
 import time
+import sqlite3
 from collections import defaultdict, Counter
 
 # add project root to path so we can import sibling packages
@@ -79,6 +82,7 @@ def build_inverted_index(corpus, config):
         doc_meta[int_id] = {
             "ext_id": doc_id,
             "title": title,
+            "len": len(tokens),
             # norm will be computed in a second pass after idf is known
         }
 
@@ -123,6 +127,38 @@ def build_inverted_index(corpus, config):
     elapsed = time.time() - t0
     print(f"[index] Built index in {elapsed:.1f}s: {num_docs} docs, {len(vocab)} terms")
     return postings, doc_meta, vocab, corpus_stats
+
+
+def build_title_postings(corpus):
+    """
+    Builds title-zone postings from the full title of each document.
+    Document ids follow corpus order, the same as build_inverted_index.
+
+    Returns: dict term -> list of [int_doc_id, tf]
+    """
+    title_postings = defaultdict(list)
+    for int_id, doc in enumerate(corpus.values()):
+        for term, tf in Counter(tokenize(doc.get("title", "") or "")).items():
+            title_postings[term].append([int_id, tf])
+    return dict(sorted(title_postings.items()))
+
+
+def write_abstract_store(corpus, db_path):
+    """Writes the full title and abstract of every document to a SQLite file."""
+    if os.path.exists(db_path):
+        os.remove(db_path)
+    connection = sqlite3.connect(db_path)
+    connection.execute(
+        "CREATE TABLE docs(doc_id INTEGER PRIMARY KEY, ext_id TEXT, title TEXT, abstract TEXT)"
+    )
+    rows = (
+        (int_id, ext_id, doc.get("title", "") or "", doc.get("text", "") or "")
+        for int_id, (ext_id, doc) in enumerate(corpus.items())
+    )
+    connection.executemany("INSERT INTO docs VALUES (?, ?, ?, ?)", rows)
+    connection.execute("CREATE INDEX docs_ext_id ON docs(ext_id)")
+    connection.commit()
+    connection.close()
 
 
 def build_kgram_index(vocab, k=3):
@@ -249,6 +285,7 @@ def main():
     """
     Full offline pipeline: download data -> tokenize -> build index -> export shards.
     """
+    build_start = time.time()
     config = load_config()
 
     # Step 1: Download/load TREC-COVID data
@@ -278,10 +315,19 @@ def main():
     # Step 4: Export shards
     num_shards = export_shards(postings, vocab, doc_meta, kgram_index, corpus_stats, config)
 
+    # Step 5: Title-zone postings and abstract store
+    with open("index_out/title_postings.json", "w") as f:
+        json.dump(build_title_postings(corpus), f, separators=(",", ":"))
+    write_abstract_store(corpus, "index_out/abstracts.sqlite")
+
     print("\n" + "=" * 60)
     print(f"Pipeline complete. Index in index_out/ ({num_shards} shards)")
     print(f"Corpus: {corpus_stats['num_docs']} docs, {corpus_stats['vocab_size']} unique terms")
     print(f"Average document length: {corpus_stats['avg_dl']} tokens")
+    print(f"Build time: {time.time() - build_start:.1f}s")
+    for name in sorted(os.listdir("index_out")):
+        size_mb = os.path.getsize(os.path.join("index_out", name)) / (1024 * 1024)
+        print(f"  {name}: {size_mb:.1f} MB")
     print("=" * 60)
 
 

@@ -4,6 +4,7 @@ Text processing pipeline: tokenize, normalize (lowercase, remove punctuation),
 and stem using Porter Stemmer.
 """
 
+import os
 import re
 import nltk
 from nltk.stem import PorterStemmer
@@ -60,6 +61,24 @@ def get_stems_for_tokens(tokens):
     Useful when you need both the raw token and its stem.
     """
     return [_stemmer.stem(t) for t in tokens]
+
+
+STOPWORDS_PATH = os.path.join(os.path.dirname(__file__), "..", "resources", "stopwords.txt")
+
+
+def load_query_stopwords(path=STOPWORDS_PATH):
+    """Reads the query-side stopword list. It is never applied while indexing."""
+    with open(path, "r", encoding="utf-8") as f:
+        return {line.strip() for line in f if line.strip() and not line.startswith("#")}
+
+
+_QUERY_STOPWORDS = load_query_stopwords()
+
+
+def query_terms(text):
+    """Lowercases, drops stopwords on the raw tokens, then stems the rest."""
+    raw_tokens = tokenize_no_stem(text)
+    return get_stems_for_tokens([t for t in raw_tokens if t not in _QUERY_STOPWORDS])
 
 
 if __name__ == "__main__":

@@ -7,5 +7,8 @@
     "top_k": 10,
     "shard_max_bytes": 5000000,
     "min_df_for_index": 1,
-    "kgram_k": 3
+    "kgram_k": 3,
+    "bm25_k1": 1.2,
+    "bm25_b": 0.75,
+    "title_boost": 0.0
 }

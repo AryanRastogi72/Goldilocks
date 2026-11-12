@@ -15,6 +15,7 @@ from engine.controller import run_controller, load_config
 
 
 def main():
+    sys.stdout.reconfigure(encoding="utf-8")
     if len(sys.argv) < 2:
         print("Goldilocks: Agentic Boolean Search Engine")
         print("Usage: python -m engine.main <query>")
