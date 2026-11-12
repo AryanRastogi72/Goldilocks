@@ -1020,7 +1020,7 @@ figure.chart text {
 }
 .sheet-panel {
   position: fixed;
-  top: 6.5rem;
+  top: var(--head-height, 6.5rem);
   right: 0;
   bottom: 0;
   z-index: 40;

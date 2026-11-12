@@ -61,3 +61,6 @@ streamlit_server.*.log
 
 # Generated design review screenshots
 .impeccable/review/
+
+# Submission ZIP built by scripts/package_submission.py
+CSD358_*.zip

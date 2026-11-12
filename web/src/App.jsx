@@ -40,6 +40,18 @@ function useScrollMemory(route) {
   }, [route]);
 }
 
+// The sheet starts right under the sticky head, however tall the head is when it wraps.
+function useHeadHeight() {
+  useLayoutEffect(() => {
+    const head = document.querySelector(".page-head");
+    const publish = () => document.documentElement.style.setProperty("--head-height", `${head.offsetHeight}px`);
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(head);
+    return () => observer.disconnect();
+  }, []);
+}
+
 function useEvaluationData(route) {
   const [state, setState] = useState({ status: "idle" });
   useEffect(() => {
@@ -57,6 +69,7 @@ export default function App() {
   const route = useRoute();
   const visited = useKeptPages(route);
   useScrollMemory(route);
+  useHeadHeight();
   const evaluationState = useEvaluationData(route);
   const inputRef = useRef(null);
   const sheetButton = useRef(null);

@@ -1,150 +1,85 @@
-# Goldilocks
+# EvidenceLens
 
-Search results that are just the right size.
+An offline, explainable research search agent over TREC-COVID (171,332 papers). It rewrites your question, keeps the result set small enough to read, asks a clarifying question when the question is too broad, carries context across follow-ups, labels the study type of every paper, and shows why each result was ranked where it is. It uses no generative AI at query time: every step is classical information retrieval and every decision is logged.
 
-Goldilocks is an Information Retrieval course project for scientific search. It turns a research question into a Boolean query, checks the index statistics, adjusts the query when the result set is too large or too small, then ranks the matching documents with tf idf cosine similarity.
+CSD358 Information Retrieval course project, Track 2 (conversational and agentic search), by Aryan Rastogi and Raghav Garg. It extends our midsem project, Goldilocks (see "Midsem history").
 
-## Track choice
+## Run it
 
-Our main track is Track 2, Conversational and agentic search. The app keeps recent questions and accepted queries for the current browser session. A follow up can use that context when Groq is enabled. Offline mode keeps the earlier query and adds terms from the follow up, then the same controller adjusts the result size. Session context is temporary and does not persist after the browser session ends.
+Python 3.12 or newer and Node.js are needed. From the project folder:
 
-## Try the hosted app
-
-[Open Goldilocks](https://goldilocks-hackathon.streamlit.app/)
-
-
-
-## Novelty
-
-The project contribution is an inspectable query size controller for a large scientific collection. It uses postings document frequencies to estimate the likely result size, checks the exact Boolean hit count, and records each accept, tighten or relax decision. The app also carries recent search context into follow up questions during the current session. These are system integration and teaching contributions built from established information retrieval methods. They are not a new retrieval algorithm, and the evaluation does not show that Goldilocks is more relevant overall.
-
-## How search works
-
-1. The tokenizer normalizes the question and stems terms.
-2. Groq may propose a Boolean query using the current question and recent session context. It proposes terms only, it does not decide whether to tighten or relax.
-3. The controller reads document frequency, estimates possible result counts, runs Boolean retrieval and checks the actual hit count.
-4. The controller accepts a result count in the configured target band, tightens a query above the band, or relaxes a query below the band.
-5. The ranker orders the matching papers by tf idf cosine score and returns the requested top K.
-
-The default target band is 20 through 200 results. The app also works in Offline mode with keyword queries. Successful Groq proposals are cached locally. A cache miss without a key falls back to Offline mode.
-
-## Project map
-
-1. `app.py`, Streamlit entry point.
-2. `ui.py` and `ui_styles.py`, interface and visual styling.
-3. `pipeline`, corpus loading, tokenization, stemming and index building.
-4. `engine`, Boolean parsing, postings search, the controller, Groq requests and tf idf ranking.
-5. `index_out`, the prebuilt index for 171,332 documents.
-6. `evaluation`, saved topic results, charts, summary and metric validator.
-7. `config.json`, model, target band and search settings.
-
-Private notes, secrets, raw corpus data, local caches and submission drafts are excluded by `.gitignore`.
-
-## Run on Windows
-
-Open PowerShell in the project folder, then run:
-
-```powershell
+```
 python -m venv .venv
-& '.venv\Scripts\Activate.ps1'
-python -m pip install -r requirements.txt
-$env:PYTHONUTF8 = '1'
-streamlit run app.py
+.venv\Scripts\activate            # Windows; source .venv/bin/activate on macOS and Linux
+pip install -r requirements.txt
+python -m pipeline.build_index    # reads data/raw/beir/trec-covid.zip, writes index_out/
+python -m pipeline.build_thesaurus
+python -m pipeline.build_evidence
+cd web && npm install && npm run build && cd ..
+uvicorn api.main:app              # open http://localhost:8000
 ```
 
-If script activation is blocked in that PowerShell window, run:
+The three `pipeline` commands are needed after a fresh clone only for `abstracts.sqlite` (made by `build_index`, not tracked in git because of its size); the git repository otherwise tracks the rest of `index_out/`. The submission ZIP leaves `index_out/` out for size, so run all three there. A rebuilt thesaurus can differ slightly from ours, because word2vec training with several workers is not bit-reproducible.
 
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-& '.venv\Scripts\Activate.ps1'
+Command-line smoke test: `python -m engine.main "covid vaccine pregnant"`. Tests: `python -m unittest discover tests`. Web development server: `cd web && npm run dev` (port 5173, proxies `/api` to port 8000). Health check: `http://localhost:8000/api/health`.
+
+## What you see
+
+- **Search** shows results only: one line ("I searched for ... - N papers") and a column of result slips with the study-type stamp and the best sentence of the abstract. "Why this result" shows the score, the per-term BM25 bars and the rule behind the study type.
+- **How did I get this?** opens a side sheet with the concepts, the numbered trace of tighten and relax steps against the 20 to 200 band, the Boolean query and earlier turns. A switch there re-ranks the current turn with plain BM25 over the whole collection.
+- **How it works** explains the pipeline. **Evaluation** shows the saved results, starting with where the agent loses.
+
+## Architecture
+
+```
+question -> conversation rules -> concept extraction (idf, lexicon, index elimination)
+         -> Boolean controller over the inverted index (band 20-200: accept / tighten / relax)
+              uses: word2vec thesaurus, Rocchio terms, k-gram wildcards, title zone
+         -> too broad? clusters of the result set become clarifying choices
+         -> BM25 ranking (+ optional evidence score) -> per-result explanation -> web app
 ```
 
-For the command line reference search, run:
+| Folder | Content |
+|---|---|
+| `pipeline/` | index, thesaurus and evidence-label builders |
+| `engine/` | Boolean parser, controller, ranker, conversation rules, clarification, evidence classifier, explainer |
+| `api/` | FastAPI app (`/api/search`, `/api/clarify`, `/api/rerank`, `/api/doc/{id}`, `/api/eval`, `/api/health`) |
+| `web/` | React app ("Bench Notebook" design) |
+| `evaluation/` | six runs, significance tests, charts, saved results (`summary.md`) |
+| `docs/` | brief, formulas, references, viva prep, demo script, report (`docs/report/main.pdf`) |
 
-```powershell
-$env:PYTHONUTF8 = '1'
-& '.venv\Scripts\python.exe' -m engine.main 'covid vaccine pregnant'
-```
+## IR concepts used
 
-For an evaluation using saved Groq replies and Offline fallback, remove the key from the current session first:
+Inverted index with sharded postings; Boolean retrieval with postings intersection ordered by document frequency; k-gram index for wildcards; title-zone postings; index elimination; Okapi BM25 (Lucene idf, k1 = 1.2, b = 0.75); ltc.ltc tf-idf cosine; Rocchio pseudo-relevance feedback (positive part only); a word2vec thesaurus for global query expansion; leader-follower clustering for clarification, with contrast-score labels; rule-based query rewriting for follow-ups; a rule-based study-type classifier with an evidence score g(d) from a published levels-of-evidence ordering; paired randomization tests with Bonferroni correction. The formulas are in `docs/formulas.md`.
 
-```powershell
-Remove-Item Env:GROQ_API_KEY -ErrorAction SilentlyContinue
-& '.venv\Scripts\python.exe' -m evaluation.run_eval
-```
+## Evaluation, with the trade-offs
 
-To build the index again, place the TREC COVID data in the expected local data folder, then run:
+Fifty TREC-COVID topics, both the keyword field and the question field, depth 1000, nDCG with linear gain. Full numbers: `evaluation/summary.md`.
 
-```powershell
-& '.venv\Scripts\python.exe' -m pipeline.build_index
-```
+| run | nDCG@10 keyword | nDCG@10 question |
+|---|---|---|
+| R1 BM25, whole collection | 0.6032 | 0.6555 |
+| R3 BM25 + Rocchio | 0.5741 | 0.6180 |
+| R4 EvidenceLens agent | 0.5897 | 0.4452 |
+| R5 agent + evidence weight 0.2 | 0.5856 | 0.4363 |
 
-The index is already included, so most users do not need to download or rebuild it. The index occupies 208,118,057 bytes across 38 files. The largest individual file is 26,117,615 bytes. The saved full retrieval identifiers for evaluation are compressed in `evaluation/retrieved_ids.json.gz`.
+- The agent keeps 98% (keyword) and 96% (question) of topics inside the 20 to 200 band, against 32% and 12% for the midsem AND baseline.
+- It is **tied with BM25 on keyword queries** (p = 0.6737) and **clearly worse on question text** (p = 0.0001). Because the band caps the set at about 200 papers, its Recall@1000 is 0.1217 and 0.0531 against 0.4161 and 0.4543 for BM25.
+- Rocchio feedback and the evidence weight did not improve ranking. The controller revision (v2.1) was made after seeing v2.0 on all 50 topics, with no held-out topics, so it is a post-hoc result.
+- Our BM25 on the question field gets nDCG@10 0.6555; the BEIR paper reports 0.656 for BM25 on TREC-COVID (Table 2, version 4). Their BM25 setup differs from ours, so we do not claim to reproduce it.
+- Study-type classifier: human-validated accuracy is `TODO(metric)` (the 120-document sample has not been hand-labelled).
 
-The full evaluation and validator need `data/cache/queries.json` and `data/cache/qrels.json`. These local files are excluded from Git. To fetch the source topics and judgments, run the index pipeline command above. It also rebuilds the index. The prebuilt index is already present, so a first time app visitor does not need this step to search.
+## Team
 
-For Streamlit Community Cloud, select Python 3.12 in Advanced settings and put `GROQ_API_KEY` in the app Secrets field. The repository contains `runtime.txt` as a version note. Current Community Cloud setup selects Python in its deployment settings, so the file does not replace that selection. The local requirements install passed in a clean Python 3.13.5 environment. The project owner reports that the deployed app works.
+- Raghav Garg: the original Goldilocks indexing, retrieval, controller and evaluation.
+- Aryan Rastogi: the midsem model-provider switch, the midsem web UI and audit; EvidenceLens product direction and decisions.
+- Everything else in EvidenceLens: `TODO(team)` (to be filled by Aryan and Raghav; see the report).
+- Source code link for the submission: `TODO(link)`.
 
-## Verified evaluation
+## Midsem history
 
-The values below are from the regenerated `evaluation/results.json` and `evaluation/summary.tsv`. P at 10 always divides the number of relevant items in the ranked first ten by ten, including when fewer than ten results were returned. nDCG at 10 uses graded relevance and discounts lower ranked results. MRR at 10 measures the position of the first relevant result.
+Goldilocks, the midsem project, controlled result size with a Boolean query controller and ranked with tf-idf cosine, but relied on a language-model API to propose queries; 14 of 50 topics had no valid proposal in the saved replay. Its state is frozen in the git tag `midsem-final` (commit 37d95aa) and its saved results are in `archive/midsem/evaluation/summary.tsv`: 86.0% of topics inside the band, mean 73.5 hits, P@10 0.4860, nDCG@10 0.4549 and MRR@10 0.6593. Those nDCG numbers use gain 2^g - 1, so they are not comparable with the linear-gain numbers above.
 
-1. Goldilocks, 50 topics, 43 in the target band, mean hits 73.5, precision 0.3286, recall 0.0535, P at 10 0.4860, nDCG at 10 0.4549, MRR at 10 0.6593.
-2. One shot Groq Boolean baseline, 36 topics with valid proposals, 12 in the target band, mean hits 1809.0, precision 0.4863, recall 0.1491, P at 10 0.5333, nDCG at 10 0.5348, MRR at 10 0.7650.
-3. AND keyword baseline, 50 topics, 5 in the target band, mean hits 8.9, precision 0.1481, recall 0.0089, P at 10 0.1280, nDCG at 10 0.1130, MRR at 10 0.2467.
-4. OR keyword baseline, 50 topics, none in the target band, mean hits 135330.3, precision 0.0036, recall 0.9728, P at 10 0.2880, nDCG at 10 0.2542, MRR at 10 0.4525.
+## Data and references
 
-The Groq baseline is unavailable on 14 topics. In this key free replay, 11 had no cached proposal and 3 had invalid Boolean replies. Its fair direct comparison uses the same 36 topics for both systems. On those topics, Goldilocks has precision 0.3816, recall 0.0677, P at 10 0.5583, nDCG at 10 0.5198, MRR at 10 0.6907 and target band rate 80.56 percent. The one shot Groq baseline has precision 0.4863, recall 0.1491, P at 10 0.5333, nDCG at 10 0.5348, MRR at 10 0.7650 and target band rate 33.33 percent.
-
-These results support the claim that Goldilocks controls result size more reliably. They do not show better overall relevance. On the paired topics, the one shot Groq baseline has higher precision, recall, nDCG at 10 and MRR at 10. Goldilocks has slightly higher P at 10 and a much higher paired target band rate. The OR baseline has much higher recall and very low precision. These systems make different tradeoffs.
-
-Run the independent saved metric check with:
-
-```powershell
-& '.venv\Scripts\python.exe' -m evaluation.validate_saved_results
-```
-
-## Information Retrieval choices
-
-1. The inverted index maps each term to a postings list of documents and term counts.
-2. Document frequency supports hit estimates and orders AND processing from the shortest postings list.
-3. The Boolean engine supports AND, OR, NOT and wildcard terms through a trigram k gram index.
-4. The ranker uses logarithmic term frequency, inverse document frequency, vector length normalization, cosine similarity and heap based top K selection.
-5. The evaluation uses the provided TREC COVID topics and relevance judgments, measuring precision, recall, P at 10, graded nDCG at 10 and MRR at 10.
-
-## Libraries
-
-1. NLTK supplies Porter stemming.
-2. NumPy is installed as numeric support for the Python package stack. The project modules do not call it directly.
-3. Requests sends Groq API requests.
-4. Streamlit builds the interface.
-5. Pandas formats evaluation and trace tables.
-6. Altair renders evaluation charts.
-7. Matplotlib writes saved evaluation charts.
-8. Tabulate writes the text summary table.
-
-## Data and related work
-
-The corpus and judgments come from TREC COVID, a research collection created to evaluate search over scientific COVID 19 literature. The local index contains 171,332 documents. BEIR distributes TREC COVID as one of its information retrieval benchmark datasets.
-
-Roberts and colleagues, “Searching for Scientific Evidence in a Pandemic: An Overview of TREC COVID,” Journal of Biomedical Informatics, 2021. [DOI record](https://doi.org/10.1016/j.jbi.2021.103865)
-
-Thakur and colleagues, “BEIR: A Heterogenous Benchmark for Zero Shot Evaluation of Information Retrieval Models,” NeurIPS Datasets and Benchmarks, 2021. [Paper](https://arxiv.org/abs/2104.08663)
-
-The project combines established retrieval components and follows known query reformulation ideas. Its inspectable controller and session scoped follow up context are implementation and teaching contributions, not a new retrieval algorithm or a claim of state of the art relevance.
-
-## Team and AI use
-
-Raghav Garg built the original project, including the Python indexing and retrieval pipeline, controller and evaluation foundation. Aryan Rastogi tested the project, changed the model provider from Gemini to Groq, built and redesigned the Streamlit app, and led the audit and integration work. Groq generated Boolean query proposals only. Search logic, controller decisions, ranking and evaluation run in project code.
-
-## Submission links
-
-[Report Google Doc](https://drive.google.com/drive/folders/1FauDbnLpA1ehaHF8nSEGFvTo1GJpY4yY?usp=sharing)
-
-[Demo video](https://drive.google.com/drive/folders/1FauDbnLpA1ehaHF8nSEGFvTo1GJpY4yY?usp=sharing)
-
-## Sources
-
-BEIR paper: https://arxiv.org/abs/2104.08663
-
-TREC COVID paper: https://doi.org/10.1016/j.jbi.2021.103865
+TREC-COVID through BEIR (Roberts et al., Journal of Biomedical Informatics 2021; Thakur et al., 2021). The levels-of-evidence ordering behind g(d) is from Burns, Rohrich and Chung (Plastic and Reconstructive Surgery, 2011). Verification notes for every reference: `docs/references.md`.
