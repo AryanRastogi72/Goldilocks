@@ -6,7 +6,7 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 from api.main import app, create_app, group_duplicates
-from engine.conversation import SESSIONS, SessionStore
+from engine.conversation import SESSIONS, SessionStore, handle_turn
 
 client = None
 
@@ -138,6 +138,21 @@ class RerankTests(unittest.TestCase):
         self.assertEqual(back["boolean_query"], agent["boolean_query"])
         self.assertEqual([r["ext_id"] for r in back["results"]], [r["ext_id"] for r in agent["results"]])
         self.assertEqual(len(SESSIONS["api_rerank"]["turns"]), 1)
+
+    def test_bm25_switch_matches_run_r1_for_a_single_question(self):
+        question = "what are the benefits and risks of re-opening schools in the midst of the COVID-19 pandemic?"
+        run_file = Path(__file__).resolve().parent.parent / "evaluation" / "runs" / "R1_text.trec"
+        expected = [line.split()[2] for line in run_file.read_text().splitlines() if line.split()[0] == "48"][:10]
+        state = client.app.state
+        result = handle_turn("api_r1", question, state.index, state.config, ranker="bm25")
+        self.assertEqual([r["ext_id"] for r in result["results"]], expected)
+
+    def test_bm25_switch_uses_the_typed_words_of_the_whole_topic(self):
+        search("covid vaccine pregnant", "api_topic_words")
+        search("what about breastfeeding", "api_topic_words", ranker="bm25")
+        self.assertTrue({"breastfeed", "pregnant", "vaccin", "covid"} <= set(SESSIONS["api_topic_words"]["ranking_stems"]))
+        search("ace2 hypertension", "api_topic_words", ranker="bm25")
+        self.assertNotIn("breastfeed", SESSIONS["api_topic_words"]["ranking_stems"])
 
     def test_rerank_errors(self):
         assert_error(self, client.post("/api/rerank", json={"session_id": "api_no_such", "ranker": "bm25"}), 404, "unknown_session")

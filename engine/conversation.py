@@ -16,6 +16,7 @@ from engine.controller import ranking_stems, run_controller
 from engine.evidence import class_of, docs_of_class, g_value, validate_class
 from engine.query_understanding import make_concept, mark_elimination, understand
 from engine.ranker import apply_evidence_weight, rank_bm25
+from pipeline.tokenizer import query_terms
 
 KEEP_FILTER = object()
 BM25_DEPTH = 1000
@@ -98,7 +99,7 @@ FOLLOWUP_IGNORE = re.compile(
 
 
 def new_session():
-    return {"turns": [], "concepts": [], "boolean_query": "", "evidence_filter": None, "clarifications": []}
+    return {"turns": [], "concepts": [], "boolean_query": "", "evidence_filter": None, "clarifications": [], "topic_texts": []}
 
 
 def extract_evidence_filter(text):
@@ -168,6 +169,7 @@ def rewritten_query(concepts, evidence_filter):
 def update_concepts(session, text, original_text, excluded, index, config, rules):
     """Applies FOLLOWUP_DETECT, FACET_SWAP and TOPIC_SWITCH. Returns the new concept list."""
     if not session["concepts"]:
+        session["topic_texts"] = [text]
         return understand(text, index, config) + excluded
     new_concepts = understand(FOLLOWUP_IGNORE.sub(" ", text), index, config)
     signal = followup_signal(original_text)
@@ -175,21 +177,24 @@ def update_concepts(session, text, original_text, excluded, index, config, rules
     if signal is None and len(new_concepts) >= 2 and overlap < config["topic_switch_jaccard"]:
         rules.append({"rule": "TOPIC_SWITCH", "detail": f"concept overlap {overlap:.2f} is below {config['topic_switch_jaccard']}; new topic"})
         session["evidence_filter"] = None
+        session["topic_texts"] = [text]
         return new_concepts + excluded
     if signal is None and len(new_concepts) > 2:
         signal = f"{len(new_concepts)} concepts with overlap {overlap:.2f}"
     rules.append({"rule": "FOLLOWUP_DETECT", "detail": signal or "at most 2 concepts"})
+    session["topic_texts"].append(text)
     return merge_followup(session["concepts"], new_concepts, excluded, rules)
 
 
 def bm25_full_collection(concepts, session, index, config):
     """
-    The "bm25" ranker: BM25 over the whole collection on the concept stems. There is no Boolean set; the evidence
-    filter still applies, and documents containing an excluded concept are removed from the ranking.
+    The "bm25" ranker: BM25 over the whole collection on the words the user typed in the current topic (the turn that
+    started it and its follow-ups), as evaluation run R1 does for a single question. There is no Boolean set; the
+    evidence filter still applies, and documents containing an excluded concept are removed from the ranking.
     Returns (ranked, trace, clarifications, ranking stems, hits).
     """
-    stems = sorted({s for c in concepts if not c.get("excluded") for s in c["stems"]})
     excluded_stems = {s for c in concepts if c.get("excluded") for s in c["stems"]}
+    stems = sorted(set(query_terms(" ".join(session["topic_texts"]))) - excluded_stems)
     allowed = docs_of_class(index, session["evidence_filter"]) if session["evidence_filter"] else None
     excluded_docs = {d for s in excluded_stems for d, _ in index.get_postings(s)}
     matching = {d for s in stems for d, _ in index.get_postings(s)} - excluded_docs
@@ -204,7 +209,7 @@ def bm25_full_collection(concepts, session, index, config):
         "step": 1, "query": "BM25 over the whole collection: " + " ".join(stems),
         "df_table": {s: index.get_df(s) for s in stems}, "estimated_hits": len(matching), "actual_hits": len(matching),
         "decision": "BM25_FULL_COLLECTION",
-        "reason": "ranker bm25: no Boolean set is built; every document containing a concept stem is scored" + filter_note,
+        "reason": "ranker bm25: no Boolean set is built; every document containing one of your words is scored" + filter_note,
         "source": "rule",
     }]
     return ranked, trace, [], stems, len(matching)
@@ -301,6 +306,7 @@ def apply_clarification(session_id, choice_id, index, config):
     stems = [stem for stem in choice["label_stems"] if index.get_df(stem) > 0]
     concept = make_concept(" ".join(choice["label_terms"]), stems, index, True, "clarify")
     rules = [{"rule": "CLARIFY_CHOSEN", "detail": f"choice {choice_id}: {' '.join(choice['label_terms'])}"}]
+    session["topic_texts"].append(" ".join(choice["label_terms"]))
     result = finish_turn(session, f"#{choice_id}", session["concepts"] + [concept], index, config, False, rules)
     chosen_row = {
         "step": 0, "query": "", "df_table": {}, "estimated_hits": 0, "actual_hits": 0,
