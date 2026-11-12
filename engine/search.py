@@ -114,6 +114,12 @@ class SearchIndex:
                 self._title_postings = json.load(f)
         return self._title_postings.get(term, [])
 
+    def doc_id_for(self, ext_id):
+        """Internal doc id of an external id, or None."""
+        self.get_title_and_abstract(0)
+        row = self._abstract_db.execute("SELECT doc_id FROM docs WHERE ext_id = ?", (ext_id,)).fetchone()
+        return row[0] if row else None
+
     def get_title_and_abstract(self, doc_id):
         """Returns (title, abstract) from abstracts.sqlite, opened once on first use."""
         if self._abstract_db is None:

@@ -21,13 +21,15 @@ class ConversationTests(unittest.TestCase):
         SESSIONS.pop(session_id, None)
         return handle_turn(session_id, first_turn, self.index, self.config, allow_clarify=False)
 
-    def test_evidence_filter_is_stored_and_adds_no_words(self):
+    def test_evidence_filter_is_applied_and_adds_no_words(self):
         first = self.start("evidence")
         result = handle_turn("evidence", "only reviews", self.index, self.config, allow_clarify=False)
         self.assertIn("EVIDENCE_FILTER", rule_names(result))
         self.assertEqual(result["evidence_filter"], "systematic_review_meta_analysis")
-        self.assertEqual(result["boolean_query"], first["boolean_query"])
-        self.assertTrue(result["rewritten_query"].endswith("[only: systematic_review_meta_analysis]"))
+        self.assertEqual(result["rewritten_query"], first["rewritten_query"] + " [only: systematic_review_meta_analysis]")
+        self.assertTrue(result["results"])
+        self.assertTrue(all(item["evidence_class"] == "systematic_review_meta_analysis" for item in result["results"]))
+        self.assertNotEqual([i["doc_id"] for i in result["results"]], [i["doc_id"] for i in first["results"]])
 
     def test_exclusion_adds_not_concept(self):
         self.start("exclusion", "coronavirus remdesivir")

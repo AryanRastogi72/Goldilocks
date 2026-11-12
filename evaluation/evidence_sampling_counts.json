@@ -1,0 +1,38 @@
+{
+  "min_abstract_characters": 200,
+  "seed": 42,
+  "classes": {
+    "systematic_review_meta_analysis": {
+      "population": 4992,
+      "sampled": 15
+    },
+    "randomized_controlled_trial": {
+      "population": 2636,
+      "sampled": 15
+    },
+    "observational": {
+      "population": 14573,
+      "sampled": 15
+    },
+    "case_report_series": {
+      "population": 3380,
+      "sampled": 15
+    },
+    "modelling_simulation": {
+      "population": 4546,
+      "sampled": 15
+    },
+    "lab_animal": {
+      "population": 13729,
+      "sampled": 15
+    },
+    "opinion_editorial": {
+      "population": 2039,
+      "sampled": 15
+    },
+    "other": {
+      "population": 81477,
+      "sampled": 15
+    }
+  }
+}

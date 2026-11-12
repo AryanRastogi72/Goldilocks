@@ -147,6 +147,19 @@ def rank_bm25(query_terms, index, top_k=10, doc_ids=None, k1=1.2, b=0.75, title_
     return [(-negative_score, doc_id) for negative_score, doc_id in best]
 
 
+def apply_evidence_weight(ranked, weight, g_of_doc):
+    """
+    Net score: net(d) = rel(d) / rel_max + weight * g(d), where rel_max is the top relevance score in the list.
+    Dividing by rel_max keeps the weight on a fixed scale whatever the query. With weight 0 the list is returned unchanged.
+    Returns [(net, doc_id)], highest first, ties by smaller doc_id.
+    """
+    if not ranked or weight == 0:
+        return ranked
+    rel_max = max(score for score, _ in ranked) or 1.0
+    net = [(score / rel_max + weight * g_of_doc(doc_id), doc_id) for score, doc_id in ranked]
+    return sorted(net, key=lambda pair: (-pair[0], pair[1]))
+
+
 if __name__ == "__main__":
     # quick test
     from engine.search import SearchIndex

@@ -16,9 +16,10 @@ import os
 
 from engine.boolean_parser import ast_to_string, collect_terms
 from engine.clarify import build_clarifications
+from engine.evidence import docs_of_class, g_value, class_of, validate_class
 from engine.expansion import prf_terms, thesaurus_neighbours
 from engine.query_understanding import union_df, understand
-from engine.ranker import rank_bm25
+from engine.ranker import apply_evidence_weight, rank_bm25
 
 PRF_DOCS = 10
 SYNONYMS_PER_MOVE = 3
@@ -250,26 +251,36 @@ def log_clarify(log, ast, index, docs, concepts, config, allow_clarify, reason):
     log_step(log, ast, index, docs, "CLARIFY", f"{reason}; {outcome}", "rule")
 
 
-def run_controller(text, index, config=None, concepts=None, allow_clarify=False):
+def matching_docs(ast, index, evidence_docs):
+    """Boolean result, intersected with the documents of the evidence filter when there is one."""
+    docs = index.execute_boolean(ast)
+    return docs if evidence_docs is None else docs & evidence_docs
+
+
+def run_controller(text, index, config=None, concepts=None, allow_clarify=False, evidence_filter=None):
     """
     Understands the query (or uses the given concepts), then loops: run the Boolean query, compare the
     hit count with the band, and tighten or relax. Returns (ranked, log, final_query).
     With allow_clarify the log may carry clarification choices; without it a CLARIFY step is only logged.
+    With evidence_filter (a class id) the Boolean result is intersected with that class before every band check.
     """
     config = config or load_config()
     low, high = config["target_band_low"], config["target_band_high"]
     concepts = fresh_concepts(understand(text, index, config) if concepts is None else concepts)
     hold_back_extra_concepts(concepts, config["initial_concepts"])
     log = ControllerLog(concepts)
+    evidence_docs = docs_of_class(index, validate_class(evidence_filter)) if evidence_filter else None
     if not any(not c.get("excluded") for c in concepts):
         log.add("", {}, 0, 0, "EXHAUSTED", "no searchable terms in the question", "rule")
         return [], log, ""
     state = {"concepts": concepts, "extra_nodes": [], "used_moves": set()}
     comparable_concepts = [c for c in concepts if not c["eliminated"] and not c.get("excluded")]
+    if evidence_filter:
+        log.add("", {}, 0, 0, "EVIDENCE_FILTER", f"evidence filter: {evidence_filter}", "rule")
 
     for step in range(1, config["max_iterations"] + 1):
         ast = build_ast(concepts, state["extra_nodes"])
-        docs = index.execute_boolean(ast)
+        docs = matching_docs(ast, index, evidence_docs)
         if low <= len(docs) <= high:
             log_step(log, ast, index, docs, "ACCEPT", f"Hit count {len(docs)} is in target band [{low}, {high}]", "rule")
             break
@@ -293,21 +304,32 @@ def run_controller(text, index, config=None, concepts=None, allow_clarify=False)
         log_step(log, ast, index, docs, *outcome)
 
     ast = build_ast(concepts, state["extra_nodes"])
-    docs = index.execute_boolean(ast)
-    ranked = rank_final(ast, docs, concepts, index, config, log)
+    docs = matching_docs(ast, index, evidence_docs)
+    ranked = rank_final(ast, docs, concepts, index, config, log, evidence_docs)
     return ranked, log, ast_to_string(ast)
 
 
-def rank_final(ast, docs, concepts, index, config, log):
-    ranking_options = dict(top_k=config["top_k"], k1=config["bm25_k1"], b=config["bm25_b"], title_boost=config["title_boost"])
+def ranking_stems(ast, concepts):
+    """Stems used to score documents: all non-excluded, non-dropped concept stems plus the query's own terms."""
+    wanted = [c for c in concepts if not c.get("excluded") and not c.get("dropped")]
+    return sorted({stem for c in wanted for stem in c["stems"]} | collect_terms(ast))
+
+
+def rank_final(ast, docs, concepts, index, config, log, evidence_docs=None):
+    weight = config["evidence_weight"]
+    top_k = config["top_k"]
+    ranking_options = dict(k1=config["bm25_k1"], b=config["bm25_b"], title_boost=config["title_boost"])
+    candidates = config["evidence_candidates"] if weight else top_k
     wanted = [c for c in concepts if not c.get("excluded")]
     all_stems = sorted({stem for c in wanted for stem in c["stems"]})
     if docs:
-        ranking_stems = {stem for c in wanted if not c.get("dropped") for stem in c["stems"]} | collect_terms(ast)
-        return rank_bm25(sorted(ranking_stems), index, doc_ids=docs, **ranking_options)
-    reason = "no Boolean match; full-collection BM25 ranking shown"
-    if log.steps[-1]["decision"] == "EXHAUSTED":
-        log.steps[-1]["reason"] += f"; {reason}"
+        ranked = rank_bm25(ranking_stems(ast, concepts), index, top_k=candidates, doc_ids=docs, **ranking_options)
     else:
-        log_step(log, ast, index, docs, "EXHAUSTED", reason, "rule")
-    return rank_bm25(all_stems, index, **ranking_options)
+        reason = "no Boolean match; full-collection BM25 ranking shown"
+        if log.steps[-1]["decision"] == "EXHAUSTED":
+            log.steps[-1]["reason"] += f"; {reason}"
+        else:
+            log_step(log, ast, index, docs, "EXHAUSTED", reason, "rule")
+        ranked = rank_bm25(all_stems, index, top_k=candidates, doc_ids=evidence_docs, **ranking_options)
+    ranked = apply_evidence_weight(ranked, weight, lambda doc_id: g_value(class_of(index, doc_id), config))
+    return ranked[:top_k]

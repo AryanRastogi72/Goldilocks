@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from engine.search import SearchIndex
 from engine.controller import run_controller, load_config
 from engine.conversation import apply_clarification, handle_turn
+from engine.evidence import class_of
 
 SESSION_ID = "cli"
 SESSION_TOP = 5
@@ -45,7 +46,7 @@ def print_turn(result, index):
     print_trace(result["trace"])
     print(f"Top {SESSION_TOP}:")
     for rank, item in enumerate(result["results"][:SESSION_TOP], 1):
-        print(f"  {rank}. [{item['ext_id']}] {item['title'][:80]}")
+        print(f"  {rank}. [{item['ext_id']}] ({item['evidence_class']}) {item['title'][:80]}")
     print_choices(result["clarifications"])
 
 
@@ -78,7 +79,7 @@ def run_single_query(query, index, config):
     print_choices(log.clarifications)
     print(f"\nTOP {config['top_k']} RESULTS")
     for rank, (score, doc_id) in enumerate(ranked, 1):
-        print(f"  {rank}. [{index.get_ext_id(doc_id)}] score={score:.4f}")
+        print(f"  {rank}. [{index.get_ext_id(doc_id)}] score={score:.4f}  evidence: {class_of(index, doc_id)}")
         print(f"     {index.get_doc_title(doc_id)[:80]}")
 
 

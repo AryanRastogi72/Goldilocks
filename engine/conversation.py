@@ -10,6 +10,7 @@ Rules, in the order they are checked:
 import re
 
 from engine.controller import run_controller
+from engine.evidence import class_of
 from engine.query_understanding import make_concept, mark_elimination, understand
 
 SESSIONS = {}
@@ -26,6 +27,9 @@ EXCLUSION_RE = re.compile(
 )
 CUES = ["what about", "how about", "and", "also", "only", "except", "without"]
 PRONOUNS = {"it", "they", "them", "this", "these", "those"}
+FOLLOWUP_IGNORE = re.compile(
+    r"\b(?:work|works|working|help|helps|know|known|happen|happens|get|make|tell|show|find)\b", re.IGNORECASE
+)
 
 
 def new_session():
@@ -98,9 +102,9 @@ def rewritten_query(concepts, evidence_filter):
 
 def update_concepts(session, text, original_text, excluded, index, config, rules):
     """Applies FOLLOWUP_DETECT, FACET_SWAP and TOPIC_SWITCH. Returns the new concept list."""
-    new_concepts = understand(text, index, config)
     if not session["concepts"]:
-        return new_concepts + excluded
+        return understand(text, index, config) + excluded
+    new_concepts = understand(FOLLOWUP_IGNORE.sub(" ", text), index, config)
     signal = followup_signal(original_text)
     overlap = jaccard({c["label"] for c in new_concepts}, positive_labels(session["concepts"]))
     if signal is None and len(new_concepts) >= 2 and overlap < config["topic_switch_jaccard"]:
@@ -115,7 +119,9 @@ def update_concepts(session, text, original_text, excluded, index, config, rules
 
 def finish_turn(session, text, concepts, index, config, allow_clarify, rules):
     mark_elimination(concepts, index, config)
-    ranked, log, boolean_query = run_controller(text, index, config, concepts=concepts, allow_clarify=allow_clarify)
+    ranked, log, boolean_query = run_controller(
+        text, index, config, concepts=concepts, allow_clarify=allow_clarify, evidence_filter=session["evidence_filter"]
+    )
     session["concepts"] = concepts
     session["boolean_query"] = boolean_query
     session["clarifications"] = log.clarifications
@@ -126,7 +132,10 @@ def finish_turn(session, text, concepts, index, config, allow_clarify, rules):
         "trace": log.steps,
         "clarifications": log.clarifications,
         "results": [
-            {"doc_id": doc_id, "ext_id": index.get_ext_id(doc_id), "title": index.get_doc_title(doc_id), "score": score}
+            {
+                "doc_id": doc_id, "ext_id": index.get_ext_id(doc_id), "title": index.get_doc_title(doc_id),
+                "score": score, "evidence_class": class_of(index, doc_id),
+            }
             for score, doc_id in ranked
         ],
         "evidence_filter": session["evidence_filter"],

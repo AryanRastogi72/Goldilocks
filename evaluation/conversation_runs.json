@@ -81,29 +81,71 @@
               "detail": "leading cue 'only'"
             }
           ],
-          "boolean_query": "((breastfeed OR mother OR breastf OR childbirth) AND (pregnant OR pregnanc OR gestat) AND vaccin)",
+          "boolean_query": "(vaccin OR quadrival OR bival OR immunis)",
           "evidence_filter": "systematic_review_meta_analysis",
           "trace": [
             {
               "step": 1,
-              "decision": "RELAX_EXPAND_SYNONYMS",
-              "actual_hits": 3,
-              "source": "thesaurus"
+              "decision": "EVIDENCE_FILTER",
+              "actual_hits": 0,
+              "source": "rule"
             },
             {
               "step": 2,
+              "decision": "RELAX_EXPAND_SYNONYMS",
+              "actual_hits": 0,
+              "source": "thesaurus"
+            },
+            {
+              "step": 3,
+              "decision": "RELAX_EXPAND_SYNONYMS",
+              "actual_hits": 1,
+              "source": "thesaurus"
+            },
+            {
+              "step": 4,
+              "decision": "RELAX_EXPAND_SYNONYMS",
+              "actual_hits": 1,
+              "source": "thesaurus"
+            },
+            {
+              "step": 5,
+              "decision": "RELAX_WILDCARD",
+              "actual_hits": 1,
+              "source": "kgram"
+            },
+            {
+              "step": 6,
+              "decision": "RELAX_WILDCARD",
+              "actual_hits": 1,
+              "source": "kgram"
+            },
+            {
+              "step": 7,
+              "decision": "RELAX_DROP_CONCEPT",
+              "actual_hits": 1,
+              "source": "rule"
+            },
+            {
+              "step": 8,
+              "decision": "RELAX_DROP_CONCEPT",
+              "actual_hits": 10,
+              "source": "rule"
+            },
+            {
+              "step": 9,
               "decision": "ACCEPT",
-              "actual_hits": 31,
+              "actual_hits": 196,
               "source": "rule"
             }
           ],
           "clarifications": [],
           "top_titles": [
-            "Vaccination during pregnancy: current and possible future recommendations",
-            "Neonatal Outcomes After Antenatal Influenza Immunization During the 2009 H1N1 Influenza Pandemic: Impact on Preterm Birth, Birth Weight, and Small for Gestational Age Birth",
-            "Maternal Influenza Immunization and Reduced Likelihood of Prematurity and Small for Gestational Age Births: A Retrospective Cohort Study",
-            "Protection by Exclusion: Another Missed Opportunity to Include Pregnant Women in Research During the Coronavirus Disease 2019 (COVID-19) Pandemic",
-            "Protection by Exclusion: Another Missed Opportunity to Include Pregnant Women in Research During the Coronavirus Disease 2019 (COVID-19) Pandemic"
+            "Immune and bioinformatics identification of T cell and B cell epitopes in the protein structure of SARS-CoV-2: A Systematic Review",
+            "Post-vaccination encephalomyelitis: Literature review and illustrative case",
+            "Potential Rapid Diagnostics, Vaccine and Therapeutics for 2019 Novel Coronavirus (2019-nCoV): A Systematic Review",
+            "The possible of immunotherapy for COVID-19: A systematic review",
+            "The Possible of Immunotherapy for COVID-19: a Systematic Review"
           ]
         }
       ]
@@ -132,26 +174,24 @@
               "label_terms": [
                 "lopinavir",
                 "ritonavir",
-                "favipiravir"
+                "hydroxychloroquine"
               ],
               "label_stems": [
                 "lopinavir",
                 "ritonavir",
-                "favipiravir"
+                "hydroxychloroquin"
               ],
               "size": 85
             },
             {
               "id": 2,
               "label_terms": [
-                "compassionate",
-                "bei",
-                "hope"
+                "use",
+                "drug"
               ],
               "label_stems": [
-                "compassion",
-                "bei",
-                "hope"
+                "use",
+                "drug"
               ],
               "size": 65
             },
@@ -172,14 +212,14 @@
             {
               "id": 4,
               "label_terms": [
-                "gs",
                 "triphosphate",
-                "metabolite"
+                "metabolite",
+                "nucleoside"
               ],
               "label_stems": [
-                "gs",
                 "triphosph",
-                "metabolit"
+                "metabolit",
+                "nucleosid"
               ],
               "size": 17
             }
@@ -219,55 +259,41 @@
             {
               "id": 1,
               "label_terms": [
-                "rhesus",
-                "macaque",
-                "hope"
-              ],
-              "label_stems": [
-                "rhesu",
-                "macaqu",
-                "hope"
-              ],
-              "size": 72
-            },
-            {
-              "id": 2,
-              "label_terms": [
-                "gilead",
                 "trials",
-                "options"
+                "options",
+                "drug"
               ],
               "label_stems": [
-                "gilead",
                 "trial",
-                "option"
+                "option",
+                "drug"
               ],
               "size": 58
             },
             {
-              "id": 3,
+              "id": 2,
               "label_terms": [
-                "nsp12",
                 "rdrp",
-                "nsp8"
+                "polymerase",
+                "cryo"
               ],
               "label_stems": [
-                "nsp12",
                 "rdrp",
-                "nsp8"
+                "polymeras",
+                "cryo"
               ],
               "size": 22
             },
             {
-              "id": 4,
+              "id": 3,
               "label_terms": [
-                "rdrp",
                 "rna",
+                "rdrp",
                 "drug"
               ],
               "label_stems": [
-                "rdrp",
                 "rna",
+                "rdrp",
                 "drug"
               ],
               "size": 22
@@ -461,14 +487,14 @@
             {
               "id": 2,
               "label_terms": [
-                "diaper",
-                "pressure",
-                "skin"
+                "surgical",
+                "health",
+                "use"
               ],
               "label_stems": [
-                "diaper",
-                "pressur",
-                "skin"
+                "surgic",
+                "health",
+                "use"
               ],
               "size": 63
             },
@@ -587,14 +613,14 @@
             {
               "id": 2,
               "label_terms": [
-                "ace2",
                 "protein",
-                "receptor"
+                "receptor",
+                "candidate"
               ],
               "label_stems": [
-                "ace2",
                 "protein",
-                "receptor"
+                "receptor",
+                "candid"
               ],
               "size": 49
             },
@@ -603,12 +629,12 @@
               "label_terms": [
                 "cytokine",
                 "inflammatory",
-                "storm"
+                "therapy"
               ],
               "label_stems": [
                 "cytokin",
                 "inflammatori",
-                "storm"
+                "therapi"
               ],
               "size": 30
             },
@@ -617,12 +643,12 @@
               "label_terms": [
                 "epitopes",
                 "peptides",
-                "immunoinformatics"
+                "immunogenicity"
               ],
               "label_stems": [
                 "epitop",
                 "peptid",
-                "immunoinformat"
+                "immunogen"
               ],
               "size": 25
             }
@@ -637,14 +663,14 @@
         },
         {
           "turn": "#2",
-          "rewritten_query": "vaccine AND ace2 protein receptor AND covid19",
+          "rewritten_query": "vaccine AND protein receptor candidate AND covid19",
           "rules_fired": [
             {
               "rule": "CLARIFY_CHOSEN",
-              "detail": "choice 2: ace2 protein receptor"
+              "detail": "choice 2: protein receptor candidate"
             }
           ],
-          "boolean_query": "(vaccin AND (ace2 OR protein OR receptor) AND (covid OR covid19 OR sarscov2 OR ncov OR cov2 OR coronaviru) AND title:vaccin AND rbd)",
+          "boolean_query": "(vaccin AND (protein OR receptor OR candid) AND (covid OR covid19 OR sarscov2 OR ncov OR cov2 OR coronaviru) AND title:vaccin AND title:candid)",
           "evidence_filter": null,
           "trace": [
             {
@@ -656,35 +682,35 @@
             {
               "step": 1,
               "decision": "TIGHTEN_ADD_CONCEPT",
-              "actual_hits": 3273,
+              "actual_hits": 3792,
               "source": "rule"
             },
             {
               "step": 2,
               "decision": "TIGHTEN_TITLE_ZONE",
-              "actual_hits": 1439,
+              "actual_hits": 1615,
               "source": "rule"
             },
             {
               "step": 3,
-              "decision": "TIGHTEN_ADD_PRF",
-              "actual_hits": 365,
-              "source": "prf"
+              "decision": "TIGHTEN_TITLE_ZONE",
+              "actual_hits": 441,
+              "source": "rule"
             },
             {
               "step": 4,
               "decision": "ACCEPT",
-              "actual_hits": 56,
+              "actual_hits": 57,
               "source": "rule"
             }
           ],
           "clarifications": [],
           "top_titles": [
-            "Characterization of the receptor-binding domain (RBD) of 2019 novel coronavirus: implication for development of RBD protein as a viral attachment inhibitor and vaccine",
-            "Development of a COVID-19 vaccine based on the receptor binding domain displayed on virus-like particles",
-            "Elucidation of Cellular Targets and Exploitation of the Receptor Binding Domain of SARS-CoV-2 for vaccine and monoclonal antibody synthesis",
-            "Elucidation of Cellular Targets and Exploitation of the Receptor Binding Domain of SARS\u2010CoV\u20102 for vaccine and monoclonal antibody synthesis",
-            "Receptor-binding domain of SARS-CoV spike protein induces highly potent neutralizing antibodies: implication for developing subunit vaccine"
+            "Reverse vaccinology approach to design a novel multi-epitope vaccine candidate against COVID-19: an in silico study",
+            "Reverse vaccinology approach to design a novel multi-epitope vaccine candidate against COVID-19: an in silico study",
+            "Evaluation of the immunogenicity of prime-boost vaccination with the replication-deficient viral vectored COVID-19 vaccine candidate ChAdOx1 nCoV-19",
+            "Immunogenicity of a DNA vaccine candidate for COVID-19",
+            "Identification of potential vaccine candidates against SARS-CoV-2, A step forward to fight novel coronavirus 2019-nCoV: A Reverse Vaccinology Approach"
           ]
         }
       ]
@@ -713,26 +739,24 @@
               "label_terms": [
                 "lopinavir",
                 "ritonavir",
-                "favipiravir"
+                "hydroxychloroquine"
               ],
               "label_stems": [
                 "lopinavir",
                 "ritonavir",
-                "favipiravir"
+                "hydroxychloroquin"
               ],
               "size": 85
             },
             {
               "id": 2,
               "label_terms": [
-                "compassionate",
-                "bei",
-                "hope"
+                "use",
+                "drug"
               ],
               "label_stems": [
-                "compassion",
-                "bei",
-                "hope"
+                "use",
+                "drug"
               ],
               "size": 65
             },
@@ -753,14 +777,14 @@
             {
               "id": 4,
               "label_terms": [
-                "gs",
                 "triphosphate",
-                "metabolite"
+                "metabolite",
+                "nucleoside"
               ],
               "label_stems": [
-                "gs",
                 "triphosph",
-                "metabolit"
+                "metabolit",
+                "nucleosid"
               ],
               "size": 17
             }
@@ -775,134 +799,35 @@
         },
         {
           "turn": "does it work in children",
-          "rewritten_query": "remdesivir AND children AND work AND covid19",
+          "rewritten_query": "remdesivir AND children AND covid19",
           "rules_fired": [
             {
               "rule": "FOLLOWUP_DETECT",
               "detail": "pronoun 'it'"
             }
           ],
-          "boolean_query": "((children OR child OR paediatr OR pediatr OR infant OR adult OR hemato OR hematolog OR hemagglutinin OR hematopoiet OR hemagglutin OR hematoma) AND (work OR tirelessli OR ourselv OR informatician OR informaticist))",
+          "boolean_query": "(remdesivir AND (children OR child OR paediatr OR pediatr))",
           "evidence_filter": null,
           "trace": [
             {
               "step": 1,
-              "decision": "RELAX_EXPAND_SYNONYMS",
-              "actual_hits": 1,
-              "source": "thesaurus"
-            },
-            {
-              "step": 2,
-              "decision": "RELAX_EXPAND_SYNONYMS",
-              "actual_hits": 3,
-              "source": "thesaurus"
-            },
-            {
-              "step": 3,
-              "decision": "RELAX_EXPAND_SYNONYMS",
-              "actual_hits": 6,
-              "source": "thesaurus"
-            },
-            {
-              "step": 4,
-              "decision": "RELAX_WILDCARD",
-              "actual_hits": 6,
-              "source": "kgram"
-            },
-            {
-              "step": 5,
-              "decision": "RELAX_WILDCARD",
-              "actual_hits": 6,
-              "source": "kgram"
-            },
-            {
-              "step": 6,
-              "decision": "RELAX_WILDCARD",
-              "actual_hits": 6,
-              "source": "kgram"
-            },
-            {
-              "step": 7,
-              "decision": "RELAX_DROP_CONCEPT",
-              "actual_hits": 6,
-              "source": "rule"
-            },
-            {
-              "step": 8,
-              "decision": "CLARIFY",
-              "actual_hits": 877,
+              "decision": "ACCEPT",
+              "actual_hits": 22,
               "source": "rule"
             }
           ],
-          "clarifications": [
-            {
-              "id": 1,
-              "label_terms": [
-                "perinatal",
-                "ensure",
-                "prevention"
-              ],
-              "label_stems": [
-                "perinat",
-                "ensur",
-                "prevent"
-              ],
-              "size": 39
-            },
-            {
-              "id": 2,
-              "label_terms": [
-                "mental",
-                "older",
-                "skills"
-              ],
-              "label_stems": [
-                "mental",
-                "older",
-                "skill"
-              ],
-              "size": 38
-            },
-            {
-              "id": 3,
-              "label_terms": [
-                "home",
-                "parents",
-                "care"
-              ],
-              "label_stems": [
-                "home",
-                "parent",
-                "care"
-              ],
-              "size": 35
-            },
-            {
-              "id": 4,
-              "label_terms": [
-                "intervention",
-                "systematic",
-                "search"
-              ],
-              "label_stems": [
-                "intervent",
-                "systemat",
-                "search"
-              ],
-              "size": 23
-            }
-          ],
+          "clarifications": [],
           "top_titles": [
-            "Recomendaciones sobre el manejo cl\u00ednico de la infecci\u00f3n por el \u00abnuevo coronavirus\u00bc SARS-CoV2. Grupo de trabajo de la Asociaci\u00f3n Espa\u00f1ola de Pediatr\u00eda (AEP)./ [Recommendations on the clinical managemen...",
-            "Recommendations on the clinical management of the COVID-19 infection by the \u00abnew coronavirus\u00bb SARS-CoV2. Spanish Paediatric Association working group",
-            "Recomendaciones sobre el manejo cl\u00ednico de la infecci\u00f3n por el \u00abnuevo coronavirus\u00bb SARS-CoV2. Grupo de trabajo de la Asociaci\u00f3n Espa\u00f1ola de Pediatr\u00eda (AEP)",
-            "Chinese expert consensus on the perinatal and neonatal management for the prevention and control of the 2019 novel coronavirus infection (First edition).",
-            "European consensus recommendations for neonatal and paediatric retrievals of positive or suspected COVID-19 patients."
+            "Simulated Assessment of Pharmacokinetically Guided Dosing for Investigational Treatments of Pediatric Patients With Coronavirus Disease 2019.",
+            "Simulated Assessment of Pharmacokinetically Guided Dosing for Investigational Treatments of Pediatric Patients With Coronavirus Disease 2019",
+            "Multicenter initial guidance on use of antivirals for children with COVID-19/SARS-CoV-2",
+            "Clinical Features of Critical Coronavirus Disease 2019 in Children",
+            "Clinical Features of Critical Coronavirus Disease 2019 in Children"
           ]
         },
         {
           "turn": "only randomized trials",
-          "rewritten_query": "remdesivir AND children AND work AND covid19 [only: randomized_controlled_trial]",
+          "rewritten_query": "remdesivir AND children AND covid19 [only: randomized_controlled_trial]",
           "rules_fired": [
             {
               "rule": "EVIDENCE_FILTER",
@@ -913,122 +838,41 @@
               "detail": "leading cue 'only'"
             }
           ],
-          "boolean_query": "((children OR child OR paediatr OR pediatr OR infant OR adult OR hemato OR hematolog OR hemagglutinin OR hematopoiet OR hemagglutin OR hematoma) AND (work OR tirelessli OR ourselv OR informatician OR informaticist))",
+          "boolean_query": "((remdesivir OR favipiravir OR lopinavir OR ritonavir) AND (children OR child OR paediatr OR pediatr OR infant OR adult OR hemato))",
           "evidence_filter": "randomized_controlled_trial",
           "trace": [
             {
               "step": 1,
-              "decision": "RELAX_EXPAND_SYNONYMS",
-              "actual_hits": 1,
-              "source": "thesaurus"
+              "decision": "EVIDENCE_FILTER",
+              "actual_hits": 0,
+              "source": "rule"
             },
             {
               "step": 2,
               "decision": "RELAX_EXPAND_SYNONYMS",
-              "actual_hits": 3,
+              "actual_hits": 0,
               "source": "thesaurus"
             },
             {
               "step": 3,
               "decision": "RELAX_EXPAND_SYNONYMS",
-              "actual_hits": 6,
+              "actual_hits": 1,
               "source": "thesaurus"
             },
             {
               "step": 4,
-              "decision": "RELAX_WILDCARD",
-              "actual_hits": 6,
-              "source": "kgram"
-            },
-            {
-              "step": 5,
-              "decision": "RELAX_WILDCARD",
-              "actual_hits": 6,
-              "source": "kgram"
-            },
-            {
-              "step": 6,
-              "decision": "RELAX_WILDCARD",
-              "actual_hits": 6,
-              "source": "kgram"
-            },
-            {
-              "step": 7,
-              "decision": "RELAX_DROP_CONCEPT",
-              "actual_hits": 6,
-              "source": "rule"
-            },
-            {
-              "step": 8,
-              "decision": "CLARIFY",
-              "actual_hits": 877,
+              "decision": "ACCEPT",
+              "actual_hits": 25,
               "source": "rule"
             }
           ],
-          "clarifications": [
-            {
-              "id": 1,
-              "label_terms": [
-                "perinatal",
-                "ensure",
-                "prevention"
-              ],
-              "label_stems": [
-                "perinat",
-                "ensur",
-                "prevent"
-              ],
-              "size": 39
-            },
-            {
-              "id": 2,
-              "label_terms": [
-                "mental",
-                "older",
-                "skills"
-              ],
-              "label_stems": [
-                "mental",
-                "older",
-                "skill"
-              ],
-              "size": 38
-            },
-            {
-              "id": 3,
-              "label_terms": [
-                "home",
-                "parents",
-                "care"
-              ],
-              "label_stems": [
-                "home",
-                "parent",
-                "care"
-              ],
-              "size": 35
-            },
-            {
-              "id": 4,
-              "label_terms": [
-                "intervention",
-                "systematic",
-                "search"
-              ],
-              "label_stems": [
-                "intervent",
-                "systemat",
-                "search"
-              ],
-              "size": 23
-            }
-          ],
+          "clarifications": [],
           "top_titles": [
-            "Recomendaciones sobre el manejo cl\u00ednico de la infecci\u00f3n por el \u00abnuevo coronavirus\u00bc SARS-CoV2. Grupo de trabajo de la Asociaci\u00f3n Espa\u00f1ola de Pediatr\u00eda (AEP)./ [Recommendations on the clinical managemen...",
-            "Recommendations on the clinical management of the COVID-19 infection by the \u00abnew coronavirus\u00bb SARS-CoV2. Spanish Paediatric Association working group",
-            "Recomendaciones sobre el manejo cl\u00ednico de la infecci\u00f3n por el \u00abnuevo coronavirus\u00bb SARS-CoV2. Grupo de trabajo de la Asociaci\u00f3n Espa\u00f1ola de Pediatr\u00eda (AEP)",
-            "Chinese expert consensus on the perinatal and neonatal management for the prevention and control of the 2019 novel coronavirus infection (First edition).",
-            "European consensus recommendations for neonatal and paediatric retrievals of positive or suspected COVID-19 patients."
+            "A Trial of Lopinavir-Ritonavir in Adults Hospitalized with Severe Covid-19",
+            "A Trial of Lopinavir\u2013Ritonavir in Adults Hospitalized with Severe Covid-19",
+            "Triple combination of interferon beta-1b, lopinavir-ritonavir, and ribavirin in the treatment of patients admitted to hospital with COVID-19: an open-label, randomised, phase 2 trial",
+            "Triple combination of interferon beta-1b, lopinavir\u2013ritonavir, and ribavirin in the treatment of patients admitted to hospital with COVID-19: an open-label, randomised, phase 2 trial",
+            "Remdesivir in adults with severe COVID-19: a randomised, double-blind, placebo-controlled, multicentre trial"
           ]
         }
       ]
@@ -1085,35 +929,29 @@
               "detail": "leading cue 'only'"
             }
           ],
-          "boolean_query": "(asymptomat AND transmiss AND (covid OR covid19 OR sarscov2 OR ncov OR cov2 OR coronaviru) AND title:asymptomat)",
+          "boolean_query": "(asymptomat AND transmiss)",
           "evidence_filter": "observational",
           "trace": [
             {
               "step": 1,
-              "decision": "TIGHTEN_ADD_CONCEPT",
-              "actual_hits": 929,
+              "decision": "EVIDENCE_FILTER",
+              "actual_hits": 0,
               "source": "rule"
             },
             {
               "step": 2,
-              "decision": "TIGHTEN_TITLE_ZONE",
-              "actual_hits": 772,
-              "source": "rule"
-            },
-            {
-              "step": 3,
               "decision": "ACCEPT",
-              "actual_hits": 144,
+              "actual_hits": 80,
               "source": "rule"
             }
           ],
           "clarifications": [],
           "top_titles": [
-            "Healthcare Personnel Exposure to a Patient with Asymptomatic SARS-CoV2 Infection during a Prolonged Surgical Intervention",
-            "Predicting the impact of asymptomatic transmission, non-pharmaceutical intervention and testing on the spread of COVID19 COVID19",
-            "Transmission of 2019-nCoV Infection from an Asymptomatic Contact in Germany",
-            "Beware of asymptomatic transmission: Study on 2019-nCoV prevention and control measures based on extended SEIR model",
-            "Comparison of transmissibility of coronavirus between symptomatic and asymptomatic patients: Reanalysis of the Ningbo Covid-19 data"
+            "Retrospective Analysis of 2019-nCov-Infected Cases in Dongyang, Southeastern China",
+            "Characterization of an asymptomatic cohort of SARS-COV-2 infected individuals outside of Wuhan, China",
+            "[Clinical features of asymptomatic or subclinical COVID-19 in children].",
+            "[Clinical features of asymptomatic or subclinical COVID-19 in children]",
+            "A Review of Asymptomatic and Subclinical Middle East Respiratory Syndrome Coronavirus Infections"
           ]
         },
         {
@@ -1129,35 +967,29 @@
               "detail": "at most 2 concepts"
             }
           ],
-          "boolean_query": "(asymptomat AND transmiss AND (covid OR covid19 OR sarscov2 OR ncov OR cov2 OR coronaviru) AND title:asymptomat AND NOT (children OR child OR paediatr OR pediatr))",
+          "boolean_query": "(asymptomat AND transmiss AND NOT (children OR child OR paediatr OR pediatr))",
           "evidence_filter": "observational",
           "trace": [
             {
               "step": 1,
-              "decision": "TIGHTEN_ADD_CONCEPT",
-              "actual_hits": 789,
+              "decision": "EVIDENCE_FILTER",
+              "actual_hits": 0,
               "source": "rule"
             },
             {
               "step": 2,
-              "decision": "TIGHTEN_TITLE_ZONE",
-              "actual_hits": 654,
-              "source": "rule"
-            },
-            {
-              "step": 3,
               "decision": "ACCEPT",
-              "actual_hits": 130,
+              "actual_hits": 56,
               "source": "rule"
             }
           ],
           "clarifications": [],
           "top_titles": [
-            "Healthcare Personnel Exposure to a Patient with Asymptomatic SARS-CoV2 Infection during a Prolonged Surgical Intervention",
-            "Predicting the impact of asymptomatic transmission, non-pharmaceutical intervention and testing on the spread of COVID19 COVID19",
-            "Transmission of 2019-nCoV Infection from an Asymptomatic Contact in Germany",
-            "Beware of asymptomatic transmission: Study on 2019-nCoV prevention and control measures based on extended SEIR model",
-            "Comparison of transmissibility of coronavirus between symptomatic and asymptomatic patients: Reanalysis of the Ningbo Covid-19 data"
+            "Retrospective Analysis of 2019-nCov-Infected Cases in Dongyang, Southeastern China",
+            "Characterization of an asymptomatic cohort of SARS-COV-2 infected individuals outside of Wuhan, China",
+            "A Review of Asymptomatic and Subclinical Middle East Respiratory Syndrome Coronavirus Infections",
+            "The natural history and transmission potential of asymptomatic SARS-CoV-2 infection",
+            "The natural history and transmission potential of asymptomatic SARS-CoV-2 infection"
           ]
         }
       ]

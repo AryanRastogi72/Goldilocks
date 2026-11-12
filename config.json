@@ -26,5 +26,18 @@
     "seed": 42,
     "clarify_candidates": 300,
     "clarify_min_size": 10,
-    "topic_switch_jaccard": 0.2
+    "topic_switch_jaccard": 0.2,
+    "clarify_label_min_coverage": 0.3,
+    "evidence_weight": 0.0,
+    "evidence_candidates": 100,
+    "evidence_g": {
+        "systematic_review_meta_analysis": 1.0,
+        "randomized_controlled_trial": 0.85,
+        "observational": 0.6,
+        "case_report_series": 0.4,
+        "modelling_simulation": 0.3,
+        "lab_animal": 0.25,
+        "opinion_editorial": 0.1,
+        "other": 0.5
+    }
 }

@@ -55,20 +55,31 @@ def leader_follower(vectors, seed):
     return sorted((c for c in clusters if c), key=len, reverse=True)
 
 
-def cluster_label_stems(cluster, vectors, excluded_stems, index):
-    """Stems ranked by (mean weight inside the cluster) - (mean weight over all candidates)."""
+def readable_surface_form(stem, surface_forms):
+    """The most frequent surface form of a stem, if it is alphabetic with at least 3 letters."""
+    form = surface_forms[stem].most_common(1)[0][0]
+    return form if form.isalpha() and len(form) >= 3 else None
+
+
+def cluster_label_stems(cluster, vectors, excluded_stems, index, surface_forms, min_coverage):
+    """
+    Stems ranked by (mean weight inside the cluster) - (mean weight over all candidates).
+    A label stem must occur in at least min_coverage of the cluster's documents and have a readable surface form.
+    """
     overall = defaultdict(float)
     for vector in vectors:
         for stem, weight in vector.items():
             overall[stem] += weight
-    inside = defaultdict(float)
+    inside, document_counts = defaultdict(float), Counter()
     for position in cluster:
         for stem, weight in vectors[position].items():
             inside[stem] += weight
+            document_counts[stem] += 1
     contrast = {
         stem: total / len(cluster) - overall[stem] / len(vectors)
         for stem, total in inside.items()
         if stem not in excluded_stems and not stem.isdigit() and index.get_df(stem) >= LABEL_MIN_DF
+        and document_counts[stem] / len(cluster) >= min_coverage and readable_surface_form(stem, surface_forms)
     }
     return sorted(contrast, key=lambda stem: (-contrast[stem], stem))
 
@@ -98,7 +109,7 @@ def build_clarifications(doc_ids, concepts, index, config):
     excluded_stems = set(query_stems) | stemmed_stopwords()
     choices, taken_first_labels = [], set()
     for cluster in big_clusters:
-        label_stems = pick_labels(cluster_label_stems(cluster, vectors, excluded_stems, index), taken_first_labels)
+        label_stems = pick_labels(cluster_label_stems(cluster, vectors, excluded_stems, index, surface_forms, config["clarify_label_min_coverage"]), taken_first_labels)
         if not label_stems:
             continue
         taken_first_labels.add(label_stems[0])
