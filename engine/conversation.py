@@ -8,12 +8,77 @@ Rules, in the order they are checked:
 """
 
 import re
+import threading
+import time
+from collections import OrderedDict
 
-from engine.controller import run_controller
-from engine.evidence import class_of
+from engine.controller import ranking_stems, run_controller
+from engine.evidence import class_of, docs_of_class, g_value, validate_class
 from engine.query_understanding import make_concept, mark_elimination, understand
+from engine.ranker import apply_evidence_weight, rank_bm25
 
-SESSIONS = {}
+KEEP_FILTER = object()
+BM25_DEPTH = 1000
+
+
+class SessionStore:
+    """
+    In-memory sessions. At most max_sessions are kept; a session idle for idle_seconds expires; when the store
+    is full the least recently used session is evicted first. All access goes through one lock.
+    """
+
+    def __init__(self, max_sessions=500, idle_seconds=3600, clock=time.monotonic):
+        self.max_sessions, self.idle_seconds, self.clock = max_sessions, idle_seconds, clock
+        self._items = OrderedDict()
+        self._lock = threading.Lock()
+
+    def configure(self, max_sessions, idle_seconds):
+        with self._lock:
+            self.max_sessions, self.idle_seconds = max_sessions, idle_seconds
+
+    def _expire(self):
+        now = self.clock()
+        for session_id in [s for s, (_, last_used) in self._items.items() if now - last_used > self.idle_seconds]:
+            del self._items[session_id]
+
+    def setdefault(self, session_id, default):
+        with self._lock:
+            self._expire()
+            if session_id not in self._items:
+                self._items[session_id] = [default, self.clock()]
+                while len(self._items) > self.max_sessions:
+                    self._items.popitem(last=False)
+            return self._touch(session_id)
+
+    def _touch(self, session_id):
+        self._items[session_id][1] = self.clock()
+        self._items.move_to_end(session_id)
+        return self._items[session_id][0]
+
+    def __getitem__(self, session_id):
+        with self._lock:
+            self._expire()
+            if session_id not in self._items:
+                raise KeyError(session_id)
+            return self._touch(session_id)
+
+    def __contains__(self, session_id):
+        with self._lock:
+            self._expire()
+            return session_id in self._items
+
+    def __len__(self):
+        with self._lock:
+            self._expire()
+            return len(self._items)
+
+    def pop(self, session_id, default=None):
+        with self._lock:
+            item = self._items.pop(session_id, None)
+            return item[0] if item else default
+
+
+SESSIONS = SessionStore()
 
 EVIDENCE_PHRASES = [
     (r"(?:systematic\s+)?reviews?|meta[- ]analys[ie]s|meta[- ]analyses", "systematic_review_meta_analysis"),
@@ -117,20 +182,58 @@ def update_concepts(session, text, original_text, excluded, index, config, rules
     return merge_followup(session["concepts"], new_concepts, excluded, rules)
 
 
-def finish_turn(session, text, concepts, index, config, allow_clarify, rules):
-    mark_elimination(concepts, index, config)
+def bm25_full_collection(concepts, session, index, config):
+    """
+    The "bm25" ranker: BM25 over the whole collection on the concept stems. There is no Boolean set; the evidence
+    filter still applies, and documents containing an excluded concept are removed from the ranking.
+    Returns (ranked, trace, clarifications, ranking stems, hits).
+    """
+    stems = sorted({s for c in concepts if not c.get("excluded") for s in c["stems"]})
+    excluded_stems = {s for c in concepts if c.get("excluded") for s in c["stems"]}
+    allowed = docs_of_class(index, session["evidence_filter"]) if session["evidence_filter"] else None
+    excluded_docs = {d for s in excluded_stems for d, _ in index.get_postings(s)}
+    matching = {d for s in stems for d, _ in index.get_postings(s)} - excluded_docs
+    matching = matching if allowed is None else matching & allowed
+    weight, top_k = config["evidence_weight"], config["top_k"]
+    depth = BM25_DEPTH if excluded_docs else (max(config["evidence_candidates"], top_k) if weight else top_k)
+    ranked = rank_bm25(stems, index, top_k=depth, doc_ids=allowed, k1=config["bm25_k1"], b=config["bm25_b"], title_boost=config["title_boost"])
+    ranked = [pair for pair in ranked if pair[1] not in excluded_docs]
+    ranked = apply_evidence_weight(ranked, weight, lambda doc_id: g_value(class_of(index, doc_id), config))[:top_k]
+    filter_note = f"; evidence filter {session['evidence_filter']} applied" if session["evidence_filter"] else ""
+    trace = [{
+        "step": 1, "query": "BM25 over the whole collection: " + " ".join(stems),
+        "df_table": {s: index.get_df(s) for s in stems}, "estimated_hits": len(matching), "actual_hits": len(matching),
+        "decision": "BM25_FULL_COLLECTION",
+        "reason": "ranker bm25: no Boolean set is built; every document containing a concept stem is scored" + filter_note,
+        "source": "rule",
+    }]
+    return ranked, trace, [], stems, len(matching)
+
+
+def agent_turn(text, concepts, session, index, config, allow_clarify):
     ranked, log, boolean_query = run_controller(
         text, index, config, concepts=concepts, allow_clarify=allow_clarify, evidence_filter=session["evidence_filter"]
     )
+    return ranked, log.steps, log.clarifications, log.ranking_stems, len(log.final_docs), boolean_query
+
+
+def finish_turn(session, text, concepts, index, config, allow_clarify, rules, ranker="agent"):
+    mark_elimination(concepts, index, config)
+    if ranker == "bm25":
+        ranked, trace, clarifications, stems, hits = bm25_full_collection(concepts, session, index, config)
+        boolean_query = ""
+    else:
+        ranked, trace, clarifications, stems, hits, boolean_query = agent_turn(text, concepts, session, index, config, allow_clarify)
     session["concepts"] = concepts
     session["boolean_query"] = boolean_query
-    session["clarifications"] = log.clarifications
+    session["ranking_stems"] = stems
+    session["clarifications"] = clarifications
     result = {
         "rewritten_query": rewritten_query(concepts, session["evidence_filter"]),
         "rules_fired": rules,
         "boolean_query": boolean_query,
-        "trace": log.steps,
-        "clarifications": log.clarifications,
+        "trace": trace,
+        "clarifications": clarifications,
         "results": [
             {
                 "doc_id": doc_id, "ext_id": index.get_ext_id(doc_id), "title": index.get_doc_title(doc_id),
@@ -139,13 +242,23 @@ def finish_turn(session, text, concepts, index, config, allow_clarify, rules):
             for score, doc_id in ranked
         ],
         "evidence_filter": session["evidence_filter"],
+        "concepts": concepts,
+        "ranking_stems": stems,
+        "hits": hits,
+        "ranker": ranker,
     }
     session["turns"].append({"text": text, "rewritten_query": result["rewritten_query"], "rules_fired": rules})
     return result
 
 
-def handle_turn(session_id, text, index, config, allow_clarify=True):
+def handle_turn(session_id, text, index, config, allow_clarify=True, ranker="agent", evidence_filter=KEEP_FILTER):
+    """
+    One conversation turn. ranker is "agent" (Boolean controller) or "bm25" (full-collection BM25).
+    evidence_filter KEEP_FILTER keeps the session's filter; a class id sets it and None clears it.
+    """
     session = SESSIONS.setdefault(session_id, new_session())
+    if evidence_filter is not KEEP_FILTER:
+        session["evidence_filter"] = validate_class(evidence_filter) if evidence_filter else None
     rules = []
     evidence_class, remaining = extract_evidence_filter(text)
     excluded, remaining = extract_exclusions(remaining, index, config)
@@ -155,7 +268,7 @@ def handle_turn(session_id, text, index, config, allow_clarify=True):
         rules.insert(0, {"rule": "EVIDENCE_FILTER", "detail": evidence_class})
     if excluded:
         rules.insert(1 if evidence_class else 0, {"rule": "EXCLUSION", "detail": ", ".join(c["label"] for c in excluded)})
-    return finish_turn(session, text, concepts, index, config, allow_clarify, rules)
+    return finish_turn(session, text, concepts, index, config, allow_clarify, rules, ranker)
 
 
 def apply_clarification(session_id, choice_id, index, config):

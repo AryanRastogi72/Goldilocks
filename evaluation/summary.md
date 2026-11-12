@@ -74,22 +74,41 @@ Differences that could contribute (none was tested one by one):
 - Lucene may store document length in a lossy encoded norm; we use exact token counts (this detail comes from general knowledge, not from the BEIR paper, and was not checked).
 - The BEIR corpus version and judgement handling may differ from the files we use (our run uses the same 171,332 documents and 50 topics).
 
-## Evidence classifier accuracy
+## Evidence classifier accuracy (human labels)
 
-Human labels: TODO(metric). The blind sample `evaluation/evidence_label_sample.csv` has not been labelled by a human yet; after labelling, `python -m evaluation.score_evidence_labels` saves `evaluation/evidence_scores.json`.
+TODO(metric): the blind sample `evaluation/evidence_label_sample.csv` has not been labelled by a human yet; after labelling, `python -m evaluation.score_evidence_labels` saves `evaluation/evidence_scores.json`.
 
-AI reference labels: agreement with reference labels, not human-validated accuracy. On 120 rows (documents with abstracts only), re-weighted overall agreement is 0.597 and unweighted agreement 0.733. Labels were made blind (see `evaluation/evidence_label_sample_ai_note.md`). Details in `evaluation/evidence_scores_ai.json`.
+## Evidence classifier: agreement with reference labels, not human-validated accuracy
 
-| class | precision (re-weighted) | recall (re-weighted) |
-|---|---|---|
-| systematic_review_meta_analysis | 0.733 | 1.000 |
-| randomized_controlled_trial | 0.800 | 0.685 |
-| observational | 0.867 | 0.412 |
-| case_report_series | 0.733 | 0.123 |
-| modelling_simulation | 0.933 | 0.922 |
-| lab_animal | 0.867 | 0.671 |
-| opinion_editorial | 0.467 | 0.142 |
-| other | 0.467 | 0.930 |
+Labels were made blind on 120 sampled documents with abstracts (see `evaluation/evidence_label_sample_ai_note.md`). Details in `evaluation/evidence_scores_ai.json`.
+
+Re-weighted by inverse sampling probability (precision unbiased; recall, F1 and accuracy estimated for the corpus):
+
+| class | precision | recall | F1 |
+|---|---|---|---|
+| systematic_review_meta_analysis | 0.733 | 1.000 | 0.846 |
+| randomized_controlled_trial | 0.800 | 0.685 | 0.738 |
+| observational | 0.867 | 0.412 | 0.559 |
+| case_report_series | 0.733 | 0.123 | 0.211 |
+| modelling_simulation | 0.933 | 0.922 | 0.927 |
+| lab_animal | 0.867 | 0.671 | 0.756 |
+| opinion_editorial | 0.467 | 0.142 | 0.218 |
+| other | 0.467 | 0.930 | 0.621 |
+| overall | accuracy 0.597 | | |
+
+Unweighted sample numbers (the sample is balanced by predicted class, so recall and accuracy are not corpus estimates):
+
+| class | precision | recall | F1 |
+|---|---|---|---|
+| systematic_review_meta_analysis | 0.733 | 1.000 | 0.846 |
+| randomized_controlled_trial | 0.800 | 0.923 | 0.857 |
+| observational | 0.867 | 0.591 | 0.703 |
+| case_report_series | 0.733 | 0.688 | 0.710 |
+| modelling_simulation | 0.933 | 0.875 | 0.903 |
+| lab_animal | 0.867 | 0.812 | 0.839 |
+| opinion_editorial | 0.467 | 0.778 | 0.583 |
+| other | 0.467 | 0.412 | 0.437 |
+| overall | accuracy 0.733 | | |
 
 ## Where EvidenceLens wins and loses
 

@@ -104,8 +104,12 @@ def chart_evidence_classes():
     axis.set_yticks(range(len(names)))
     axis.set_yticklabels([n.replace("_", " ") for n in names])
     axis.invert_yaxis()
-    axis.set_xscale("log")
-    axis.set_xlabel("documents (log scale)")
+    for position, value in enumerate(values):
+        axis.text(value + max(values) * 0.01, position, f"{value:,}", va="center", fontsize=8)
+    axis.set_xlim(0, max(values) * 1.22)
+    axis.set_xticks([0, 50000, 100000])
+    axis.set_xticklabels(["0", "50,000", "100,000"])
+    axis.set_xlabel("documents (linear scale)")
     save(figure, "4_evidence_classes", {"classes": names, "documents": values, "total": sum(values)})
 
 

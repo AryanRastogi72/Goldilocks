@@ -7,3 +7,6 @@ pandas==2.3.3
 altair==5.5.0
 streamlit==1.51.0
 gensim==4.4.0
+fastapi==0.162.5
+uvicorn==0.54.0
+httpx==0.28.1

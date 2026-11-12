@@ -40,6 +40,7 @@ class ControllerLog:
         self.steps = []
         self.clarifications = []
         self.final_docs = set()
+        self.ranking_stems = []
 
     def add(self, query, df_table, estimated_hits, actual_hits, decision, reason, source):
         self.steps.append({
@@ -322,6 +323,7 @@ def run_controller(text, index, config=None, concepts=None, allow_clarify=False,
     docs = matching_docs(ast, index, evidence_docs)
     ranked = rank_final(ast, docs, concepts, index, config, log, evidence_docs, top_k)
     log.final_docs = docs
+    log.ranking_stems = ranking_stems(ast, concepts)
     return ranked, log, ast_to_string(ast)
 
 

@@ -1,0 +1,90 @@
+{
+  "note": "warm-up request sent first; fresh session per request; TestClient, so no network time",
+  "groups": {
+    "agent/metadata.query": {
+      "requests": 50,
+      "mean_ms": 449.87198799994076,
+      "median_ms": 418.3238000041456,
+      "p95_ms": 988.32720000064,
+      "worst_ms": 1741.1307000002125,
+      "mean_controller_ms": 348.8266699993983,
+      "mean_explain_ms": 101.02279000129784,
+      "explain_share": 0.22455896943134662,
+      "slowest_topic": {
+        "topic": "4",
+        "text": "how do people die from the coronavirus",
+        "total_ms": 1741.1307000002125,
+        "controller_ms": 1682.7813999989303,
+        "explain_ms": 58.3288000052562
+      }
+    },
+    "agent/text": {
+      "requests": 50,
+      "mean_ms": 257.4965620000148,
+      "median_ms": 200.17099999677157,
+      "p95_ms": 561.0291000048164,
+      "worst_ms": 921.9013000110863,
+      "mean_controller_ms": 117.48892200062983,
+      "mean_explain_ms": 139.98083199985558,
+      "explain_share": 0.5436221397000537,
+      "slowest_topic": {
+        "topic": "41",
+        "text": "What are the impacts of COVID-19 among African-Americans that differ from the rest of the U.S. population?",
+        "total_ms": 921.9013000110863,
+        "controller_ms": 710.0168000033591,
+        "explain_ms": 211.83939999900758
+      }
+    },
+    "bm25/metadata.query": {
+      "requests": 50,
+      "mean_ms": 277.2172619999037,
+      "median_ms": 260.2014500007499,
+      "p95_ms": 430.68740000308026,
+      "worst_ms": 508.93809999979567,
+      "mean_controller_ms": 178.8272259995574,
+      "mean_explain_ms": 98.36239200114505,
+      "explain_share": 0.3548205883412095,
+      "slowest_topic": {
+        "topic": "2",
+        "text": "coronavirus response to weather changes",
+        "total_ms": 508.93809999979567,
+        "controller_ms": 378.2284000044456,
+        "explain_ms": 130.668700003298
+      }
+    },
+    "bm25/text": {
+      "requests": 50,
+      "mean_ms": 366.4210780005669,
+      "median_ms": 333.80319999560015,
+      "p95_ms": 611.7980999988504,
+      "worst_ms": 688.6949000036111,
+      "mean_controller_ms": 246.25210000085644,
+      "mean_explain_ms": 120.14207400061423,
+      "explain_share": 0.3278798115441065,
+      "slowest_topic": {
+        "topic": "11",
+        "text": "what are the guidelines for triaging patients infected with coronavirus?",
+        "total_ms": 688.6949000036111,
+        "controller_ms": 535.4851000010967,
+        "explain_ms": 153.18930000648834
+      }
+    }
+  },
+  "all": {
+    "requests": 200,
+    "mean_ms": 337.75172250010655,
+    "median_ms": 300.3980999928899,
+    "p95_ms": 670.7121999934316,
+    "worst_ms": 1741.1307000002125,
+    "mean_controller_ms": 222.8487295001105,
+    "mean_explain_ms": 114.87702200072818,
+    "explain_share": 0.34012268287008346
+  },
+  "worst_request": {
+    "topic": "4",
+    "text": "how do people die from the coronavirus",
+    "total_ms": 1741.1307000002125,
+    "controller_ms": 1682.7813999989303,
+    "explain_ms": 58.3288000052562
+  }
+}

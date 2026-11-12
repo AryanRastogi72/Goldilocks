@@ -83,26 +83,36 @@ def beir_section(results, beir):
     ]
 
 
+AI_SECTION_TITLE = "Evidence classifier: agreement with reference labels, not human-validated accuracy"
+
+
+def score_table(per_class, accuracy):
+    lines = ["| class | precision | recall | F1 |", "|---|---|---|---|"]
+    for class_id, row in per_class.items():
+        cells = [f"{row[k]:.3f}" if row[k] is not None else "n/a" for k in ("precision", "recall", "f1")]
+        lines.append(f"| {class_id} | " + " | ".join(cells) + " |")
+    return lines + [f"| overall | accuracy {accuracy:.3f} | | |"]
+
+
 def evidence_section():
     human_path = os.path.join("evaluation", "evidence_scores.json")
     ai_path = os.path.join("evaluation", "evidence_scores_ai.json")
-    lines = ["## Evidence classifier accuracy", ""]
+    lines = ["## Evidence classifier accuracy (human labels)", ""]
     if os.path.exists(human_path):
         scores = load(human_path)
-        lines += [f"Human labels: re-weighted accuracy {scores['weighted_accuracy']:.3f} on {scores['labelled_rows']} labelled rows (documents with abstracts only). Details in `evaluation/evidence_scores.json`.", ""]
+        lines += [f"Re-weighted accuracy {scores['weighted_accuracy']:.3f} on {scores['labelled_rows']} human-labelled rows (documents with abstracts only). Details in `evaluation/evidence_scores.json`.", ""]
     else:
-        lines += ["Human labels: TODO(metric). The blind sample `evaluation/evidence_label_sample.csv` has not been labelled by a human yet; "
+        lines += ["TODO(metric): the blind sample `evaluation/evidence_label_sample.csv` has not been labelled by a human yet; "
                   "after labelling, `python -m evaluation.score_evidence_labels` saves `evaluation/evidence_scores.json`.", ""]
     if os.path.exists(ai_path):
         ai = load(ai_path)
-        per_class = ai["weighted_per_class"]
-        lines += [f"AI reference labels: {ai['note']}. On {ai['labelled_rows']} rows (documents with abstracts only), re-weighted overall agreement is "
-                  f"{ai['weighted_accuracy']:.3f} and unweighted agreement {ai['unweighted_accuracy']:.3f}. Labels were made blind "
-                  "(see `evaluation/evidence_label_sample_ai_note.md`). Details in `evaluation/evidence_scores_ai.json`.", "",
-                  "| class | precision (re-weighted) | recall (re-weighted) |", "|---|---|---|"]
-        for class_id, row in per_class.items():
-            lines.append(f"| {class_id} | {row['precision']:.3f} | {row['recall']:.3f} |")
-        lines.append("")
+        lines += [f"## {AI_SECTION_TITLE}", "",
+                  f"Labels were made blind on {ai['labelled_rows']} sampled documents with abstracts. "
+                  "Details in `evaluation/evidence_scores_ai.json`.", "",
+                  "Re-weighted by inverse sampling probability (precision unbiased; recall, F1 and accuracy estimated for the corpus):", ""]
+        lines += score_table(ai["weighted_per_class"], ai["weighted_accuracy"])
+        lines += ["", "Unweighted sample numbers (the sample is balanced by predicted class, so recall and accuracy are not corpus estimates):", ""]
+        lines += score_table(ai["unweighted_per_class"], ai["unweighted_accuracy"]) + [""]
     return lines
 
 
@@ -125,21 +135,34 @@ def comparison_sentence(test):
             f"(p = {test['p_value']:.4f}, {test['run_a']} wins {test['topics_a_wins']}, {test['run_b']} wins {test['topics_b_wins']}, tied {test['topics_tied']}); {verdict}.")
 
 
+def top_differences(results, field, topic_text):
+    """The topics where R4 beats R1 most and loses most on nDCG@10, as lists of dicts."""
+    r1 = results["runs"]["R1"]["fields"][field]["per_topic"]
+    r4 = results["runs"]["R4"]["fields"][field]["per_topic"]
+    ranked = sorted(((r4[t]["ndcg_at_10"] - r1[t]["ndcg_at_10"], t) for t in r4), reverse=True)
+
+    def row(difference, topic):
+        return {
+            "topic": topic, "text": topic_text[field][topic], "r1_ndcg_at_10": r1[topic]["ndcg_at_10"],
+            "r4_ndcg_at_10": r4[topic]["ndcg_at_10"], "difference": difference,
+            "final_query": r4[topic]["final_query"], "hits": r4[topic]["hits"],
+        }
+
+    return [row(d, t) for d, t in ranked[:EXAMPLES_SHOWN]], [row(d, t) for d, t in ranked[::-1][:EXAMPLES_SHOWN]]
+
+
 def wins_and_losses(results, significance, topic_text):
     lines = ["## Where EvidenceLens wins and loses", "", "R4 is the EvidenceLens agent (controller v2.1) and R1 is plain BM25 on the full collection."]
     for field in FIELDS:
-        r1 = results["runs"]["R1"]["fields"][field]["per_topic"]
-        r4 = results["runs"]["R4"]["fields"][field]["per_topic"]
-        ranked = sorted(((r4[t]["ndcg_at_10"] - r1[t]["ndcg_at_10"], t) for t in r4), reverse=True)
+        wins, losses = top_differences(results, field, topic_text)
         lines += ["", f"### {FIELD_LABELS[field]}", "", "Comparisons:"]
         lines += [comparison_sentence(t) for t in significance["tests"] if t["field"] == field]
-        for title, rows in (("Topics where R4 beats R1 most (nDCG@10)", ranked[:EXAMPLES_SHOWN]),
-                            ("Topics where R4 loses to R1 most (nDCG@10)", ranked[::-1][:EXAMPLES_SHOWN])):
+        for title, rows in (("Topics where R4 beats R1 most (nDCG@10)", wins), ("Topics where R4 loses to R1 most (nDCG@10)", losses)):
             lines += ["", f"{title}:", "", "| topic | text | R1 | R4 | difference | R4 final Boolean query | R4 hits |", "|---|---|---|---|---|---|---|"]
-            for difference, topic in rows:
-                query = r4[topic]["final_query"].replace("|", "/")
-                lines.append(f"| {topic} | {topic_text[field][topic]} | {r1[topic]['ndcg_at_10']:.3f} | {r4[topic]['ndcg_at_10']:.3f} | "
-                             f"{difference:+.3f} | `{query}` | {r4[topic]['hits']} |")
+            for r in rows:
+                query = r["final_query"].replace("|", "/")
+                lines.append(f"| {r['topic']} | {r['text']} | {r['r1_ndcg_at_10']:.3f} | {r['r4_ndcg_at_10']:.3f} | "
+                             f"{r['difference']:+.3f} | `{query}` | {r['hits']} |")
     return lines
 
 
