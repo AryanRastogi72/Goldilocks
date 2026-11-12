@@ -9,6 +9,7 @@ import sys
 import json
 import math
 import re
+import sqlite3
 from collections import defaultdict, OrderedDict
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -50,6 +51,7 @@ class SearchIndex:
         # cache for loaded shards (shard_id -> {term: [[doc_id, tf], ...]})
         self._shard_cache = OrderedDict()
         self._title_postings = None
+        self._abstract_db = None
 
     def get_df(self, term):
         """Returns document frequency for a term, or 0 if not in vocabulary."""
@@ -112,6 +114,19 @@ class SearchIndex:
                 self._title_postings = json.load(f)
         return self._title_postings.get(term, [])
 
+    def get_title_and_abstract(self, doc_id):
+        """Returns (title, abstract) from abstracts.sqlite, opened once on first use."""
+        if self._abstract_db is None:
+            self._abstract_db = sqlite3.connect(os.path.join(self.index_dir, "abstracts.sqlite"), check_same_thread=False)
+        row = self._abstract_db.execute("SELECT title, abstract FROM docs WHERE doc_id = ?", (doc_id,)).fetchone()
+        return row if row else ("", "")
+
+    def close(self):
+        """Closes the abstracts database if it was opened."""
+        if self._abstract_db is not None:
+            self._abstract_db.close()
+            self._abstract_db = None
+
     def get_doc_title(self, doc_id):
         """Returns the title of a document given its internal integer ID."""
         meta = self.doc_meta.get(str(doc_id))
@@ -139,6 +154,9 @@ class SearchIndex:
         if op == "TERM":
             postings = self.get_postings(ast[1])
             return [doc_id for doc_id, tf in postings]
+
+        if op == "TITLE":
+            return [doc_id for doc_id, tf in self.get_title_postings(ast[1])]
 
         if op == "WILDCARD":
             result = set()
@@ -251,6 +269,9 @@ class SearchIndex:
         if op == "TERM":
             return self.get_df(ast[1])
 
+        elif op == "TITLE":
+            return len(self.get_title_postings(ast[1]))
+
         elif op == "WILDCARD":
             prefix = ast[1]
             expanded = self.expand_wildcard(prefix)
@@ -288,6 +309,8 @@ class SearchIndex:
         op = ast[0]
         if op == "TERM":
             table[ast[1]] = self.get_df(ast[1])
+        elif op == "TITLE":
+            table[f"title:{ast[1]}"] = len(self.get_title_postings(ast[1]))
         elif op == "WILDCARD":
             prefix = ast[1]
             expanded = self.expand_wildcard(prefix)

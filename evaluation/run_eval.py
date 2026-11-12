@@ -6,13 +6,12 @@ Metrics computed:
   - Fraction of queries landing in the target band (20 to 200 hits)
   - Boolean set precision and recall (using qrels)
   - P@10 after tf-idf cosine ranking
-  - Average LLM calls used per query
+  - Average controller steps per query
 
 Baselines compared:
-  1. Goldilocks controller (with or without LLM)
-  2. One-shot LLM Boolean query (no controller refinement)
-  3. AND of all keywords (simple baseline)
-  4. OR of all keywords ranked by tf-idf (recall-oriented baseline)
+  1. Controller (offline rules)
+  2. AND of all keywords (simple baseline)
+  3. OR of all keywords ranked by tf-idf (recall-oriented baseline)
 
 Outputs: tables (printed + saved as TSV) and charts (saved as PNG).
 """
@@ -29,8 +28,13 @@ from engine.search import SearchIndex
 from engine.boolean_parser import parse, collect_terms, ParseError
 from engine.ranker import rank_documents
 from evaluation.metrics import compute_p_at_k, compute_ndcg_at_k, compute_mrr_at_k
-from engine.controller import run_controller, load_config, keyword_terms
-from engine.llm_client import propose_boolean_query
+from engine.controller import run_controller, load_config
+from pipeline.tokenizer import tokenize
+
+
+def keyword_terms(text):
+    """Return stemmed keyword terms, excluding Boolean operator words."""
+    return [term for term in tokenize(text) if term not in {"and", "or", "not"}]
 
 
 def load_eval_data():
@@ -98,22 +102,6 @@ def baseline_or_keywords(query_text, index, top_k=10):
         return set(), [], query_str
 
 
-def baseline_one_shot_llm(query_text, index, top_k=10):
-    """Run one Groq Boolean proposal without controller refinement."""
-    try:
-        query_str = propose_boolean_query(query_text)
-        ast = parse(query_str)
-    except RuntimeError as error:
-        return {"available": False, "error": str(error)}
-    except ParseError:
-        return {"available": False, "error": "Groq returned an invalid Boolean query."}
-
-    docs = index.execute_boolean(ast)
-    terms = list(collect_terms(ast))
-    ranked = rank_documents(docs, terms, index, top_k=top_k)
-    return {"available": True, "query": query_str, "docs": docs, "ranked": ranked}
-
-
 def run_evaluation():
     """
     Runs the full evaluation on all TREC-COVID topics.
@@ -136,18 +124,9 @@ def run_evaluation():
     print(f"Target band: [{target_low}, {target_high}]")
     print()
 
-    # Always allow cache lookup. On a cache miss, the client uses the API key
-    # if present and the controller falls back to keywords if it is absent.
-    use_llm = True
-    if os.environ.get("GROQ_API_KEY"):
-        print("[mode] Groq cache and API enabled")
-    else:
-        print("[mode] Cached model responses when available, keyword fallback otherwise")
-
     # results storage
     results = {
         "goldilocks": [],
-        "one_shot_llm_baseline": [],
         "and_baseline": [],
         "or_baseline": [],
     }
@@ -167,38 +146,9 @@ def run_evaluation():
         # get relevant docs for this query (qrels with score > 0)
         relevant = {did for did, score in qrels[qid].items() if score > 0}
 
-        # Reuse the proposal cache in Goldilocks after measuring one shot output.
-        llm_result = baseline_one_shot_llm(query_text, index, top_k)
-        if llm_result["available"]:
-            llm_ext = {index.get_ext_id(doc_id) for doc_id in llm_result["docs"]}
-            llm_ranked_ext = [index.get_ext_id(doc_id) for _, doc_id in llm_result["ranked"]]
-            llm_p, llm_r = compute_precision_recall(llm_ext, relevant)
-            results["one_shot_llm_baseline"].append({
-                "qid": qid, "available": True, "hits": len(llm_result["docs"]),
-                "in_band": target_low <= len(llm_result["docs"]) <= target_high,
-                "precision": llm_p, "recall": llm_r,
-                "p_at_10": compute_p_at_k(llm_ranked_ext, relevant, k=10),
-                "ndcg_at_10": compute_ndcg_at_k(llm_ranked_ext, qrels[qid], k=10),
-                "mrr_at_10": compute_mrr_at_k(llm_ranked_ext, qrels[qid], k=10),
-                "ranked_doc_ids": llm_ranked_ext,
-                "retrieved_ids_key": f"one_shot_llm_baseline:{qid}",
-                "query": llm_result["query"],
-            })
-            retrieved_ids["one_shot_llm_baseline"][qid] = sorted(llm_ext)
-            query_use_llm = True
-            print(f"  [one shot LLM] hits={len(llm_result['docs'])}")
-        else:
-            results["one_shot_llm_baseline"].append({
-                "qid": qid, "available": False, "error": llm_result["error"]
-            })
-            query_use_llm = False
-            print(f"  [one shot LLM] unavailable: {llm_result['error']}")
-
         # ---- Goldilocks controller ----
         try:
-            ranked_gc, ctrl_log, final_query = run_controller(
-                query_text, index, config, use_llm=query_use_llm
-            )
+            ranked_gc, ctrl_log, final_query = run_controller(query_text, index, config)
             final_ast = parse(final_query)
             final_doc_ids = index.execute_boolean(final_ast)
             gc_docs = {index.get_ext_id(doc_id) for doc_id in final_doc_ids}
@@ -224,12 +174,11 @@ def run_evaluation():
                 "mrr_at_10": compute_mrr_at_k(gc_ranked_ext, qrels[qid], k=10),
                 "ranked_doc_ids": gc_ranked_ext,
                 "retrieved_ids_key": f"goldilocks:{qid}",
-                "llm_calls": ctrl_log.llm_calls,
-                "iterations": len(ctrl_log.iterations),
+                "iterations": len(ctrl_log.steps),
                 "final_query": final_query,
             })
             retrieved_ids["goldilocks"][qid] = sorted(gc_docs)
-            print(f"  [goldilocks] hits={gc_actual}, in_band={gc_in_band}, P@10={gc_p10:.3f}, llm_calls={ctrl_log.llm_calls}")
+            print(f"  [goldilocks] hits={gc_actual}, in_band={gc_in_band}, P@10={gc_p10:.3f}")
         except Exception as e:
             print(f"  [goldilocks] ERROR: {e}")
             results["goldilocks"].append({
@@ -238,7 +187,7 @@ def run_evaluation():
                 "ndcg_at_10": 0, "mrr_at_10": 0,
                 "ranked_doc_ids": [],
                 "retrieved_ids_key": f"goldilocks:{qid}",
-                "llm_calls": 0, "iterations": 0, "final_query": "ERROR",
+                "iterations": 0, "final_query": "ERROR",
             })
             retrieved_ids["goldilocks"][qid] = []
 
@@ -293,11 +242,11 @@ def run_evaluation():
     print("AGGREGATE RESULTS")
     print("=" * 70)
 
-    for method in ["goldilocks", "one_shot_llm_baseline", "and_baseline", "or_baseline"]:
+    for method in ["goldilocks", "and_baseline", "or_baseline"]:
         entries = [entry for entry in results[method] if entry.get("available", True)]
         if not entries:
             if results[method]:
-                print(f"\n{method.upper()}: no successful Groq responses")
+                print(f"\n{method.upper()}: no results")
             continue
 
         n = len(entries)
@@ -320,9 +269,7 @@ def run_evaluation():
         print(f"  Avg MRR@10:        {avg_mrr:.4f}")
 
         if method == "goldilocks":
-            avg_llm = sum(e.get("llm_calls", 0) for e in entries) / n
             avg_iter = sum(e.get("iterations", 0) for e in entries) / n
-            print(f"  Avg LLM calls:     {avg_llm:.2f}")
             print(f"  Avg iterations:    {avg_iter:.2f}")
 
     # ---- Save results ----
@@ -360,7 +307,7 @@ def _save_summary_table(results, config):
     headers = ["Method", "In Band %", "Avg Hits", "Avg Precision", "Avg Recall", "Avg P@10", "Avg nDCG@10", "Avg MRR@10"]
     rows = []
 
-    for method in ["goldilocks", "one_shot_llm_baseline", "and_baseline", "or_baseline"]:
+    for method in ["goldilocks", "and_baseline", "or_baseline"]:
         entries = [entry for entry in results[method] if entry.get("available", True)]
         if not entries:
             continue
@@ -396,8 +343,8 @@ def _generate_charts(results, config):
     target_high = config["target_band_high"]
 
     # Chart 1: Hit count distribution per method
-    methods = ["goldilocks", "one_shot_llm_baseline", "and_baseline", "or_baseline"]
-    titles = ["Goldilocks Controller", "One Shot LLM", "AND Baseline", "OR Baseline"]
+    methods = ["goldilocks", "and_baseline", "or_baseline"]
+    titles = ["Controller", "AND Baseline", "OR Baseline"]
     fig, axes = plt.subplots(1, len(methods), figsize=(5 * len(methods), 5))
 
     for ax, method, title in zip(axes, methods, titles):
@@ -406,7 +353,7 @@ def _generate_charts(results, config):
         if hits:
             ax.hist(hits, bins=30, color="steelblue", edgecolor="white", alpha=0.8)
         else:
-            ax.text(0.5, 0.5, "No successful Groq responses", ha="center", va="center", transform=ax.transAxes)
+            ax.text(0.5, 0.5, "No results", ha="center", va="center", transform=ax.transAxes)
         ax.axvline(x=target_low, color="green", linestyle="--", label=f"Target low ({target_low})")
         ax.axvline(x=target_high, color="red", linestyle="--", label=f"Target high ({target_high})")
         ax.set_title(title)
@@ -432,7 +379,7 @@ def _generate_charts(results, config):
             method_names.append(titles[methods.index(method)])
             p10_values.append(sum(e["p_at_10"] for e in entries) / len(entries))
 
-    colors = {"goldilocks": "#2196F3", "one_shot_llm_baseline": "#9C27B0",
+    colors = {"goldilocks": "#2196F3",
               "and_baseline": "#FF9800", "or_baseline": "#4CAF50"}
     bars = ax.bar(method_names, p10_values, color=[colors[method] for method in chart_methods], edgecolor="white")
     ax.set_ylabel("Average P@10")

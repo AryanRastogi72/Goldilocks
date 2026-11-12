@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from engine.search import SearchIndex
 from engine.ranker import rank_documents, rank_bm25
+from engine.expansion import rank_bm25_prf
 from pipeline.tokenizer import query_terms
 from evaluation.metrics import (
     compute_p_at_k, compute_ndcg_at_k, compute_mrr_at_k, compute_recall_at_k,
@@ -42,9 +43,20 @@ def tfidf_run(terms, index):
     return rank_documents(candidates, terms, index, top_k=TOP_K)
 
 
-def make_bm25_run(title_boost):
+def make_bm25_run(title_boost, config):
     def run(terms, index):
-        return rank_bm25(terms, index, top_k=TOP_K, title_boost=title_boost)
+        return rank_bm25(
+            terms, index, top_k=TOP_K, k1=config["bm25_k1"], b=config["bm25_b"], title_boost=title_boost
+        )
+    return run
+
+
+def make_prf_run(config):
+    def run(terms, index):
+        return rank_bm25_prf(
+            terms, index, top_k=TOP_K, k1=config["bm25_k1"], b=config["bm25_b"],
+            title_boost=config["title_boost"], max_df_fraction=config["max_df_fraction"],
+        )
     return run
 
 
@@ -75,12 +87,15 @@ def evaluate_run(run, field_getter, topics, qrels, index):
 
 def main():
     index = SearchIndex()
+    with open("config.json", "r") as f:
+        config = json.load(f)
     topics = load_topics()
     qrels = load_qrels()
     runs = {
         "tfidf": tfidf_run,
-        "bm25": make_bm25_run(0.0),
-        f"bm25_title_boost_{UNTUNED_BOOST} (untuned, chosen before seeing results)": make_bm25_run(UNTUNED_BOOST),
+        "bm25": make_bm25_run(0.0, config),
+        f"bm25_title_boost_{UNTUNED_BOOST} (untuned, chosen before seeing results)": make_bm25_run(UNTUNED_BOOST, config),
+        "bm25_prf (alpha 1.0, beta 0.5, 10 terms from the top 10 documents)": make_prf_run(config),
     }
     results = {}
     for field_name, field_getter in FIELDS.items():

@@ -6,3 +6,4 @@ tabulate==0.10.0
 pandas==2.3.3
 altair==5.5.0
 streamlit==1.51.0
+gensim==4.4.0

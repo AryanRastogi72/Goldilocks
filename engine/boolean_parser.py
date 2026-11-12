@@ -10,6 +10,7 @@ The AST is a nested tuple structure:
   ("OR",  [child1, child2, ...])
   ("NOT", child)
   ("TERM", "stemmed_word")
+  ("TITLE", "stemmed_word")   written title:word, matches the title zone only
 """
 
 import re
@@ -33,7 +34,7 @@ def tokenize_query(query_str):
     Returns a list of token strings.
     """
     # regex: match words (possibly with * for wildcard), or single-char parens
-    tokens = re.findall(r"[a-zA-Z0-9*]+|[()]", query_str)
+    tokens = re.findall(r"title:[a-zA-Z0-9]+|[a-zA-Z0-9*]+|[()]", query_str)
     # normalize operators to uppercase
     normalized = []
     for t in tokens:
@@ -145,6 +146,8 @@ def _make_term_node(token):
     If the token ends with *, it is a wildcard query.
     Otherwise, stem it and create a TERM node.
     """
+    if token.lower().startswith("title:"):
+        return ("TITLE", stem_term(token[len("title:"):]))
     if token.endswith("*"):
         # wildcard: keep the prefix (without *), stem it
         prefix = token[:-1].lower()
@@ -161,6 +164,8 @@ def ast_to_string(node):
     op = node[0]
     if op == "TERM":
         return node[1]
+    elif op == "TITLE":
+        return f"title:{node[1]}"
     elif op == "WILDCARD":
         return node[1] + "*"
     elif op == "NOT":
@@ -181,7 +186,7 @@ def collect_terms(node):
     Returns a set of stemmed terms (excludes wildcards and NOTs).
     """
     op = node[0]
-    if op == "TERM":
+    if op in ("TERM", "TITLE"):
         return {node[1]}
     elif op == "WILDCARD":
         return set()

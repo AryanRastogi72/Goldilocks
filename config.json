@@ -1,6 +1,4 @@
 {
-    "llm_provider": "groq",
-    "groq_model": "openai/gpt-oss-20b",
     "target_band_low": 20,
     "target_band_high": 200,
     "max_iterations": 8,
@@ -10,5 +8,18 @@
     "kgram_k": 3,
     "bm25_k1": 1.2,
     "bm25_b": 0.75,
-    "title_boost": 0.0
+    "title_boost": 0.0,
+    "max_df_fraction": 0.10,
+    "thesaurus": {
+        "vector_size": 100,
+        "window": 5,
+        "min_count": 5,
+        "sg": 1,
+        "epochs": 5,
+        "workers": 4,
+        "seed": 42,
+        "min_df": 5,
+        "min_similarity": 0.6,
+        "top_neighbours": 5
+    }
 }

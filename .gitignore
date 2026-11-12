@@ -22,6 +22,7 @@ node_modules/
 /data/raw/
 /data/cache/
 index_out/abstracts.sqlite
+index_out/word2vec.model*
 /llm_cache/
 /gemini_cache/
 /tmp/

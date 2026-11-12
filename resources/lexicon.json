@@ -1,0 +1,186 @@
+[
+  {
+    "id": "covid19",
+    "variants": [
+      "covid",
+      "covid-19",
+      "covid19",
+      "sars-cov-2",
+      "sarscov2",
+      "2019-ncov",
+      "ncov",
+      "cov2",
+      "coronavirus",
+      "coronavirus disease 2019",
+      "novel coronavirus"
+    ],
+    "source": "WHO / ICTV naming (COVID-19, SARS-CoV-2, 2019-nCoV)"
+  },
+  {
+    "id": "mechanical_ventilation",
+    "variants": [
+      "ventilator",
+      "ventilators",
+      "ventilation",
+      "mechanical ventilation",
+      "artificial respiration"
+    ],
+    "source": "common clinical usage; related MeSH heading: Respiration, Artificial (entry terms not checked)"
+  },
+  {
+    "id": "face_mask",
+    "variants": [
+      "mask",
+      "masks",
+      "face mask",
+      "face masks",
+      "face covering",
+      "face coverings",
+      "respirator",
+      "respirators",
+      "n95"
+    ],
+    "source": "common clinical usage; related MeSH heading: Masks (entry terms not checked)"
+  },
+  {
+    "id": "children",
+    "variants": [
+      "children",
+      "child",
+      "paediatric",
+      "pediatric",
+      "paediatrics",
+      "pediatrics"
+    ],
+    "source": "common clinical usage; related MeSH heading: Child; plus British and American spellings (entry terms not checked)"
+  },
+  {
+    "id": "pregnancy",
+    "variants": [
+      "pregnant",
+      "pregnancy",
+      "pregnancies",
+      "gestational",
+      "pregnant women"
+    ],
+    "source": "common clinical usage; related MeSH heading: Pregnancy (entry terms not checked)"
+  },
+  {
+    "id": "mortality",
+    "variants": [
+      "mortality",
+      "death",
+      "deaths",
+      "fatality",
+      "fatalities",
+      "case fatality"
+    ],
+    "source": "common clinical usage; related MeSH heading: Mortality (entry terms not checked)"
+  },
+  {
+    "id": "ace2",
+    "variants": [
+      "ace2",
+      "angiotensin-converting enzyme 2",
+      "angiotensin converting enzyme 2"
+    ],
+    "source": "gene symbol ACE2 and its full name"
+  },
+  {
+    "id": "hydroxychloroquine",
+    "variants": [
+      "hydroxychloroquine",
+      "hcq",
+      "plaquenil"
+    ],
+    "source": "common clinical usage: generic and brand drug names"
+  },
+  {
+    "id": "remdesivir",
+    "variants": [
+      "remdesivir",
+      "veklury"
+    ],
+    "source": "common clinical usage: generic and brand drug names"
+  },
+  {
+    "id": "hypertension",
+    "variants": [
+      "hypertension",
+      "hypertensive",
+      "high blood pressure"
+    ],
+    "source": "common clinical usage; related MeSH heading: Hypertension (entry terms not checked)"
+  },
+  {
+    "id": "intensive_care",
+    "variants": [
+      "icu",
+      "icus",
+      "intensive care",
+      "intensive care unit",
+      "intensive care units"
+    ],
+    "source": "common clinical usage; related MeSH heading: Intensive Care Units (entry terms not checked)"
+  },
+  {
+    "id": "influenza",
+    "variants": [
+      "influenza",
+      "flu",
+      "seasonal flu"
+    ],
+    "source": "common clinical usage; related MeSH heading: Influenza, Human (entry terms not checked)"
+  },
+  {
+    "id": "anosmia",
+    "variants": [
+      "anosmia",
+      "smell loss",
+      "loss of smell"
+    ],
+    "source": "common clinical usage; related MeSH heading: Anosmia (entry terms not checked)"
+  },
+  {
+    "id": "elderly",
+    "variants": [
+      "elderly",
+      "older",
+      "older adults",
+      "aged",
+      "geriatric"
+    ],
+    "source": "common clinical usage; related MeSH heading: Aged (entry terms not checked)"
+  },
+  {
+    "id": "kidney",
+    "variants": [
+      "kidney",
+      "kidneys",
+      "renal"
+    ],
+    "source": "common clinical usage; related MeSH heading: Kidney (entry terms not checked)"
+  },
+  {
+    "id": "cancer",
+    "variants": [
+      "cancer",
+      "tumor",
+      "tumour",
+      "malignancy",
+      "neoplasm"
+    ],
+    "source": "common clinical usage; related MeSH heading: Neoplasms (entry terms not checked)"
+  },
+  {
+    "id": "smoking",
+    "variants": [
+      "smoking",
+      "smoker",
+      "smokers",
+      "tobacco",
+      "cigarette"
+    ],
+    "source": "common clinical usage; related MeSH heading: Smoking and Tobacco (entry terms not checked)"
+  }
+]

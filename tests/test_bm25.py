@@ -1,21 +1,16 @@
-import json
 import math
-import os
 import tempfile
 import unittest
 
-from pipeline.build_index import (
-    build_inverted_index, build_kgram_index, build_title_postings, export_shards,
-)
 from engine.search import SearchIndex
 from engine.ranker import rank_bm25
+from tests.support import build_tiny_index
 
 CORPUS = {
     "doc_a": {"title": "cat", "text": "dog dog"},         # indexed tokens: cat dog dog (3)
     "doc_b": {"title": "bird", "text": "cat cat cat bird"},  # bird cat cat cat bird (5)
     "doc_c": {"title": "fish", "text": "fish fish"},      # fish fish fish (3)
 }
-CONFIG = {"shard_max_bytes": 5000000}
 K1 = 1.2
 B = 0.75
 
@@ -24,10 +19,7 @@ class Bm25Tests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.folder = tempfile.TemporaryDirectory()
-        postings, doc_meta, vocab, stats = build_inverted_index(CORPUS, CONFIG)
-        export_shards(postings, vocab, doc_meta, build_kgram_index(vocab), stats, CONFIG, cls.folder.name)
-        with open(os.path.join(cls.folder.name, "title_postings.json"), "w") as f:
-            json.dump(build_title_postings(CORPUS), f)
+        build_tiny_index(CORPUS, cls.folder.name)
         cls.index = SearchIndex(cls.folder.name)
 
     @classmethod

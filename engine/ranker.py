@@ -113,7 +113,7 @@ def bm25_idf(index, term):
     return math.log(1 + (index.num_docs - df + 0.5) / (df + 0.5))
 
 
-def rank_bm25(query_terms, index, top_k=10, doc_ids=None, k1=1.2, b=0.75, title_boost=0.0):
+def rank_bm25(query_terms, index, top_k=10, doc_ids=None, k1=1.2, b=0.75, title_boost=0.0, term_weights=None):
     """
     Okapi BM25 with an optional title-zone boost.
 
@@ -121,6 +121,7 @@ def rank_bm25(query_terms, index, top_k=10, doc_ids=None, k1=1.2, b=0.75, title_
                idf(t) * tf * (k1 + 1) / (tf + k1 * (1 - b + b * len(d) / avg_dl))
     final(d) = score(d) + title_boost * sum of idf(t) for query terms in the title of d
 
+    term_weights (optional dict term -> weight, default 1) scales a term's idf, for expansion terms.
     doc_ids=None scores every document that contains a query term.
     Otherwise only the given documents are scored.
     Returns: list of (score, doc_id), highest score first, ties by smaller doc_id.
@@ -129,8 +130,9 @@ def rank_bm25(query_terms, index, top_k=10, doc_ids=None, k1=1.2, b=0.75, title_
     avg_dl = index.get_avg_doc_length()
     scores = {}
 
+    term_weights = term_weights or {}
     for term in set(query_terms):
-        idf = bm25_idf(index, term)
+        idf = bm25_idf(index, term) * term_weights.get(term, 1.0)
         for doc_id, tf in index.get_postings(term):
             if allowed is not None and doc_id not in allowed:
                 continue
