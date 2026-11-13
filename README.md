@@ -71,10 +71,13 @@ Fifty TREC-COVID topics, both the keyword field and the question field, depth 10
 
 ## Team
 
-- Raghav Garg: the original Goldilocks indexing, retrieval, controller and evaluation.
-- Aryan Rastogi: the midsem model-provider switch, the midsem web UI and audit; EvidenceLens product direction and decisions.
-- Everything else in EvidenceLens: `TODO(team)` (to be filled by Aryan and Raghav).
-- Source code link for the submission: `TODO(link)`.
+Aryan Rastogi and Raghav Garg.
+
+The midsem system Goldilocks was originally built by Raghav Garg.
+
+## Source code
+
+https://github.com/AryanRastogi72/Goldilocks
 
 ## Midsem history
 

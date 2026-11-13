@@ -10,7 +10,7 @@ import sys
 import zipfile
 
 MEMBERS = ["AryanRastogi", "RaghavGarg"]
-GITHUB_LINK = "TODO(link)"
+GITHUB_LINK = "https://github.com/AryanRastogi72/Goldilocks"
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPORT_PDF = os.path.join("docs", "report", "main.pdf")
