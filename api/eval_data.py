@@ -8,7 +8,6 @@ from evaluation.make_summary import top_differences
 from evaluation.quick_rank_eval import FIELDS, load_topics
 
 EVAL_DIR = "evaluation"
-AI_NOTE = "agreement with reference labels, not human-validated accuracy"
 
 
 def load(name):
@@ -49,11 +48,7 @@ def chart_data():
 
 
 def evidence_block():
-    human = load("evidence_scores.json") if exists("evidence_scores.json") else {"status": "TODO(metric)"}
-    ai = {"source": "ai", "note": AI_NOTE, "status": "not available"}
-    if exists("evidence_scores_ai.json"):
-        ai = dict(load("evidence_scores_ai.json"), source="ai", note=AI_NOTE)
-    return {"human": human, "ai": ai}
+    return {"human": load("evidence_scores.json") if exists("evidence_scores.json") else {"status": "TODO(metric)"}}
 
 
 def build_eval_payload():

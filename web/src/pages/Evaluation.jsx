@@ -6,7 +6,7 @@ const FIELDS = [
   ["text", "question text"],
 ];
 const FIELD_NAME = Object.fromEntries(FIELDS);
-const AI_TITLE = "Evidence classifier: agreement with reference labels, not human-validated accuracy";
+const CLASSIFIER_TITLE = "Evidence classifier accuracy";
 
 const signed = (value, digits = 4) => `${value >= 0 ? "+" : "−"}${Math.abs(value).toFixed(digits)}`;
 const pValue = (p) => (p < 0.0001 ? "< 0.0001" : p.toFixed(4));
@@ -250,63 +250,13 @@ function Chart({ number, children, caption }) {
 }
 
 function ClassifierBlock({ block }) {
-  const { human, ai } = block;
-  const classRows = (perClass) => (
-    <tbody>
-      {Object.entries(perClass).map(([name, row]) => (
-        <tr key={name}>
-          <td className="left">{name.replaceAll("_", " ")}</td>
-          {["precision", "recall", "f1"].map((key) => (
-            <td key={key} className="num">
-              {row[key] === null ? "n/a" : formatFixed(row[key], 3)}
-            </td>
-          ))}
-        </tr>
-      ))}
-    </tbody>
-  );
-  const header = (
-    <thead>
-      <tr>
-        <th>Class</th>
-        <th>Precision</th>
-        <th>Recall</th>
-        <th>F1</th>
-      </tr>
-    </thead>
-  );
+  const { human } = block;
   return (
     <div className="sheet">
-      <h3 className="mt-0">{AI_TITLE}</h3>
+      <h3 className="mt-0">{CLASSIFIER_TITLE}</h3>
       <p className="m-0">
-        <b>Human-validated accuracy: {human.status ?? "TODO(metric)"}</b>. Nobody has labelled the sample by hand yet. The numbers below are not accuracy.
+        <b>Human-validated accuracy: {human.status ?? "TODO(metric)"}</b>. A blind sample of 120 documents with abstracts is ready for hand labelling (evaluation/evidence_label_sample.csv); nobody has labelled it yet.
       </p>
-      {ai.status === "not available" ? (
-        <p>The AI agreement scores have not been computed.</p>
-      ) : (
-        <>
-          <p className="mt-2">
-            {ai.labelled_rows} sampled papers with abstracts were labelled blind to the classifier's guesses. Overall agreement: <b>{formatFixed(ai.weighted_accuracy, 3)}</b> re-weighted to the corpus, {formatFixed(ai.unweighted_accuracy, 3)} unweighted. Precision is unbiased
-            by design of the sample; recall and agreement are estimates.
-          </p>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="scroll-x">
-              <table className="data">
-                <caption>Re-weighted by inverse sampling probability</caption>
-                {header}
-                {classRows(ai.weighted_per_class)}
-              </table>
-            </div>
-            <div className="scroll-x">
-              <table className="data">
-                <caption>Unweighted sample numbers</caption>
-                {header}
-                {classRows(ai.unweighted_per_class)}
-              </table>
-            </div>
-          </div>
-        </>
-      )}
     </div>
   );
 }

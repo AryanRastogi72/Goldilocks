@@ -9,17 +9,12 @@ The sample was stratified by predicted class, so:
     weight_c = population_c / labelled_c documents of the corpus (abstract of at least 200 characters).
 
 Usage: python -m evaluation.score_evidence_labels [sample.csv predictions.csv counts.json]
-       python -m evaluation.score_evidence_labels --labels ai
-The second form scores evaluation/evidence_label_sample_ai.csv and writes
-evaluation/evidence_scores_ai.json. Those numbers are agreement with reference labels,
-not human-validated accuracy; they are never written into human_label.
 """
 
 import csv
 import json
 import os
 import sys
-import tempfile
 from collections import Counter
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -29,10 +24,7 @@ from engine.evidence import CLASSES
 SAMPLE_PATH = os.path.join("evaluation", "evidence_label_sample.csv")
 PREDICTIONS_PATH = os.path.join("evaluation", "evidence_label_predictions.csv")
 COUNTS_PATH = os.path.join("evaluation", "evidence_sampling_counts.json")
-AI_LABELS_PATH = os.path.join("evaluation", "evidence_label_sample_ai.csv")
-AI_SCORES_PATH = os.path.join("evaluation", "evidence_scores_ai.json")
 HUMAN_SCORES_PATH = os.path.join("evaluation", "evidence_scores.json")
-AI_DISCLAIMER = "agreement with reference labels, not human-validated accuracy"
 
 
 def read_rows(path):
@@ -112,33 +104,8 @@ def save_scores(path, count, weighted, unweighted, note=None):
         json.dump(output, f, indent=2)
 
 
-def ai_sample_rows():
-    """The sample rows with the AI label in an ai_label column (the human_label column is never touched)."""
-    ai_labels = {row["doc_id"]: row["ai_label"] for row in read_rows(AI_LABELS_PATH)}
-    return [dict(row, ai_label=ai_labels.get(row["doc_id"], "")) for row in read_rows(SAMPLE_PATH)]
-
-
-def score_ai_labels():
-    with tempfile.TemporaryDirectory() as folder:
-        merged = os.path.join(folder, "sample_with_ai_labels.csv")
-        rows = ai_sample_rows()
-        with open(merged, "w", encoding="utf-8", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=list(rows[0]))
-            writer.writeheader()
-            writer.writerows(rows)
-        count, weighted, unweighted = score(merged, PREDICTIONS_PATH, COUNTS_PATH, label_column="ai_label")
-    print(f"Scores against AI labels: {AI_DISCLAIMER}. {count} labelled rows.")
-    save_scores(AI_SCORES_PATH, count, weighted, unweighted, note=AI_DISCLAIMER)
-    print_table(f"Re-weighted, {AI_DISCLAIMER}", *weighted)
-    print_table(f"Unweighted sample numbers, {AI_DISCLAIMER}", *unweighted)
-    print(f"\nSaved {AI_SCORES_PATH}")
-
-
 def main():
     args = sys.argv[1:]
-    if args[:2] == ["--labels", "ai"]:
-        score_ai_labels()
-        return
     count, weighted, unweighted = score(*(args[:3] if len(args) >= 3 else []))
     if count == 0:
         print("No labelled rows yet. Fill human_label in the sample file and run again.")

@@ -190,11 +190,9 @@ class DocumentAndEvalTests(unittest.TestCase):
     def test_unknown_document_is_404(self):
         assert_error(self, client.get("/api/doc/nonexistent"), 404, "unknown_document")
 
-    def test_eval_carries_the_ai_flag_and_no_human_accuracy(self):
+    def test_eval_has_no_human_accuracy_yet_and_no_other_labels(self):
         body = client.get("/api/eval").json()
-        self.assertEqual(body["evidence_classifier"]["ai"]["source"], "ai")
-        self.assertIn("not human-validated accuracy", body["evidence_classifier"]["ai"]["note"])
-        self.assertEqual(body["evidence_classifier"]["human"], {"status": "TODO(metric)"})
+        self.assertEqual(body["evidence_classifier"], {"human": {"status": "TODO(metric)"}})
         for key in ["runs", "significance", "beir", "wins_and_losses", "charts", "controller_versions"]:
             self.assertIn(key, body)
         self.assertEqual(len(body["charts"]), 5)

@@ -16,13 +16,10 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPORT_PDF = os.path.join("docs", "report", "main.pdf")
 DATASET_ZIP = os.path.join("data", "raw", "beir", "trec-covid.zip")
 
-EXCLUDED_FOLDERS = {
-    "index_out", "node_modules", "archive", "reference", ".git", ".venv", ".scratch",
-    "__pycache__", ".pytest_cache", ".mypy_cache", ".collab",
-}
+LOCAL_EXCLUDE_FILE = os.path.join(PROJECT_ROOT, ".git", "info", "exclude")
+EXCLUDED_FOLDERS = {"index_out", "node_modules", "archive", "reference", ".git", ".venv", "__pycache__", ".pytest_cache", ".mypy_cache"}
 EXCLUDED_PATHS = {
     os.path.join("web", "dist"),
-    os.path.join(".impeccable", "review"),
     os.path.join("data", "raw"),
     os.path.join("data", "cache"),
 }
@@ -58,8 +55,20 @@ The report is docs/report/main.pdf (LaTeX source docs/report/main.tex). The READ
 """
 
 
-def is_excluded(relative_path):
+def local_excludes():
+    """Paths this working copy keeps out of version control (the lines of .git/info/exclude); they stay out of the ZIP too."""
+    if not os.path.exists(LOCAL_EXCLUDE_FILE):
+        return set()
+    with open(LOCAL_EXCLUDE_FILE, encoding="utf-8") as f:
+        lines = [line.strip().rstrip("/") for line in f]
+    return {line for line in lines if line and not line.startswith("#")}
+
+
+def is_excluded(relative_path, local_entries):
     parts = relative_path.split(os.sep)
+    posix_path = "/".join(parts)
+    if any(posix_path == entry or posix_path.startswith(entry + "/") or entry in parts for entry in local_entries):
+        return True
     if any(part in EXCLUDED_FOLDERS for part in parts[:-1]):
         return True
     if any(relative_path == path or relative_path.startswith(path + os.sep) for path in EXCLUDED_PATHS):
@@ -68,11 +77,12 @@ def is_excluded(relative_path):
 
 
 def project_files():
+    local_entries = local_excludes()
     for folder, folder_names, file_names in os.walk(PROJECT_ROOT):
         folder_names[:] = [name for name in folder_names if name not in EXCLUDED_FOLDERS]
         for name in file_names:
             relative_path = os.path.relpath(os.path.join(folder, name), PROJECT_ROOT)
-            if not is_excluded(relative_path) and not name.startswith("CSD358_"):
+            if not is_excluded(relative_path, local_entries) and not name.startswith("CSD358_"):
                 yield relative_path
 
 

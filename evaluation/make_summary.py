@@ -83,20 +83,8 @@ def beir_section(results, beir):
     ]
 
 
-AI_SECTION_TITLE = "Evidence classifier: agreement with reference labels, not human-validated accuracy"
-
-
-def score_table(per_class, accuracy):
-    lines = ["| class | precision | recall | F1 |", "|---|---|---|---|"]
-    for class_id, row in per_class.items():
-        cells = [f"{row[k]:.3f}" if row[k] is not None else "n/a" for k in ("precision", "recall", "f1")]
-        lines.append(f"| {class_id} | " + " | ".join(cells) + " |")
-    return lines + [f"| overall | accuracy {accuracy:.3f} | | |"]
-
-
 def evidence_section():
     human_path = os.path.join("evaluation", "evidence_scores.json")
-    ai_path = os.path.join("evaluation", "evidence_scores_ai.json")
     lines = ["## Evidence classifier accuracy (human labels)", ""]
     if os.path.exists(human_path):
         scores = load(human_path)
@@ -104,15 +92,6 @@ def evidence_section():
     else:
         lines += ["TODO(metric): the blind sample `evaluation/evidence_label_sample.csv` has not been labelled by a human yet; "
                   "after labelling, `python -m evaluation.score_evidence_labels` saves `evaluation/evidence_scores.json`.", ""]
-    if os.path.exists(ai_path):
-        ai = load(ai_path)
-        lines += [f"## {AI_SECTION_TITLE}", "",
-                  f"Labels were made blind on {ai['labelled_rows']} sampled documents with abstracts. "
-                  "Details in `evaluation/evidence_scores_ai.json`.", "",
-                  "Re-weighted by inverse sampling probability (precision unbiased; recall, F1 and accuracy estimated for the corpus):", ""]
-        lines += score_table(ai["weighted_per_class"], ai["weighted_accuracy"])
-        lines += ["", "Unweighted sample numbers (the sample is balanced by predicted class, so recall and accuracy are not corpus estimates):", ""]
-        lines += score_table(ai["unweighted_per_class"], ai["unweighted_accuracy"]) + [""]
     return lines
 
 

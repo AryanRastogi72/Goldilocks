@@ -49,9 +49,8 @@ Thumbs.db
 reference/
 reference/**/*.pdf
 
-# Agent scratch and review staging
+# Review staging
 _trash_review/
-.scratch/
 
 # Local Streamlit logs
 streamlit_server.*.log
