@@ -67,7 +67,7 @@ Fifty TREC-COVID topics, both the keyword field and the question field, depth 10
 - It is **tied with BM25 on keyword queries** (p = 0.6737) and **clearly worse on question text** (p = 0.0001). Because the band caps the set at about 200 papers, its Recall@1000 is 0.1217 and 0.0531 against 0.4161 and 0.4543 for BM25.
 - Rocchio feedback and the evidence weight did not improve ranking. The controller revision (v2.1) was made after seeing v2.0 on all 50 topics, with no held-out topics, so it is a post-hoc result.
 - Our BM25 on the question field gets nDCG@10 0.6555; the BEIR paper reports 0.656 for BM25 on TREC-COVID (Table 2, version 4). Their BM25 setup differs from ours, so we do not claim to reproduce it.
-- Study-type classifier: accuracy against hand labels is `TODO(metric)` (the 120-document blind sample in `evaluation/evidence_label_sample.csv` has not been hand-labelled yet).
+- Study-type classifier, against 120 hand-labelled documents (15 per predicted class, `evaluation/evidence_label_sample.csv`): estimated accuracy 0.597 for the collection (re-weighted), 0.733 on the balanced sample. Recall is low for case reports (0.123) and opinion pieces (0.142). Per-class precision, recall and F1 are in `evaluation/summary.md`.
 
 ## Team
 

@@ -251,12 +251,63 @@ function Chart({ number, children, caption }) {
 
 function ClassifierBlock({ block }) {
   const { human } = block;
+  const classRows = (perClass) => (
+    <tbody>
+      {Object.entries(perClass).map(([name, row]) => (
+        <tr key={name}>
+          <td className="left">{name.replaceAll("_", " ")}</td>
+          {["precision", "recall", "f1"].map((key) => (
+            <td key={key} className="num">
+              {row[key] === null ? "n/a" : formatFixed(row[key], 3)}
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  );
+  const header = (
+    <thead>
+      <tr>
+        <th>Class</th>
+        <th>Precision</th>
+        <th>Recall</th>
+        <th>F1</th>
+      </tr>
+    </thead>
+  );
+  if (!human.labelled_rows) {
+    return (
+      <div className="sheet">
+        <h3 className="mt-0">{CLASSIFIER_TITLE}</h3>
+        <p className="m-0">
+          <b>Accuracy: {human.status ?? "TODO(metric)"}</b>. A blind sample of 120 documents with abstracts is ready for hand labelling (evaluation/evidence_label_sample.csv); nobody has labelled it yet.
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="sheet">
       <h3 className="mt-0">{CLASSIFIER_TITLE}</h3>
       <p className="m-0">
-        <b>Human-validated accuracy: {human.status ?? "TODO(metric)"}</b>. A blind sample of 120 documents with abstracts is ready for hand labelling (evaluation/evidence_label_sample.csv); nobody has labelled it yet.
+        {human.labelled_rows} sampled papers with abstracts, 15 for each predicted class, labelled by the two authors. Overall accuracy: <b>{formatFixed(human.weighted_accuracy, 3)}</b> re-weighted to the
+        corpus, {formatFixed(human.unweighted_accuracy, 3)} unweighted. Precision is unbiased by design of the sample; recall and accuracy are estimates.
       </p>
+      <div className="mt-2 grid gap-4 md:grid-cols-2">
+        <div className="scroll-x">
+          <table className="data">
+            <caption>Re-weighted by inverse sampling probability</caption>
+            {header}
+            {classRows(human.weighted_per_class)}
+          </table>
+        </div>
+        <div className="scroll-x">
+          <table className="data">
+            <caption>Unweighted sample numbers</caption>
+            {header}
+            {classRows(human.unweighted_per_class)}
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

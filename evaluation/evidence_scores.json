@@ -1,0 +1,90 @@
+{
+  "note": null,
+  "labelled_rows": 120,
+  "weighted_per_class": {
+    "systematic_review_meta_analysis": {
+      "precision": 0.7333333333333333,
+      "recall": 1.0,
+      "f1": 0.846153846153846
+    },
+    "randomized_controlled_trial": {
+      "precision": 0.8,
+      "recall": 0.6846012336327237,
+      "f1": 0.737815616070908
+    },
+    "observational": {
+      "precision": 0.8666666666666666,
+      "recall": 0.4120767734946991,
+      "f1": 0.5585689708802556
+    },
+    "case_report_series": {
+      "precision": 0.7333333333333333,
+      "recall": 0.12344941163970567,
+      "f1": 0.21132444383817026
+    },
+    "modelling_simulation": {
+      "precision": 0.9333333333333333,
+      "recall": 0.9215354096983914,
+      "f1": 0.9273968510706506
+    },
+    "lab_animal": {
+      "precision": 0.8666666666666667,
+      "recall": 0.6710418468248298,
+      "f1": 0.7564107182589715
+    },
+    "opinion_editorial": {
+      "precision": 0.46666666666666673,
+      "recall": 0.14230876605248466,
+      "f1": 0.21810652424721694
+    },
+    "other": {
+      "precision": 0.4666666666666667,
+      "recall": 0.9300784715336847,
+      "f1": 0.6214972340742009
+    }
+  },
+  "weighted_accuracy": 0.5966282490133885,
+  "unweighted_per_class": {
+    "systematic_review_meta_analysis": {
+      "precision": 0.7333333333333333,
+      "recall": 1.0,
+      "f1": 0.846153846153846
+    },
+    "randomized_controlled_trial": {
+      "precision": 0.8,
+      "recall": 0.9230769230769231,
+      "f1": 0.8571428571428571
+    },
+    "observational": {
+      "precision": 0.8666666666666667,
+      "recall": 0.5909090909090909,
+      "f1": 0.7027027027027029
+    },
+    "case_report_series": {
+      "precision": 0.7333333333333333,
+      "recall": 0.6875,
+      "f1": 0.7096774193548386
+    },
+    "modelling_simulation": {
+      "precision": 0.9333333333333333,
+      "recall": 0.875,
+      "f1": 0.9032258064516129
+    },
+    "lab_animal": {
+      "precision": 0.8666666666666667,
+      "recall": 0.8125,
+      "f1": 0.8387096774193549
+    },
+    "opinion_editorial": {
+      "precision": 0.4666666666666667,
+      "recall": 0.7777777777777778,
+      "f1": 0.5833333333333334
+    },
+    "other": {
+      "precision": 0.4666666666666667,
+      "recall": 0.4117647058823529,
+      "f1": 0.43749999999999994
+    }
+  },
+  "unweighted_accuracy": 0.7333333333333333
+}

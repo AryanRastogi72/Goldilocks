@@ -83,16 +83,26 @@ def beir_section(results, beir):
     ]
 
 
+def score_table(per_class, accuracy):
+    lines = ["| class | precision | recall | F1 |", "|---|---|---|---|"]
+    for class_id, row in per_class.items():
+        cells = [f"{row[k]:.3f}" if row[k] is not None else "n/a" for k in ("precision", "recall", "f1")]
+        lines.append(f"| {class_id} | " + " | ".join(cells) + " |")
+    return lines + [f"| overall | accuracy {accuracy:.3f} | | |"]
+
+
 def evidence_section():
     human_path = os.path.join("evaluation", "evidence_scores.json")
-    lines = ["## Evidence classifier accuracy (human labels)", ""]
-    if os.path.exists(human_path):
-        scores = load(human_path)
-        lines += [f"Re-weighted accuracy {scores['weighted_accuracy']:.3f} on {scores['labelled_rows']} human-labelled rows (documents with abstracts only). Details in `evaluation/evidence_scores.json`.", ""]
-    else:
-        lines += ["TODO(metric): the blind sample `evaluation/evidence_label_sample.csv` has not been labelled by a human yet; "
-                  "after labelling, `python -m evaluation.score_evidence_labels` saves `evaluation/evidence_scores.json`.", ""]
-    return lines
+    lines = ["## Evidence classifier accuracy (hand labels)", ""]
+    if not os.path.exists(human_path):
+        return lines + ["TODO(metric): the blind sample `evaluation/evidence_label_sample.csv` has not been labelled yet; "
+                        "after labelling, `python -m evaluation.score_evidence_labels` saves `evaluation/evidence_scores.json`.", ""]
+    scores = load(human_path)
+    lines += [f"{scores['labelled_rows']} documents with abstracts, sampled 15 per predicted class and labelled by the two authors. Details in `evaluation/evidence_scores.json`.", "",
+              "Re-weighted by inverse sampling probability (precision unbiased; recall, F1 and accuracy estimated for the corpus):", ""]
+    lines += score_table(scores["weighted_per_class"], scores["weighted_accuracy"])
+    lines += ["", "Unweighted sample numbers (the sample is balanced by predicted class, so recall and accuracy are not corpus estimates):", ""]
+    return lines + score_table(scores["unweighted_per_class"], scores["unweighted_accuracy"]) + [""]
 
 
 def significance_lines(significance):
