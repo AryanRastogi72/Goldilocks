@@ -165,7 +165,7 @@ export default function HowItWorks() {
       <h1>How it works</h1>
       <p>
         Every question goes through the same pipeline. Each stage is a classical information-retrieval technique, and each one leaves a mark on the Search page, so you can check it. No
-        generative AI runs at query time. This course project was built by Aryan Rastogi and Raghav Garg; Raghav built the original Goldilocks search it grew from.
+        generative AI runs at query time. This course project was built by Aryan Rastogi and Raghav Garg. Raghav Garg created the foundation of the midsem system Goldilocks: indexing, retrieval, the query controller and the evaluation. Aryan Rastogi refined Goldilocks (model-provider switch, web interface, audit and integration) and led its extension into EvidenceLens.
       </p>
 
       <h2>The pipeline</h2>

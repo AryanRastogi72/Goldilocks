@@ -73,7 +73,9 @@ Fifty TREC-COVID topics, both the keyword field and the question field, depth 10
 
 Aryan Rastogi and Raghav Garg.
 
-The midsem system Goldilocks was originally built by Raghav Garg.
+Raghav Garg created the foundation of the midsem system Goldilocks: indexing, retrieval, the query controller and the evaluation.
+
+Aryan Rastogi refined Goldilocks (model-provider switch, web interface, audit and integration) and led its extension into EvidenceLens.
 
 ## Source code
 
