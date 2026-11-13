@@ -1,5 +1,5 @@
 {
- "note": "R5 evidence_weight 0.2 was chosen by the designer before any R5 result existed; nothing else was tuned",
+ "note": "R5 evidence_weight 0.2 was chosen before any R5 result existed; nothing else was tuned",
  "depth": 1000,
  "band": [
   20,

@@ -7,7 +7,7 @@ Runs R0 to R5 on all TREC-COVID topics, both topic fields, to depth 1000, and sc
   R2  tf-idf ltc.ltc, full collection
   R3  BM25 + Rocchio pseudo-relevance feedback reranking
   R4  EvidenceLens agent: controller v2.1 (no clarification), BM25 over the whole accepted set (set run)
-  R5  R4 with evidence_weight = 0.2 (value fixed by the designer before any R5 result existed; nothing else tuned)
+  R5  R4 with evidence_weight = 0.2 (value fixed before any R5 result existed; nothing else tuned)
 
 Writes evaluation/runs/<run>_<field>.trec (topic Q0 ext_id rank score tag), evaluation/results.json and
 evaluation/summary.tsv. Usage: python -m evaluation.run_eval
@@ -169,7 +169,7 @@ def main():
     index = SearchIndex()
     topics, qrels = load_topics(), load_qrels()
     results = {
-        "note": "R5 evidence_weight 0.2 was chosen by the designer before any R5 result existed; nothing else was tuned",
+        "note": "R5 evidence_weight 0.2 was chosen before any R5 result existed; nothing else was tuned",
         "depth": DEPTH,
         "band": [config["target_band_low"], config["target_band_high"]],
         "runs": {},

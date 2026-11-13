@@ -1,6 +1,6 @@
 # Evaluation summary
 
-R5 evidence_weight 0.2 was chosen by the designer before any R5 result existed; nothing else was tuned.
+R5 evidence_weight 0.2 was chosen before any R5 result existed; nothing else was tuned.
 
 All runs use depth 1000, 50 topics, relevant = grade above 0, nDCG with linear gain. Run files: `evaluation/runs/*.trec`; recomputed by `python -m evaluation.validate_results`.
 
