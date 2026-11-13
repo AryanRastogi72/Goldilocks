@@ -23,7 +23,7 @@ EXCLUDED_PATHS = {
     os.path.join("data", "raw"),
     os.path.join("data", "cache"),
 }
-EXCLUDED_SUFFIXES = (".pyc", ".aux", ".log", ".fdb_latexmk", ".fls", ".synctex.gz")
+EXCLUDED_SUFFIXES = (".pyc", ".aux", ".log", ".out", ".fdb_latexmk", ".fls", ".synctex.gz")
 EXCLUDED_FILES = {"build.log", ".env", ".dev.vars", "secrets.toml"}
 
 BUILD_TEXT = """EvidenceLens: build instructions
@@ -51,7 +51,7 @@ from data/raw/beir/trec-covid.zip, which is included.
 4. Tests: python -m unittest discover tests
    Evaluation (about 90 seconds): python -m evaluation.run_eval, then see evaluation/summary.md.
 
-The report is docs/report/main.pdf (LaTeX source docs/report/main.tex). The README explains the project.
+The report is docs/report/main.pdf. The README explains the project.
 """
 
 
@@ -89,8 +89,7 @@ def project_files():
 def check_inputs():
     missing = [path for path in (REPORT_PDF, DATASET_ZIP) if not os.path.exists(os.path.join(PROJECT_ROOT, path))]
     if missing:
-        sys.exit("Cannot build the ZIP, these files are missing: " + ", ".join(missing)
-                 + ("\nBuild the report first: cd docs/report && latexmk -pdf main.tex" if REPORT_PDF in missing else ""))
+        sys.exit("Cannot build the ZIP, these files are missing: " + ", ".join(missing))
 
 
 def main():

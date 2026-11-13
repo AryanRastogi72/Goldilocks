@@ -46,11 +46,11 @@ question -> conversation rules -> concept extraction (idf, lexicon, index elimin
 | `api/` | FastAPI app (`/api/search`, `/api/clarify`, `/api/rerank`, `/api/doc/{id}`, `/api/eval`, `/api/health`) |
 | `web/` | React app ("Bench Notebook" design) |
 | `evaluation/` | six runs, significance tests, charts, saved results (`summary.md`) |
-| `docs/` | brief, formulas, references, viva prep, demo script, report (`docs/report/main.pdf`) |
+| `docs/` | the report (`docs/report/main.pdf`) and the screenshots (`docs/screenshots/`) |
 
 ## IR concepts used
 
-Inverted index with sharded postings; Boolean retrieval with postings intersection ordered by document frequency; k-gram index for wildcards; title-zone postings; index elimination; Okapi BM25 (Lucene idf, k1 = 1.2, b = 0.75); ltc.ltc tf-idf cosine; Rocchio pseudo-relevance feedback (positive part only); a word2vec thesaurus for global query expansion; leader-follower clustering for clarification, with contrast-score labels; rule-based query rewriting for follow-ups; a rule-based study-type classifier with an evidence score g(d) from a published levels-of-evidence ordering; paired randomization tests with Bonferroni correction. The formulas are in `docs/formulas.md`.
+Inverted index with sharded postings; Boolean retrieval with postings intersection ordered by document frequency; k-gram index for wildcards; title-zone postings; index elimination; Okapi BM25 (Lucene idf, k1 = 1.2, b = 0.75); ltc.ltc tf-idf cosine; Rocchio pseudo-relevance feedback (positive part only); a word2vec thesaurus for global query expansion; leader-follower clustering for clarification, with contrast-score labels; rule-based query rewriting for follow-ups; a rule-based study-type classifier with an evidence score g(d) from a published levels-of-evidence ordering; paired randomization tests with Bonferroni correction.
 
 ## Evaluation, with the trade-offs
 
@@ -87,4 +87,4 @@ Goldilocks, the midsem project, controlled result size with a Boolean query cont
 
 ## Data and references
 
-TREC-COVID through BEIR (Roberts et al., Journal of Biomedical Informatics 2021; Thakur et al., 2021). The levels-of-evidence ordering behind g(d) is from Burns, Rohrich and Chung (Plastic and Reconstructive Surgery, 2011). Verification notes for every reference: `docs/references.md`.
+TREC-COVID through BEIR (Roberts et al., Journal of Biomedical Informatics 2021; Thakur et al., 2021). The levels-of-evidence ordering behind g(d) is from Burns, Rohrich and Chung (Plastic and Reconstructive Surgery, 2011). The full reference list is in the report.
