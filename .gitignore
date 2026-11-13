@@ -37,7 +37,6 @@ web/dist/
 .env
 .dev.vars
 *.key
-.streamlit/secrets.toml
 
 # Operating system and editor files
 .DS_Store
@@ -51,9 +50,6 @@ reference/**/*.pdf
 
 # Review staging
 _trash_review/
-
-# Local Streamlit logs
-streamlit_server.*.log
 
 # Local browser test output
 .playwright-cli/
